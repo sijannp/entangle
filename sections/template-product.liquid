@@ -35,21 +35,36 @@
           {% endcomment %}
 
           <div class="flex flex-col gap-8">
-            <slider-component>
-              <div class="main-carousel">
-                {% for media in product.media %}
-                  {% render 'product-media', media: media, variant_images: variant_images %}
-                {% endfor %}
+            <splide-component
+              data-splide='{ "perPage": 1, "type": "loop" }'
+              data-thumbnails='{ "perPage": 4, "type": "loop" }'
+            >
+              <div class="splide">
+                <div class="splide__track">
+                  <ul class="splide__list">
+                    {% for media in product.media %}
+                      <div class="splide__slide">
+                        {% render 'product-media', media: media, variant_images: variant_images %}
+                      </div>
+                    {% endfor %}
+                  </ul>
+                </div>
               </div>
 
               {% if product.media.size > 1 %}
-                <div class="carousel-thumbnails">
-                  {% for media in product.media %}
-                    {% render 'product-media', media: media, thumbnail: true %}
-                  {% endfor %}
+                <div class="splide-thumbnails splide">
+                  <div class="splide__track">
+                    <ul class="splide__list">
+                      {% for media in product.media %}
+                        <div class="splide__slide">
+                          {% render 'product-media', media: media, thumbnail: true %}
+                        </div>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </div>
               {% endif %}
-            </slider-component>
+            </splide-component>
           </div>
         </div>
 
@@ -252,35 +267,6 @@
       }
     </style>
   </div>
-
-  <script>
-    let flkty;
-    document.addEventListener('DOMContentLoaded', function () {
-      try {
-        var elem = document.querySelector('.en-images-slider');
-        flkty = new Flickity(elem, {
-          cellAlign: 'center',
-          contain: true,
-          pageDots: false,
-          wrapAround: true,
-          prevNextButtons: true,
-          draggable: false,
-        });
-
-        var elem1 = document.querySelector('.en-images-slider-thumbnail');
-        if (elem1) {
-          var flkty1 = new Flickity(elem1, {
-            asNavFor: '.en-images-slider',
-            pageDots: false,
-            contain: true,
-            prevNextButtons: false,
-          });
-        }
-      } catch (e) {
-        console.log('Flickity is not defined');
-      }
-    });
-  </script>
 </div>
 {% schema %}
 {

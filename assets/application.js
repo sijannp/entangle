@@ -815,14 +815,44 @@ class SplideComponent extends HTMLElement {
             ...this.splideData,
         };
 
-        this.splide = new Splide(this.splideElement, splideOptions);
+        this.main = new Splide(this.splideElement, splideOptions);
 
-        this.splide.mount();
+
+
+
+        this.thumbnailsElement = this.querySelector(".splide-thumbnails");
+
+
+        if (this.thumbnailsElement) {
+
+            try {
+                this.thumbnailsData = JSON.parse(this.getAttribute("data-splide")) || {};
+            } catch (error) {
+                console.error("Error parsing data-splide attribute:", error);
+                this.thumbnailsData = {};
+            }
+
+            const thumbnailOptions = {
+                ...this.thumbnailsData,
+            };
+            this.thumbnails = new Splide(this.thumbnailsElement, thumbnailOptions);
+
+            this.main.sync(this.thumbnails);
+            this.main.mount();
+            this.thumbnails.mount();
+
+
+        } else {
+            this.main.mount();
+        }
     }
 
     disconnectedCallback() {
-        if (this.splide) {
-            this.splide.destroy();
+        if (this.main) {
+            this.main.destroy();
+            if (this.thumbnails) {
+                this.thumbnails.destroy();
+            }
         }
     }
 }
