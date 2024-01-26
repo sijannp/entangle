@@ -1,0 +1,28 @@
+{
+    "name": "Footer",
+    "type": "footer",
+    "sections": {
+        "footer": {
+            "type": "footer",
+            "blocks": {
+                "footer-0": {
+                    "type": "link_list"
+                },
+                "footer-1": {
+                    "type": "text"
+                },
+                "footer-2": {
+                    "type": "email_signup"
+                }
+            },
+            "block_order": [
+                "footer-0",
+                "footer-1",
+                "footer-2"
+            ]
+        }
+    },
+    "order": [
+        "footer"
+    ]
+}

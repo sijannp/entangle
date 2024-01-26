@@ -1,0 +1,76 @@
+<div class="h-full w-full flex flex-col justify-center items-center color-{{ section.settings.color_scheme }}">
+  <div class="w-full max-w-md p-8 rounded">
+    <h2 class="text-3xl font-bold mb-6 text-center">{{ 'customer.register.title' | t }}</h2>
+
+    {% form 'create_customer' %}
+      {%- if form.errors -%}
+        <h2 class="form__message" tabindex="-1" autofocus>
+          <svg aria-hidden="true" focusable="false">
+            <use href="#icon-error" />
+          </svg>
+          {{ 'templates.contact.form.error_heading' | t }}
+        </h2>
+        <ul>
+          {%- for field in form.errors -%}
+            <li>
+              {%- if field == 'form' -%}
+                {{ form.errors.messages[field] }}
+              {%- else -%}
+                <a href="#RegisterForm-{{ field }}">
+                  {{ form.errors.translated_fields[field] | capitalize }}
+                  {{ form.errors.messages[field] }}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      <div class="mb-6">
+        <label for="firstName" class="block mb-2">{{ 'customer.register.first_name' | t }}</label>
+        <input type="text" id="firstName" name="customer[first_name]" class="input w-full mb-4" required>
+
+        <label for="lastName" class="block mb-2">{{ 'customer.register.last_name' | t }}</label>
+        <input type="text" id="lastName" name="customer[last_name]" class="input w-full mb-4" required>
+
+        <label for="email" class="block mb-2">
+          {{- 'customer.register.email' | t -}}
+          <span class="text-red-500">*</span></label
+        >
+        <input type="email" id="email" name="customer[email]" class="input w-full mb-4" required>
+
+        <label for="password" class="block mb-2">
+          {{- 'customer.register.password' | t -}}
+          <span class="text-red-500">*</span></label
+        >
+        <input type="password" id="password" name="customer[password]" class="input w-full mb-4" required>
+
+        {% comment %} <p class="text-justify text-wrap">Your personal data will be used to support your experience thoughtout this website, to managed acess to your account, and for other purpose described in our <span class="font-semibold" >privacy policy</span></span></p> {% endcomment %}
+        <button type="submit" class="button button-primary w-full mt-4">{{ 'customer.register.submit' | t }}</button>
+      </div>
+    {% endform %}
+
+    <div class="text-center my-4 flex items-center">
+      <div class="flex-1 border-t"></div>
+      <span class="mx-4">or</span>
+      <div class="flex-1 border-t"></div>
+    </div>
+
+    <a href="{{ routes.account_login_url}}">
+      <button class="button button-outline w-full">{{ 'customer.log_in' | t }}</button>
+    </a>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Login",
+  "class": "h-full flex flex-col justify-center",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    }
+  ]
+}
+{% endschema %}

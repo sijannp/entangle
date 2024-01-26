@@ -1,0 +1,282 @@
+{% liquid
+  assign bgImage = section.settings.background_image
+  assign desktop_height = section.settings.desktop_height
+  assign overlayColor = section.settings.overlay_color
+
+  assign overlayOpacity = section.settings.overlay_opacity
+  assign heading = section.settings.heading
+  assign textContent = section.settings.text_content
+  assign buttonText = section.settings.button_text
+  assign buttonUrl = section.settings.button_url
+  assign buttonType = section.settings.button_type
+  assign buttonClass = 'button-primary'
+  if buttonType == 'outline'
+    assign buttonClass = 'button-outline'
+  elsif buttonType == 'secondary'
+    assign buttonClass = 'button-secondary'
+  endif
+  assign contentPosition = section.settings.content_position
+  assign alignment = section.settings.alignment
+  assign textColor = section.settings.text_color
+
+  assign alignmentClass = 'text-center'
+  if alignment == 'left'
+    assign alignmentClass = 'text-left'
+  elsif alignment == 'right'
+    assign alignmentClass = 'text-right'
+  endif
+
+  assign desktopHeightClass = 'lg:h-[800px]'
+  if desktop_height == '600'
+    assign desktopHeightClass = 'lg:h-[600px]'
+  elsif desktop_height == '700'
+    assign desktopHeightClass = 'lg:h-[700px]'
+  elsif desktop_height == 'fullscreen'
+    assign desktopHeightClass = 'lg:h-screen'
+  endif
+%}
+
+{% assign overlayColorRgba = overlayColor.red
+  | append: ','
+  | append: overlayColor.green
+  | append: ','
+  | append: overlayColor.blue
+%}
+
+<div
+  class="w-full h-[550px] {{ desktopHeightClass }} relative {% unless bgImage %} bg-gray-300 {% endunless %}"
+
+  {% if desktop_height == 'adapt' %}
+    style="height: {{ bgImage.height }}px"
+  {% endif %}
+>
+  {% if bgImage %}
+    {{
+      bgImage
+      | image_url: width: bgImage.width
+      | image_tag: class: 'w-full h-full object-cover absolute top-0 left-0 z-[9]', loading: 'lazy'
+    }}
+
+  {% else %}
+    {{ 'hero-apparel-1' | placeholder_svg_tag: 'w-full h-full object-cover absolute top-0 left-0 z-[9]' }}
+  {% endif %}
+
+  <div
+    class="w-full h-full absolute top-0 left-0 z-[99]"
+    style="background-color: rgba({{ overlayColorRgba }}, {{ overlayOpacity }})"
+  >
+    <div class="{% if section.settings.show_container %}   {% endif %} en-conten-wrapper px-8 md:px-0 absolute w-[100%_!important] lg:w-[auto_!important] {{ alignmentClass }} {{ contentPosition }}">
+      <h2
+        class="en-title-xl"
+        style="color: {{ textColor }} "
+      >
+        {{ heading }}
+      </h2>
+      <p class="block mt-4 md:text-[2.5rem]" style="color: {{ textColor }}">
+        {{ textContent }}
+      </p>
+      {% if buttonText != blank %}
+        <a href="{{ buttonUrl }}" class="{{ buttonClass }} mt-4">
+          {{- buttonText -}}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .en-conten-wrapper.top-left {
+    top: 2%;
+    left: 2%;
+  }
+  .en-conten-wrapper.top-center {
+    top: 2%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: auto;
+  }
+  .en-conten-wrapper.top-right {
+    top: 2%;
+    right: 2%;
+  }
+  .en-conten-wrapper.center-left {
+    top: 50%;
+    left: 2%;
+    transform: translate(0, -50%);
+    width: auto;
+  }
+  .en-conten-wrapper.center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+  }
+  .en-conten-wrapper.center-right {
+    top: 50%;
+    right: 2%;
+    transform: translate(0, -50%);
+    width: auto;
+  }
+  .en-conten-wrapper.bottom-left {
+    bottom: 2%;
+    left: 2%;
+  }
+  .en-conten-wrapper.bottom-center {
+    bottom: 2%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: auto;
+  }
+  .en-conten-wrapper.bottom-right {
+    bottom: 2%;
+    right: 2%;
+  }
+
+  .en-image-overlay-section h2,
+  .en-image-overlay-section p {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Image Banner",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "select",
+      "id": "desktop_height",
+      "label": "Desktop Height",
+      "default": "800",
+      "options": [
+        {
+          "label": "Adapt to image",
+          "value": "adapt"
+        },
+        {
+          "label": "600px",
+          "value": "600"
+        },
+        {
+          "label": "700px",
+          "value": "700"
+        },
+        {
+          "label": "800px",
+          "value": "800"
+        },
+        {
+          "label": "Full screen",
+          "value": "fullscreen"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay Opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.1
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "text_content",
+      "label": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_type",
+      "label": "Button Type",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "outline", "label": "Outline" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "label": "Show Container",
+      "id": "show_container",
+      "default": true
+    },
+
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content Position",
+      "options": [
+        { "value": "top-left", "label": "Top Left" },
+        { "value": "top-center", "label": "Top Center" },
+        { "value": "top-right", "label": "Top Right" },
+        { "value": "center-left", "label": "Center Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "center-right", "label": "Center Right" },
+        { "value": "bottom-left", "label": "Bottom Left" },
+        { "value": "bottom-center", "label": "Bottom Center" },
+        { "value": "bottom-right", "label": "Bottom Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "default": "left",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#FFFFFF"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Banner"
+    }
+  ]
+}
+{% endschema %}

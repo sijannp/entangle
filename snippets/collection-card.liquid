@@ -1,0 +1,37 @@
+<div class="w-full py-4">
+  <div class="w-full overflow-hidden">
+    <a href="{{ collection.url }}">
+      {% if collection.featured_image != blank %}
+        {% assign collection_image = collection.featured_image %}
+      {% else %}
+        {% assign collection_image = collection.products.first.image %}
+      {% endif %}
+      {% if collection_image %}
+        <div class="group w-full overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
+          {{
+            collection_image
+            | image_url: width: 700
+            | image_tag:
+              class: 'h-full w-full object-cover absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out transform hover:scale-105',
+              loading: 'lazy'
+          }}
+        </div>
+
+      {% else %}
+        {{
+          'collection-1'
+          | placeholder_svg_tag: 'w-full h-full object-cover ransition duration-700 ease-in-out transform hover:scale-105'
+        }}
+      {% endif %}
+    </a>
+
+    <div class="p-4">
+      <h1 class="text-lg uppercase">
+        {{ collection.title }}
+        {% if count %}
+          ({{ collection.all_products_count }})
+        {% endif %}
+      </h1>
+    </div>
+  </div>
+</div>

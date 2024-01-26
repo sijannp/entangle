@@ -1,0 +1,87 @@
+{% comment %}
+  usage:
+  render 'product-card',
+  article: product,
+  show_vendor: true,
+  quick_add: true
+{% endcomment %}
+
+{% style %}
+  .en-product-image--padding {
+    padding: var(--product-card-image-padding);
+  }
+{% endstyle %}
+
+{% liquid
+  assign imageclass = 'h-full w-full object-cover absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out transform hover:scale-105'
+
+  if quick_add
+    assign imageclass = 'h-full w-full object-cover absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out transform hover:scale-105 '
+  endif
+%}
+<div
+  class="{% if settings.reveal_on_scroll %} reveal {% endif %} {% if settings.product_card_style == 'card' %} product-card {% endif %} {% if settings.corners == "rounded" %} rounded-lg {% endif %} w-full my-4 overflow-hidden duration-300 hover:shadow-md "
+>
+  <div class="relative w-full overflow-hidden  group {% if type == 'list' %} flex{% endif %}">
+    <div class="relative w-full {% if type == 'list' %} max-w-[200px]{% endif %}">
+      <a href="{{ article.url }}">
+        {% if article.image %}
+          <div class=" group w-full overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
+            {{ article.image | image_url: width: 700 | image_tag: class: imageclass, loading: 'lazy' }}
+          </div>
+        {% endif %}
+      </a>
+
+      {% comment %} For quick add  {% endcomment %}
+
+      {% comment %} For card badges {% endcomment %}
+
+      <div class="absolute flex items-center justify-center text-xs font-bold uppercase overflow-hidden {{ badge_classes }} {% if settings.corners == "rounded" %} rounded-sm {% endif %}">
+        Blog
+      </div>
+    </div>
+
+    <div class="flex flex-col py-4 px-2">
+      {% if show_date %}
+        <span class="text-sm">{{ article.date }}</span>
+      {% endif %}
+
+      <a href="{{ article.url }}" class="font-bold">
+        <h3>{{ article.title }}</h3>
+      </a>
+
+      {% render 'price', product: article %}
+
+      {% if swatches %}
+        {% for option in article.options_with_values %}
+          {% if option.name == 'Color' %}
+            <div class="my-2 flex gap-2 flex-wrap">
+              {% for value in option.values %}
+                <div
+                  class="h-4 w-4"
+                  style="background-color: {{- value -}};"
+                ></div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<quick-add-modal
+  quickadd-id="QuickAdd-{{ article.id }}"
+  class="hidden"
+>
+  <div class="fixed w-full h-full top-0 left-0 bg-black opacity-40 z-[10]"></div>
+  <div
+    class="page-width fixed z-[11] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] md:w-[80%] lg:w-[70%] max-h-[90%] overflow-scroll bg-[rgba(var(--primary-background))]"
+  >
+    <div class="absolute top-2 right-2 z-[12] cursor-pointer">
+      {% render 'icon-close', class: 'close-modal' %}
+    </div>
+
+    <div id="QuickAddInfo-{{ article.id }}" class=""></div>
+  </div>
+</quick-add-modal>

@@ -1,0 +1,63 @@
+{% if localization.available_countries.size > 1 %}
+  <localization-form class="relative text-sm">
+    {% form 'localization' %}
+      <collapsible-button
+        class="inline-block"
+        close-on-click="true"
+        target-id="{{ "country-localization" | append: section.id }}"
+      >
+        <button
+          type="button"
+          class="flex items-center gap-2 px-3 py-1"
+        >
+          <span>
+            {{ localization.country.name }} ({{ localization.country.currency.iso_code }}
+            {{ localization.country.currency.symbol }})
+          </span>
+          <img
+            src="https://flagicons.lipis.dev/flags/1x1/{{ localization.country.iso_code |  downcase }}.svg"
+            height="10"
+            width="10"
+            loading="lazy"
+            class="inline-block w-4 h-4"
+          >
+          <span class="en-collapsible-caret text-sm">
+            {% render 'icon-caret' %}
+          </span>
+        </button>
+      </collapsible-button>
+
+      <collapsible-content
+        data-id="{{ "country-localization" | append: section.id }}"
+        class="absolute shadow-md {% if position == 'footer' %} top-0 -translate-y-[100%] {% else %} top-full {% endif %} "
+      >
+        <div class="collapsible-inner max-h-[30rem] overflow-scroll">
+          <ul
+            id="CountryList"
+            role="list"
+            class="max-h-64 overflow-y-scroll border p-3 bg-[rgba(var(--primary-background))] {% if settings.corners == 'rounded' %}rounded {% endif %}"
+          >
+            {% for country in localization.available_countries %}
+              <li class="px-2 py-1" tabindex="-1">
+                <a
+                  href="#"
+                  {% if country.iso_code == localization.country.iso_code %}
+                    aria-current="true"
+                  {% endif %}
+                  data-value="{{ country.iso_code }}"
+                  class="flex gap-3 items-center transition-all duration-300 hover:underline"
+                >
+                  <span>
+                    {{ country.name }} ({{ country.currency.iso_code }}
+                    {{ country.currency.symbol }})
+                  </span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </collapsible-content>
+      <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+    {% endform %}
+  </localization-form>
+{% endif %}

@@ -1,0 +1,76 @@
+{% liquid
+  assign title_classes = 'my-4 mx-auto text-center'
+  if section.settings.title_position == 'inside_image' and section.settings.show_collection_image and collection.featured_image
+    assign title_classes = 'absolute z-[10] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+  endif
+%}
+
+<div class="en-container relative">
+  {% if section.settings.title_position == 'above_image' or section.settings.title_position == 'inside_image' %}
+    <h1 class="text-3xl block {{ title_classes }}">{{ collection.title }}</h1>
+  {% endif %}
+
+  {% if section.settings.show_collection_image and collection.featured_image %}
+    <div class=" group w-full h-48 md:h-64 lg:h-72 overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
+      {{
+        collection.featured_image
+        | image_url: width: 700
+        | image_tag:
+          class: 'h-full w-full object-cover absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out transform',
+          loading: 'lazy'
+      }}
+    </div>
+  {% endif %}
+  {% if section.settings.title_position == 'below_image' %}
+    <h1 class="text-3xl block {{ title_classes }}">{{ collection.title }}</h1>
+  {% endif %}
+  {% if section.settings.show_collection_description and collection.description != blank %}
+    <div class="description text-center">
+      {{ collection.description }}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Collection banner",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_collection_description",
+      "default": true,
+      "label": "Show collection description"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "default": false,
+      "label": "Show collection image",
+      "info": "Use an image with 16:9 ratio for best result."
+    },
+    {
+      "type": "select",
+      "id": "title_position",
+      "default": "inside_image",
+      "label": "Title position",
+      "info": "Applies only if collection image is enabled.",
+      "options": [
+        {
+          "label": "Above image",
+          "value": "above_image"
+        },
+        {
+          "label": "Inside image",
+          "value": "inside_image"
+        },
+        {
+          "label": "Below image",
+          "value": "below_image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

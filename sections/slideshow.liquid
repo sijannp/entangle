@@ -1,0 +1,285 @@
+{% liquid
+  assign slide_duration = section.settings.slide_style
+  assign slide_style = section.settings.slide_style
+
+  assign image_height = section.settings.image_height
+  if image_height == 'small'
+    assign height_class = 'h-[500px]'
+  elsif image_height == 'medium'
+    assign height_class = 'h-[750px]'
+  elsif image_height == 'large'
+    assign height_class = 'h-[900px]'
+  endif
+
+  assign image_class = height_class | append: ' w-full object-none'
+%}
+
+<div class="color-{{ section.settings.color_scheme }}">
+  <splide-component data-splide='{"type":"fade","perPage":1, "arrows": false  }'>
+    <div class="splide relative ">
+      <div class="splide__track">
+        <ul class="splide__list">
+          {% for block in section.blocks %}
+            {% liquid
+              assign index = forloop.index
+              if index > 4
+                assign index = index | modulo: 4
+              endif
+              assign placeholder = 'hero-apparel-' | append: index
+            %}
+
+            <li class="splide__slide w-full relative {{ height_class }} color-{{ block.settings.color_scheme }}">
+              <div class="slide--image" style="opacity: {{ block.settings.image_opacity }} ;">
+                {% liquid
+                  assign background_image = block.settings.background_image
+                  assign heading = block.settings.heading
+                  assign content = block.settings.text
+                  assign button_label = block.settings.button_label
+                  assign button_link = block.settings.button_link
+                  assign content_position = block.settings.content_position
+                  assign alignment = block.settings.alignment
+                  assign container = block.settings.container
+
+                  assign alignment_mobile = block.settings.alignment_mobile
+
+                  assign content_class = 'slide-content flex flex-col gap-2 lg:gap-4 max-w-lg p-4 lg:p-6 lg:absolute z-[2]'
+
+                  if settings.corners == 'rounded'
+                    assign content_class = content_class | append: ' rounded-lg'
+                  endif
+
+                  if content_position == 'left'
+                    assign content_class = content_class | append: ' lg:left-4  lg:top-1/2 lg:-translate-y-1/2'
+                  elsif content_position == 'center'
+                    assign content_class = content_class | append: ' lg:left-1/2 lg:-translate-x-1/2  top-1/2 lg:-translate-y-1/2'
+                  elsif content_position == 'right'
+                    assign content_class = content_class | append: ' lg:right-4  lg:top-1/2 lg:-translate-y-1/2'
+                  elsif content_position == 'bottom_center'
+                    assign content_class = content_class | append: ' lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2'
+                  elsif content_position == 'top_center'
+                    assign content_class = content_class | append: ' lg:top-4 lg:left-1/2 lg:-translate-x-1/2'
+                  endif
+
+                  comment
+                    "text-left text-center text-right lg:text-left lg:text-center lg:text-right"
+                  endcomment
+                %}
+                {% if background_image != blank %}
+                  {{
+                    background_image
+                    | image_url: width: background_image.width
+                    | image_tag: loading: 'lazy', class: image_class
+                  }}
+                {% else %}
+                  {{ placeholder | placeholder_svg_tag }}
+                {% endif %}
+              </div>
+              <div class=" {{ content_class }} text-{{ alignment_mobile }} lg:text-{{ alignment }} color-{{ block.settings.color_scheme }} {% unless container %} bg-transparent {% endunless %}">
+                {% if heading != blank %}
+                  <h2 class="text-4xl fade-in-text">{{ heading }}</h2>
+                {% endif %}
+                {% if content != blank %}
+                  <p class="fade-in-text">{{ content }}</p>
+                {% endif %}
+                {% if button_label %}
+                  <div class="pt-3">
+                    <a href="{{ button_link }}" class="button button-primary"> {{ button_label }} </a>
+                  </div>
+                {% endif %}
+              </div>
+            </li>
+          {% else %}
+            {% for i in (1..3) %}
+              {% liquid
+                assign index = forloop.index
+                if index > 4
+                  assign index = index | modulo: 4
+                endif
+                assign placeholder = 'hero-apparel-' | append: index
+              %}
+              <li class="splide__slide w-full flex flex-col relative {{ height_class }} color-{{ block.settings.color_scheme }}">
+                <div class="slide--image" style="opacity: {{ block.settings.image_opacity }} ;">
+                  {{ placeholder | placeholder_svg_tag }}
+                </div>
+
+                <div class="{{ content_class }} text-{{ alignment_mobile }} lg:text-{{ alignment }} color-{{ block.settings.color_scheme }}">
+                  <h2 class="text-4xl">Slide Heading</h2>
+
+                  <p>Give customers details about the banner image(s) or content on the template</p>
+
+                  <div class="pt-3"><a href="{{ button_link }}" class="button button-primary"> Shop Now </a></div>
+                </div>
+              </li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </splide-component>
+</div>
+
+{% schema %}
+{
+  "name": "Slideshow",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "slide_duration",
+      "min": 1,
+      "max": 15,
+      "default": 7,
+      "step": 1,
+      "label": "Slide duration"
+    },
+    {
+      "type": "select",
+      "id": "slide_style",
+      "default": "fade",
+      "label": "Slide style",
+      "options": [
+        {
+          "value": "fade",
+          "label": "Fade"
+        },
+        {
+          "value": "slide",
+          "label": "Slide"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_height",
+      "default": "medium",
+      "label": "Image height",
+      "options": [
+        {
+          "label": "Small",
+          "value": "small"
+        },
+        {
+          "label": "Medium",
+          "value": "medium"
+        },
+        {
+          "label": "Large",
+          "value": "large"
+        },
+        {
+          "label": "Adapt",
+          "value": "adapt"
+        }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "label": "Color Scheme",
+      "id": "color_scheme",
+      "default": "background-1"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Slide",
+      "type": "slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "background_image",
+          "label": "Background Image"
+        },
+        {
+          "type": "range",
+          "id": "image_opacity",
+          "label": "Image Opacity",
+          "min": 0,
+          "max": 1,
+          "step": 0.1,
+          "default": 0.9
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Slider Heding"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text Content",
+          "default": "<p> Give customers details about the banner image(s) or content on the template.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "checkbox",
+          "id": "container",
+          "label": "Show container",
+          "default": true
+        },
+
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Content Position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "default": "center",
+          "label": "Alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            },
+            {
+              "value": "top_center",
+              "label": "Top center"
+            },
+            {
+              "value": "bottom_center",
+              "label": "Bottom center"
+            }
+          ]
+        },
+        {
+          "type": "color_scheme",
+          "label": "Color Scheme",
+          "id": "color_scheme",
+          "default": "background-2"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slideshow"
+    }
+  ]
+}
+{% endschema %}

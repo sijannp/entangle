@@ -1,0 +1,118 @@
+<div class="relative h-full w-full flex flex-col justify-center color-{{ section.settings.color_scheme }}">
+  <div class="flex items-center justify-center py-8">
+    <div class="w-full max-w-md p-8 rounded">
+      <h2 class="text-3xl font-bold mb-6 text-center">{{ 'customer.login_page.title' | t }}</h2>
+
+      {% form 'customer_login' %}
+        {%- unless form.errors -%}
+          <div class="text-red-400">
+            <h2 class="text-semibold text-lg">
+              {{ 'templates.contact.form.error_heading' | t }}
+            </h2>
+            <ul>
+              {%- for field in form.errors -%}
+                <li class="w-full">
+                  {%- if field == 'form' -%}
+                    {{ form.errors.messages[field] }}
+                  {%- else -%}
+                    <a href="#RegisterForm-{{ field }}">
+                      {{ form.errors.translated_fields[field] | capitalize }}
+                      {{ form.errors.messages[field] }}
+                    </a>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endunless -%}
+        <div class="mb-6">
+          <label for="email" class="block mb-2">
+            {{- 'customer.login_page.email' | t -}}
+            <span class="text-red-500">*</span></label
+          >
+          <input type="email" id="email" name="customer[email]" class="input w-full mb-4" required>
+
+          <label for="password" class="block mb-2">
+            {{- 'customer.login_page.password' | t -}}
+            <span class="text-red-500">*</span></label
+          >
+          <input type="password" id="password" name="customer[password]" class="input w-full mb-4" required>
+          <collapsible-button target-id="forgetPassword" close-on-click="true">
+            <p class="  cursor-pointer">{{ 'customer.login_page.forgot_password' | t }}</p>
+          </collapsible-button>
+          <button type="submit" class="button button-primary w-full mt-5">
+            {{ 'customer.login_page.submit' | t }}
+          </button>
+        </div>
+      {% endform %}
+
+      <div class="text-center my-4 flex items-center">
+        <div class="flex-1 border-t"></div>
+        <span class="mx-4">or</span>
+        <div class="flex-1 border-t"></div>
+      </div>
+
+      <a href="{{ routes.account_register_url }}"
+        ><button class="button button-outline w-full">{{ 'customer.login_page.create_account' | t }}</button></a
+      >
+    </div>
+    <collapsible-content data-id="forgetPassword" class="absolute z-9 w-full max-w-md rounded">
+      <div class="collapsible-inner">
+        <div class="h-full w-full flex flex-col justify-center color-{{ section.settings.color_scheme }}">
+          <div class="w-full max-w-md rounded">
+            <h2 class="text-3xl font-bold mb-1 text-center">{{ 'customer.login_page.forgot_password' | t }}</h2>
+            <p class="text-justify  text-wrap mb-8">{{ 'customer.recover_password.subtext' | t }}</p>
+
+            {% form 'recover_customer_password' %}
+              <div class="mb-6">
+                {% if form.errors %}
+                  <div style="background-color:red">
+                    <strong>Error</strong>
+
+                    <div>
+                      {{ form.errors | default_errors }}
+                    </div>
+                  </div>
+                {% endif %}
+                <label for="email" class="block mb-2 ">
+                  {{- 'customer.login_page.email' | t -}}
+                  <span class="text-red-500">*</span></label
+                >
+                <input type="email" id="email" name="email" class="w-full p-2 mb-4 border-2" required>
+
+                <div class="flex justify-between items-center">
+                  <button type="submit" class="button button-primary w-full">
+                    {{ 'customer.reset_password.submit' | t }}
+                  </button>
+                </div>
+              </div>
+            {% endform %}
+            <div class="text-center my-4 flex items-center">
+              <div class="flex-1 border-t"></div>
+              <span class="mx-4">or</span>
+              <div class="flex-1 border-t"></div>
+            </div>
+            <a href="{{ routes.account_login_url}}"
+              ><button class="button button-outline w-full">{{ 'customer.reset_password.cancel' | t }}</button></a
+            >
+          </div>
+        </div>
+      </div>
+    </collapsible-content>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Login",
+  "class": "h-full flex flex-col justify-center",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    }
+  ]
+}
+{% endschema %}

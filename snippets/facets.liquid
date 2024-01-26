@@ -1,0 +1,16 @@
+<sort-by class="ml-auto">
+  <select id="sort-by--desktop" class="hidden md:block px-2 py-2 ml-auto cursor-pointer bg-transparent border">
+    {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+
+    {% for option in collection.sort_options %}
+      <option
+        value="{{ option.value }}"
+        {% if option.value == sort_by %}
+          selected="selected"
+        {% endif %}
+      >
+        {{ option.name }}
+      </option>
+    {% endfor %}
+  </select>
+</sort-by>

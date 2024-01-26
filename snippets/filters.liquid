@@ -1,0 +1,401 @@
+<style>
+  .wrapper {
+    position: relative;
+    border-radius: 10px;
+  }
+  .container {
+    position: relative;
+    width: 100%;
+    border-top: 4px solid;
+    border-bottom: 4px solid;
+  }
+  input[type='range'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    outline: none;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    background-color: transparent;
+    pointer-events: none;
+  }
+  .slider-track {
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    border-radius: 5px;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    height: 5px;
+  }
+  input[type='range']::-moz-range-track {
+    -moz-appearance: none;
+    height: 5px;
+  }
+  input[type='range']::-ms-track {
+    appearance: none;
+    height: 5px;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 1.7em;
+    width: 1.7em;
+    background-color: #3264fe;
+    cursor: pointer;
+    margin-top: -9px;
+    pointer-events: auto;
+    border-radius: 50%;
+  }
+  input[type='range']::-moz-range-thumb {
+    -webkit-appearance: none;
+    height: 1.7em;
+    width: 1.7em;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #3264fe;
+    pointer-events: auto;
+  }
+  input[type='range']::-ms-thumb {
+    appearance: none;
+    height: 1.7em;
+    width: 1.7em;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #3264fe;
+    pointer-events: auto;
+  }
+  input[type='range']:active::-webkit-slider-thumb {
+    background-color: #ffffff;
+    border: 3px solid #3264fe;
+  }
+  .values {
+    background-color: #3264fe;
+    width: 32%;
+    position: relative;
+    margin: auto;
+    padding: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 25px;
+    color: #ffffff;
+  }
+  .values:before {
+    content: '';
+    position: absolute;
+    height: 0;
+    width: 0;
+    border-top: 15px solid #3264fe;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    margin: auto;
+    bottom: -14px;
+    left: 0;
+    right: 0;
+  }
+</style>
+
+<div class="absolute md:relative flex w-full">
+  {% if type == 'drawer' %}
+    <div class="en-filters-drawer-icon cursor-pointer">
+      {% render 'icon-adjustments' %}
+    </div>
+  {% endif %}
+
+  <form
+    id="en-filter-form"
+    class="en-filters {% if type == "drawer" %}absolute w-full md:w-[25rem] px-4 py-8 top-full z-10 scale-y-0 origin-top transition duration-300 flex-col bg-[rgba(var(--primary-background))] {% endif %} filter-form flex items-center gap-4"
+  >
+    {%- for filter in collection.filters -%}
+      <div class="filter-group w-full flex flex-col relative">
+        <div class="filter-group-div en-filter-toggle flex cursor-pointer">
+          <div class="flex justify-between w-full">
+            <h2>{{ filter.label }}</h2>
+            {%- if filter.active_values.size > 0 -%}
+              <span>({{ filter.active_values.size }})</span>
+            {%- endif -%}
+          </div>
+          <div class="en-filter-caret duration-300 -rotate-90">
+            {% render 'icon-caret' %}
+          </div>
+        </div>
+
+        <div class="en-filter-options en-collapsible-content {% unless type == "drawer" %} absolute {% endunless %} top-full transition duration-300 p-4 z-[100] overflow-hidden origin-top bg-[rgba(var(--primary-background))]">
+          <div class="en-collapsible-inner scale-y-0 origin-top duration-300">
+            {%- case filter.type -%}
+              {%- when 'boolean', 'list' -%}
+                <ul class="filter-group-display__list">
+                  {%- for filter_value in filter.values -%}
+                    <li class="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        class="w-4 h-4"
+                        name="{{ filter_value.param_name }}"
+                        value="{{ filter_value.value }}"
+                        id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                        {% if filter_value.active -%}
+                          checked
+                        {%- endif %}
+                        {% if filter_value.count == 0 and filter_value.active == false -%}
+                          disabled
+                        {%- endif %}
+                      >
+                      <label class="w-full flex gap-4" for="Filter-{{ filter.param_name }}-{{ forloop.index }}">
+                        {{- filter_value.label -}}
+                      </label>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+
+                <div class="hidden">
+                  <input type="submit" value="Apply">
+                </div>
+              {%- when 'price_range' -%}
+                {% liquid
+                  assign currencies_using_comma_decimals = 'ANG,ARS,BRL,BYN,BYR,CLF,CLP,COP,CRC,CZK,DKK,EUR,HRK,HUF,IDR,ISK,MZN,NOK,PLN,RON,RUB,SEK,TRY,UYU,VES,VND' | split: ','
+                  assign uses_comma_decimals = false
+                  if currencies_using_comma_decimals contains cart.currency.iso_code
+                    assign uses_comma_decimals = true
+                  endif
+                %}
+
+                <div class="flex flex-col gap-4">
+                  <div class="flex justify-between">
+                    <input
+                      type="number"
+                      class="border px-2 py-1"
+                      id="range1"
+                      name="{{ filter.min_value.param_name }}"
+                      oninput="changeSlide1()"
+                      placeholder="0"
+                      min="0"
+                      {%- if uses_comma_decimals -%}
+                        max="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                      {%- else -%}
+                        max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                      {% endif %}
+                    >
+                    <span>-</span>
+                    <input
+                      type="number"
+                      class="border px-2 py-1"
+                      id="range2"
+                      name="{{ filter.max_value.param_name }}"
+                      oninput="changeSlide2()"
+                      min="0"
+                      {%- if uses_comma_decimals -%}
+                        placeholder="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                        value="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                        max="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                      {%- else -%}
+                        placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                        value="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                        max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                      {% endif %}
+                    >
+                  </div>
+                  <div class="wrapper">
+                    <div class="container color-{{ color }}">
+                      <input
+                        type="range"
+                        class="text-[80%]"
+                        name="{{ filter.min_value.param_name }}"
+                        min="0"
+                        {%- if uses_comma_decimals -%}
+                          max="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                        {%- else -%}
+                          max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                        {% endif %}
+                        {%- if filter.min_value.value -%}
+                          {%- if uses_comma_decimals -%}
+                            value="{{ filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                          {%- else -%}
+                            value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                          {%- endif %}
+                        {%- endif -%}
+
+                        id="slider-1"
+                        oninput="slideOne()"
+                        name="{{ filter.min_value.param_name }}"
+                      >
+                      <input
+                        type="range"
+                        class="text-[80%]"
+                        name="{{ filter.max_value.param_name }}"
+                        min="0"
+                        {%- if uses_comma_decimals -%}
+                          max="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                        {%- else -%}
+                          max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                        {% endif %}
+                        {%- if filter.max_value.value -%}
+                          {%- if uses_comma_decimals -%}
+                            value="{{ filter.max_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                          {%- else -%}
+                            value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                          {%- endif %}
+                        {%- endif -%}
+                        id="slider-2"
+                        oninput="slideTwo()"
+                        name="{{ filter.max_value.param_name }}"
+                      >
+                    </div>
+                  </div>
+
+                  <div class="flex justify-between">
+                    <span>$0</span>
+                    <span> </span>
+                    <span
+                      >$
+                      {%- if uses_comma_decimals -%}
+                        {{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}
+                      {%- else -%}
+                        {{ filter.range_max | money_without_currency | replace: ',', '' }}
+                      {% endif %}
+                    </span>
+                  </div>
+
+                  <div class="en-btn en-btn-outline inline-block mx-auto">
+                    <input class="cursor-pointer" type="submit" value="Apply">
+                  </div>
+                </div>
+            {%- endcase -%}
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+
+    <div class="active-filters">
+      <a
+        href="{{ collection.url }}?sort_by={{ collection.sort_by }}"
+        class="en-btn en-btn-outline border-red-400 text-red-400"
+        >Clear all</a
+      >
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var filterToggles = document.querySelectorAll('.en-filter-toggle');
+    filterToggles.forEach(function (toggle) {
+      toggle.addEventListener('click', function () {
+        var filterOptions = toggle.closest('.filter-group').querySelector('.en-filter-options');
+        filterOptions.classList.toggle('open');
+        filterOptions.querySelector('.en-collapsible-inner').classList.toggle('scale-y-0');
+        toggle.querySelector('.en-filter-caret').classList.toggle('-rotate-90');
+      });
+    });
+
+    let toggleDrawerIcon = document.querySelector('.en-filters-drawer-icon');
+    if (toggleDrawerIcon) {
+      toggleDrawerIcon.addEventListener('click', () => {
+        document.querySelector('.en-filters').classList.toggle('scale-y-0');
+      });
+    }
+  });
+  document.addEventListener('DOMContentLoaded', function () {
+    slideOne();
+    slideTwo();
+  });
+
+  let sliderOne = document.getElementById('slider-1');
+  console.log(sliderOne.value);
+  let sliderTwo = document.getElementById('slider-2');
+  let displayValOne = document.getElementById('range1');
+  let displayValTwo = document.getElementById('range2');
+  let minGap = 0;
+  let sliderTrack = document.querySelector('.slider-track');
+  let sliderMaxValue = document.getElementById('slider-1').max;
+
+  function slideOne() {
+    if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+      sliderOne.value = parseInt(sliderTwo.value) - minGap;
+    }
+    displayValOne.value = sliderOne.value;
+    fillColor();
+  }
+  function slideTwo() {
+    if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+      sliderTwo.value = parseInt(sliderOne.value) + minGap;
+    }
+    displayValTwo.value = sliderTwo.value;
+    fillColor();
+  }
+
+  function changeSlide1() {
+    document.getElementById('slider-1').value = displayValOne.value;
+  }
+
+  function changeSlide2() {
+    document.getElementById('slider-2').value = displayValTwo.value;
+  }
+
+  function fillColor() {
+    percent1 = (sliderOne.value / sliderMaxValue) * 100;
+    percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterForm = document.querySelector('.en-filters');
+    const checkboxes = filterForm.querySelectorAll('input');
+    const priceRangeInputs = filterForm.querySelectorAll('.filter-group-display__price-range input[type="number"]');
+    const submitButton = filterForm.querySelector('.filter-group-display__submit input[type="submit"]');
+    const productsGrid = document.querySelector('#products-grid'); // Replace with the actual ID of the products grid section
+
+    // Attach event listeners for checkboxes
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', handleFormChange);
+    });
+
+    // Attach event listeners for price range inputs
+    priceRangeInputs.forEach((input) => {
+      input.addEventListener('change', handleFormChange);
+    });
+
+    // Attach event listener for form submission
+    filterForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      handleFormChange();
+    });
+
+    // Function to handle form changes and fetch data
+    function handleFormChange() {
+      const filterFormNew = document.querySelector('.en-filters');
+      const formData = new FormData(filterFormNew);
+      let formString = new URLSearchParams(formData).toString();
+      console.log(formString);
+      // Build the URL based on the form data (You need to modify this according to your needs)
+      const url = `${window.location.pathname}?section_id=en-collection-products-grid&${formString}`;
+      console.log(url);
+
+      // Fetch data from the URL
+      fetch(url)
+        .then((response) => response.text())
+        .then((data) => {
+          // Update the products-grid section with the fetched data
+          let html = data;
+
+          document.getElementById('products-grid').innerHTML = new DOMParser()
+            .parseFromString(html, 'text/html')
+            .getElementById('products-grid').innerHTML;
+
+          document.getElementById('active-filters').innerHTML = new DOMParser()
+            .parseFromString(html, 'text/html')
+            .getElementById('active-filters').innerHTML;
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  });
+</script>

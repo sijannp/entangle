@@ -1,0 +1,217 @@
+{{ 'en-filters.css' | asset_url | stylesheet_tag }}
+
+<div class="relative w-full left-0 md:w-auto flex flex-col gap-4">
+  <collapsible-button target-id="filters" class=" flex gap-2 md:hidden md:max-w-[50%]">
+    {% render 'icon-adjustments' -%}
+    Sort and Filters
+  </collapsible-button>
+
+  <collapsible-content
+    data-id="filters"
+    class=" bg-[rgba(var(--primary-background))] w-full md:flex z-[9] md:relative md:px-0 md:max-h-full"
+  >
+    <div id="en-filters" class="collapsible-inner ">
+      <div class="sort border-b mb-2 pb-2 md:hidden">
+        <collapsible-button target-id="sort-by" class="flex justify-between ">
+          <h2>Sort By</h2>
+          <div class="en-collapsible-caret">
+            {% render 'icon-caret', class: 'h-4 w-4' %}
+          </div>
+        </collapsible-button>
+        <collapsible-content data-id="sort-by" class="">
+          <div class="collapsible-inner">
+            <sort-by>
+              <select id="sort-by--mobile" class=" px-2 py-2 my-2 w-full cursor-pointer bg-transparent border-2">
+                {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+
+                {% for option in collection.sort_options %}
+                  <option
+                    value="{{ option.value }}"
+                    {% if option.value == sort_by %}
+                      selected="selected"
+                    {% endif %}
+                  >
+                    {{ option.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </sort-by>
+          </div>
+        </collapsible-content>
+      </div>
+
+      <filter-form>
+        <form class="filter-form flex flex-col gap-3" id="en-filter-form">
+          {%- for filter in collection.filters -%}
+            <div class="filter-group flex flex-col">
+              <collapsible-button target-id="filter-{{ filter.label }}" class="en-collapsible">
+                <div class="filter-group-summary">
+                  <div class="flex gap-2 items-center justify-between">
+                    <h2 class="text-lg font-medium mb-2">{{ filter.label }}</h2>
+                    <div class="en-collapsible-caret">
+                      {% render 'icon-caret', class: 'h-4 w-4' %}
+                    </div>
+                  </div>
+                </div>
+              </collapsible-button>
+              <collapsible-content
+                data-id="filter-{{ filter.label }}"
+                class="en-content-collapsible"
+                {% if filter.active_values.size > 0
+                  or filter.min_value.value != null
+                  or filter.max_value.value != null
+                -%}
+                  style="max-height: 200px;"
+                {% endif %}
+              >
+                <div class="collapsible-inner filter-group-display">
+                  <div class="filter-group-display__header"></div>
+
+                  {%- case filter.type -%}
+                    {%- when 'boolean', 'list' -%}
+                      <ul class="filter-group-display__list my-3">
+                        {%- for filter_value in filter.values -%}
+                          <li class="filter-group-display__list-item ">
+                            <label for="Filter-{{ filter.param_name }}-{{ forloop.index }}" class="flex items-center">
+                              <input
+                                type="checkbox"
+                                name="{{ filter_value.param_name }}"
+                                value="{{ filter_value.value }}"
+                                class="w-4 h-4 mr-2"
+                                {% if filter_value.active -%}
+                                  checked
+                                {%- endif %}
+                                {% if filter_value.count == 0 and filter_value.active == false -%}
+                                  disabled
+                                {%- endif %}
+                              >
+                              {{- filter_value.label -}}
+                            </label>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- when 'price_range' -%}
+                      <price-range>
+                        <div class="flex flex-col gap-4 mt-3">
+                          <div class="flex justify-between items-center">
+                            <label for="range1" class="hidden">Min Price</label>
+                            <input
+                              name="{{ filter.min_value.param_name }}"
+                              id="range1"
+                              {% if filter.min_value.value -%}
+                                value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                              {% else %}
+                                value="0"
+                              {%- endif %}
+                              type="number"
+                              placeholder="0"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              class="px-2 py-2 max-w-[40%]"
+                            >
+                            <span>-</span>
+                            <label for="range2" class="hidden">Max Price</label>
+                            <input
+                              name="{{ filter.max_value.param_name }}"
+                              id="range2"
+                              {% if filter.max_value.value -%}
+                                value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                              {% else %}
+                                value="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              {%- endif %}
+                              type="number"
+                              placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              class="px-2 py-2 max-w-[40%]"
+                            >
+                          </div>
+                          <div class="wrapper">
+                            <div class="container color-{{ color }}">
+                              <label for="slider-1" class="hidden">Min Price</label>
+                              <input
+                                type="range"
+                                class="text-[80%]"
+                                min="0"
+                                max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                {% if filter.min_value.value -%}
+                                  value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                                {% else %}
+                                  value="0"
+                                {%- endif %}
+
+                                id="slider-1"
+                              >
+                              <label for="slider-2" class="hidden">Min Price</label>
+                              <input
+                                type="range"
+                                class="text-[80%]"
+                                min="0"
+                                max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                {% if filter.max_value.value -%}
+                                  value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                                {% else %}
+                                  value="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                {%- endif %}
+
+                                id="slider-2"
+                              >
+                            </div>
+                          </div>
+
+                          <div class="flex justify-between">
+                            <span>{{ filter.range_max | money }}</span>
+                            <span> </span>
+                            <span>
+                              {{ filter.range_max | money }}
+                            </span>
+                          </div>
+                        </div>
+                      </price-range>
+                  {%- endcase -%}
+                </div>
+              </collapsible-content>
+            </div>
+          {%- endfor -%}
+
+          <div class="active-filters" id="active-filters">
+            {% comment %}
+              <a
+                href="{{ collection.url }}?sort_by={{ collection.sort_by }}"
+                class="active-filters__clear px-2 py-1 mr-2 my-2 border-black border-2 rounded-full inline-block"
+                >Clear all</a
+              >
+            {% endcomment %}
+
+            {%- for filter in collection.filters -%}
+              {%- if filter.type == 'price_range' -%}
+                {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+                  {% if filter.range_max != filter.max_value.value or filter.min_value.value != 0 %}
+                    <remove-filter
+                      class="active-filters__remove-filter cursor-pointer button-outline button my-2 rounded-full inline-block px-2"
+                      data-url="{{ filter.url_to_remove }}"
+                    >
+                      {{ filter.range_min }}
+                      {%- assign min_value = filter.min_value.value | default: 0 -%}
+                      {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
+                      {{ min_value | money }} - {{ max_value | money }} X
+                    </remove-filter>
+                  {% endif %}
+                {%- endif -%}
+              {%- else -%}
+                {%- for filter_value in filter.active_values -%}
+                  <remove-filter
+                    class="active-filters__remove-filter cursor-pointer button-outline button my-2 rounded-full inline-block px-2"
+                    data-url="{{ filter_value.url_to_remove }}"
+                  >
+                    {{ filter.label }}: {{ filter_value.label }} X
+                  </remove-filter>
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </form>
+      </filter-form>
+    </div>
+  </collapsible-content>
+</div>

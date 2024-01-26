@@ -1,0 +1,27 @@
+{%- liquid
+  assign check_against_inventory = true
+  if product.selected_or_first_available_variant.inventory_management != 'shopify' or product.selected_or_first_available_variant.inventory_policy == 'continue'
+    assign check_against_inventory = false
+  endif
+  if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity and check_against_inventory
+    assign quantity_rule_soldout = true
+  endif
+-%}
+
+<div class="my-3 py-2 en-btn en-btn-primary">
+  <button
+    type="submit"
+    name="add"
+    class="w-full"
+    {% if selected_variant.available == false %}
+      disabled
+    {% endif %}
+  >
+    {% if selected_variant.available == false %}
+      Sold out
+    {% else %}
+      <a href="{{ routes.cart_add_url }}"> Add to cart </a>
+    {% endif %}
+  </button>
+</div>
+{{ form | payment_button }}

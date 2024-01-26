@@ -1,0 +1,285 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="">
+  <div class="page-width section-{{ section.id }}-padding {% if settings.reveal_on_scroll %} reveal {% endif %}">
+    <h1 class="text-2xl font-bold py-4">Image Hotspots</h1>
+    <div class="w-full flex items-center">
+      <div class="w-full relative overflow-hidden {% if settings.corners == "rounded" %} rounded-lg {% endif %}{%- if section.settings.image == blank %} bg-gray-300 {% endif %} ">
+        {% if section.settings.image %}
+          {{
+            section.settings.image
+            | image_url: width: section.settings.image.width
+            | image_tag: class: 'block h-full w-full object-scale-down', loading: 'lazy'
+          }}
+
+        {% else %}
+          {{ 'hero-apparel-1' | placeholder_svg_tag: 'block h-full w-full object-scale-down' }}
+        {% endif %}
+
+        {% if section.settings.image == blank %}
+          {% for i in (1..3) %}
+            {% liquid
+              assign x = 10
+              assign y = 20
+              assign hotspot_class = 'top-left'
+              if forloop.index == 3
+                assign x = 40
+                assign y = 65
+                assign hotspot_class = 'top-right'
+              elsif forloop.index == 2
+                assign x = 80
+                assign y = 75
+                assign hotspot_class = 'top-right'
+              endif
+            %}
+            <collapsible-button close-on-click="true" target-id="hotspot-{{ section.id | append: forloop.index }}">
+              <div
+                style="top: {{ y }}%; left: {{ x }}%;"
+                class="lg-hotspot lg-hotspot--{{ hotspot_class }} absolute m-0 p-0 -translate-x-1/2 -translate-y-1/2 z-0 cursor-pointer"
+              >
+                <div
+                  class="lg-hotspot__button h-4 w-4 lg:w-8 lg:h-8 p-0 rounded-full z-[999] after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:pointer-events-none after:block after:rounded-full after:border-2 after:border-white after:bg-[var(--colorHotspotButton)]  "
+                ></div>
+                <collapsible-content
+                  data-id="hotspot-{{ section.id | append: forloop.index }}"
+                  class="lg-hotspot__label absolute bg-[rgba(var(--primary-background))] text-xs  w-[14em] max-w-[40vw] shadow-lg z-[-1] transition-all duration-500 {% if settings.corners == "rounded" %} rounded-lg {% endif %}"
+                >
+                  <div class="collapsible-inner">
+                    <div class="p-4">
+                      <h4 class="font-bold pb-2 mb-2">Product title</h4>
+                      <p>This is some text that goes in the label. It describes the item.</p>
+                    </div>
+                  </div>
+                </collapsible-content>
+              </div>
+            </collapsible-button>
+          {% endfor %}
+        {% endif %}
+
+        {% for block in section.blocks %}
+          {% liquid
+            assign x = block.settings.xposition
+            assign y = block.settings.yposition
+
+            assign hotspot_class = 'top-left'
+            if x > 40 and y <= 50
+              assign hotspot_class = 'top-right'
+            elsif x < 60 and y > 50
+              assign hotspot_class = 'bottom-left'
+            elsif x > 40 and y > 50
+              assign hotspot_class = 'bottom-right'
+            endif
+          %}
+          <div
+            style="top: {{ block.settings.yposition }}%; left: {{ block.settings.xposition }}%;"
+            class="lg-hotspot lg-hotspot--{{ hotspot_class }} absolute m-0 p-0 -translate-x-1/2 -translate-y-1/2 z-0 cursor-pointer"
+          >
+            <collapsible-button
+              target-id="hotspot-{{ section.id | append: forloop.index }}"
+              class="lg-hotspot__button h-4 w-4 lg:w-8 lg:h-8 p-0 rounded-full z-[999] after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:pointer-events-none after:block after:rounded-full after:border-2 after:border-white after:bg-[var(--colorHotspotButton)]  "
+            ></collapsible-button>
+            <collapsible-content data-id="hotspot-{{ section.id | append: forloop.index }}">
+              <div class="collapsible-inner">
+                <div class="lg-hotspot__label absolute bg-[rgba(var(--primary-background))] text-xs p-4 w-[14em] max-w-[40vw] shadow-lg z-[-1] opacity-0 hidden transition-all duration-500 {% if settings.corners == "rounded" %} rounded-lg {% endif %}">
+                  {% if block.settings.product != blank %}
+                    <h4 class="font-bold pb-2 ">{{ block.settings.product.title }}</h4>
+                    <p class="pb-2">{{ block.settings.description }}</p>
+                    <div class="flex items-center gap-2">
+                      <button class="button-primary px-0 w-full text-xs py-2 text-center">Quick View</button>
+                    </div>
+                  {% else %}
+                    <h4 class="font-bold pb-2 mb-2">Product title</h4>
+                    <p>This is some text that goes in the label. It describes the item.</p>
+                  {% endif %}
+                </div>
+              </div>
+            </collapsible-content>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  :root {
+    --buttonRadius: 24px;
+    --labelPaddingX: calc(var(--buttonRadius) * 1);
+    --labelBorderRadius: 2px;
+    --labelFade: 0.1s;
+    --colorHotspotButton: {{ section.settings.hotspot_color }};
+    --colorHotspotButtonHover: #ff774c;
+    --colorText: #333;
+    --colorHeadingBackground: #555;
+  }
+
+  .lg-hotspot--selected {
+    z-index: 999;
+  }
+
+  .lg-hotspot--selected .lg-hotspot__label {
+    opacity: 1;
+    display: block;
+  }
+
+  .lg-hotspot__button {
+    border: 1px solid var(--colorHotspotButton);
+    animation: button-pulse 5s ease-in-out infinite;
+  }
+
+  .lg-hotspot__button:after {
+    height: calc(var(--buttonRadius) * 0.7);
+    width: calc(var(--buttonRadius) * 0.7);
+    transition: border-color 1s linear;
+  }
+
+  .lg-hotspot--top-left .lg-hotspot__label {
+    top: var(--buttonRadius);
+    left: var(--buttonRadius);
+  }
+
+  .lg-hotspot--top-right .lg-hotspot__label {
+    top: var(--buttonRadius);
+    right: var(--buttonRadius);
+  }
+
+  .lg-hotspot--bottom-right .lg-hotspot__label {
+    right: var(--buttonRadius);
+    bottom: var(--buttonRadius);
+  }
+
+  .lg-hotspot--bottom-left .lg-hotspot__label {
+    bottom: var(--buttonRadius);
+    left: var(--buttonRadius);
+  }
+
+  @keyframes button-pulse {
+    0% {
+      transform: scale(1, 1);
+      opacity: 1;
+    }
+    40% {
+      transform: scale(1.25, 1.25);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1, 1);
+      opacity: 1;
+    }
+  }
+</style>
+
+{% comment %}
+  <script>
+    const selectHotspot = (e) => {
+      const clickedHotspot = e.target.parentElement;
+      const container = clickedHotspot.parentElement;
+
+      // only include hotspots within same image to allow one open hotspot per image; change "container" to "document" to allow only one open hotspot for entire page:
+      const hotspots = document.querySelectorAll('.lg-hotspot');
+      hotspots.forEach((hotspot) => {
+        if (hotspot === clickedHotspot) {
+          hotspot.classList.toggle('lg-hotspot--selected');
+        } else {
+          hotspot.classList.remove('lg-hotspot--selected');
+        }
+      });
+    };
+
+    (() => {
+      const buttons = document.querySelectorAll('.lg-hotspot__button');
+      buttons.forEach((button) => {
+        button.addEventListener('click', selectHotspot);
+      });
+    })();
+  </script>
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Image Hotspots",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "color",
+      "id": "hotspot_color",
+      "label": "Hotspot Color",
+      "default": "#952E31"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 100,
+      "default": 25,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "default": 25,
+      "step": 1,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Hotspot",
+      "settings": [
+        {
+          "type": "range",
+          "id": "xposition",
+          "default": 50,
+          "label": "Left",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "yposition",
+          "default": 50,
+          "label": "Top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Product Description"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,41 @@
+{
+    "sections": {
+        "slideshow": {
+            "type": "slideshow",
+            "blocks": {
+                "slide1": {
+                    "type": "slide",
+                    "settings": {
+                        "content_position": "bottom_center",
+                        "color_scheme": "background-2",
+                        "image_opacity": 0.7,
+                        "container": false
+                    }
+                },
+                "slide2": {
+                    "type": "slide",
+                    "settings": {
+                        "content_position": "left",
+                        "alignment": "left",
+                        "color_scheme": "background-1"
+                    }
+                }
+            },
+            "block_order": [
+                "slide1",
+                "slide2"
+            ]
+        },
+        "featured_collection": {
+            "type": "featured-collection"
+        },
+        "hotspots": {
+            "type": "image-hotspots"
+        }
+    },
+    "order": [
+        "slideshow",
+        "featured_collection",
+        "hotspots"
+    ]
+}

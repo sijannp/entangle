@@ -1,0 +1,36 @@
+<div
+  class="color-{{ settings.product_card_color_scheme }} {% if settings.reveal_on_scroll %} reveal {% endif %} {% if settings.product_card_style == 'card' %} border {% endif %} {% if settings.corners == 'rounded' %} rounded-lg {% endif %} w-full my-4 overflow-hidden cursor-pointer duration-300 hover:shadow-md"
+>
+  <div class="relative w-full overflow-hidden group">
+    <div class="relative group w-full bg-gray-200">
+      {% if index %}
+        {% if index > 4 %}
+          {% assign index = index | modulo: 4 %}
+        {% endif %}
+        {% assign product = 'product-apparel-' | append: index %}
+        {{
+          product
+          | placeholder_svg_tag: 'w-full h-full object-cover transform duration-300 group-hover:scale-[1.03]'
+        }}
+      {% else %}
+        {{
+          'product-4'
+          | placeholder_svg_tag: 'w-full h-full object-cover transform duration-300 group-hover:scale-[1.03]'
+        }}
+      {% endif %}
+    </div>
+
+    <div class="flex flex-col py-4 px-2">
+      {% if show_vendor %}
+        <span class="text-sm">{{ card_product.vendor }}</span>
+      {% endif %}
+
+      <a href="#" class="flex flex-col gap-2">
+        <h3 class=" font-bold">Example Title</h3>
+        <div class="price text-sm">
+          {{ 2990.00 | money_with_currency }}
+        </div>
+      </a>
+    </div>
+  </div>
+</div>

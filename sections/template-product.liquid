@@ -1,0 +1,379 @@
+<div
+  id="MainProduct-{{ section.id }}"
+  class="page-width section-{{ section.id }}-padding bg-[rgba(var(--primary-background))]"
+  data-section="{{ section.id }}"
+>
+  {% assign selected_variant = product.selected_or_first_available_variant %}
+  {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
+  <style>
+    .product--information {
+      height: fit-content;
+    }
+  </style>
+
+  {% liquid
+    assign media_width = 'md:w-[60%]'
+    if section.settings.media_width == 'small'
+      assign media_width = 'md:w-[50%]'
+    elsif section.settings.media_width == 'large'
+      assign media_width = 'md:w-[70%]'
+    endif
+  %}
+
+  <div class="page-width en-container">
+    <div class="mx-auto my-8">
+      <div class="flex flex-col md:flex-row gap-8">
+        <div class="product--medias w-full {{ media_width }} {% if section.settings.media_position == "right" %} order-last {% endif %}">
+          {% comment %}
+            <div class="hidden md:block">
+              {% for media in product.media %}
+                <div class="h-100 overflow-hidden p-2">
+                  {% render 'product-media', media: media %}
+                </div>
+              {% endfor %}
+            </div>
+          {% endcomment %}
+
+          <div class="flex flex-col gap-8">
+            <slider-component>
+              <div class="main-carousel">
+                {% for media in product.media %}
+                  {% render 'product-media', media: media, variant_images: variant_images %}
+                {% endfor %}
+              </div>
+
+              {% if product.media.size > 1 %}
+                <div class="carousel-thumbnails">
+                  {% for media in product.media %}
+                    {% render 'product-media', media: media, thumbnail: true %}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </slider-component>
+          </div>
+        </div>
+
+        <div class="product--information sticky w-full md:w-[40%] top-5 p-2 ">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'vendor' %}
+                <div class="my-3">
+                  <span class="text-xs text-gray-500">{{ product.vendor }}</span>
+                </div>
+              {% when 'title' %}
+                <div class="my-3">
+                  <h1 class="text-3xl text-gray-900">
+                    {{ product.title }}
+                  </h1>
+                </div>
+              {% when 'price' %}
+                <div class="price-wrap flex flex-col">
+                  <div class="my-3 flex gap-2 items-center flex-wrap" id="price-{{ section.id }}">
+                    <span class="text-base text-red-400 line-through">
+                      {{- selected_variant.compare_at_price | money -}}
+                    </span>
+                    <span class="text-lg">{{ selected_variant.price | money }}</span>
+
+                    <div class="">
+                      {%- if product.available == false -%}
+                        <span
+                          class="bg-red-400 px-2 py-1"
+                        >
+                          Sold out
+                        </span>
+                      {%- elsif product.compare_at_price > product.price and product.available -%}
+                        <span
+                          class="bg-green-400 px-2 py-1"
+                        >
+                          Sale
+                        </span>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  {{ form | payment_terms }}
+                </div>
+
+                {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
+                  <div class="product__tax caption rte">
+                    {%- if cart.taxes_included -%}
+                      Tax included
+                    {%- endif -%}
+                    {%- if shop.shipping_policy.body != blank -%}
+                      Shipping calculated at checkout.
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {% when 'variant_selector' %}
+                <div class="my-3">
+                  {% unless product.has_only_default_variant %}
+                    <variant-selector data-url="{{ product.url }}" data-section="{{ section.id }}">
+                      {% for option in product.options_with_values %}
+                        <label for="Option-{{ section.id }}-{{ forloop.index0 }}">{{ option.name }}</label>
+                        <div class="my-2 flex gap-4 flex-wrap">
+                          {% for value in option.values %}
+                            <div class="en-varient-selector-item px-4 py-1 border-2  min-w-[40px] relative">
+                              <input
+                                type="radio"
+                                name="options[{{ option.name | escape }}]"
+                                id="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
+                                class="en-varient-selector-radio block absolute inset-0 opacity-[0.011] z-[100] cursor-pointer"
+                                value="{{ value | escape }}"
+                                {% if option.selected_value == value %}
+                                  checked="checked"
+                                {% endif %}
+                              >
+                              <label
+                                class=" flex items-center justify-center"
+                                for="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
+                              >
+                                {{- value -}}
+                              </label>
+                            </div>
+                          {% endfor %}
+                        </div>
+
+                        <script type="application/json">
+                          {{ product.variants | json }}
+                        </script>
+                      {% endfor %}
+                    </variant-selector>
+                  {% endunless %}
+                </div>
+
+                {% comment %} slide to the variant image when the associated variant is selected  {% endcomment %}
+
+                {% if product.variants.size > 1 %}
+                  <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                      var variantSelector = document.querySelector('variant-selector');
+                      var imagesSlider = document.querySelector('.en-images-slider');
+                      var variantImages = JSON.parse('{{ product.media | json }}');
+                      variantSelector.addEventListener('change', function () {
+                        var variantId = variantSelector?.currentVariant?.featured_media?.id;
+                        if (variantId) {
+                          var variantImageIndex;
+                          for (var i = 0; i < variantImages.length; i++) {
+                            var variantImage = variantImages[i];
+                            let variantImageId = variantImage.id;
+                            if (variantImageId == variantId) {
+                              variantImageIndex = i;
+                              break;
+                            }
+                            if (variantImageIndex !== undefined) {
+                              break;
+                            }
+                          }
+                        }
+
+                        if (variantImageIndex !== undefined) {
+                          flkty.select(variantImageIndex);
+                        }
+                      });
+                    });
+                  </script>
+                {% endif %}
+
+              {% when 'quantity' %}
+                <div class="my-3">
+                  <label for="Quantity-{{ section.id }}">Quantity</label>
+
+                  <div class="my-2">
+                    <input
+                      type="number"
+                      name="quantity"
+                      id="Quantity-{{ section.id }}"
+                      value="1"
+                      min="1"
+                      class="w-full border px-3 py-3"
+                    >
+                  </div>
+                </div>
+              {% when 'description' %}
+                <div class="my-3">
+                  <p class="text-gray-700">{{ product.description }}</p>
+                </div>
+
+              {% when 'sku' %}
+                {%- assign current_variant = product.selected_or_first_available_variant -%}
+                <span class="opacity-60"
+                  >SKU: <span class="sku--text">{{ current_variant.sku }}</span>
+                </span>
+
+              {% when 'checkout_buttons' %}
+                <div class="my-3" id="buttons-{{ section.id }}">
+                  <product-form>
+                    {% form 'product',
+                      product,
+                      id: 'product-form',
+                      class: 'flex flex-col gap-3',
+                      novalidate: 'novalidate'
+                    %}
+                      <input type="hidden" name="id" value="{{ selected_variant.id }}">
+
+                      <button
+                        type="submit"
+
+                        class="inline-block relative button button-primary text-lg w-full text-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        {% if selected_variant.available == false %}
+                          disabled
+                        {% endif %}
+                      >
+                        {% if selected_variant.available == false %}
+                          Sold out
+                        {% else %}
+                          Add to cart
+                        {% endif %}
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                          {% render 'spinner' %}
+                        </div>
+                      </button>
+                      {{ form | payment_button }}
+                    {% endform %}
+                  </product-form>
+                </div>
+              {% else %}
+
+            {% endcase %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .media model-viewer,
+      .media > * {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </div>
+
+  <script>
+    let flkty;
+    document.addEventListener('DOMContentLoaded', function () {
+      try {
+        var elem = document.querySelector('.en-images-slider');
+        flkty = new Flickity(elem, {
+          cellAlign: 'center',
+          contain: true,
+          pageDots: false,
+          wrapAround: true,
+          prevNextButtons: true,
+          draggable: false,
+        });
+
+        var elem1 = document.querySelector('.en-images-slider-thumbnail');
+        if (elem1) {
+          var flkty1 = new Flickity(elem1, {
+            asNavFor: '.en-images-slider',
+            pageDots: false,
+            contain: true,
+            prevNextButtons: false,
+          });
+        }
+      } catch (e) {
+        console.log('Flickity is not defined');
+      }
+    });
+  </script>
+</div>
+{% schema %}
+{
+  "name": "Product",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "media_position",
+      "default": "left",
+      "label": "Media position",
+      "options": [
+        {
+          "label": "Left",
+          "value": "left"
+        },
+        {
+          "label": "Right",
+          "value": "right"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "media_width",
+      "default": "medium",
+      "label": "Media width (desktop)",
+      "options": [
+        {
+          "label": "Small",
+          "value": "small"
+        },
+        {
+          "label": "Medium",
+          "value": "medium"
+        },
+        {
+          "label": "Large",
+          "value": "large"
+        }
+      ],
+      "info": "Width is automatically adjusted for mobile devices."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "vendor",
+      "name": "Vendor",
+      "limit": 1
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "variant_selector",
+      "name": "Variant Selector",
+      "limit": 1
+    },
+    {
+      "type": "quantity",
+      "name": "Quantity",
+      "limit": 1
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
+    },
+    {
+      "type": "checkout_buttons",
+      "name": "Checkout Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "label": "Show dynamic checkout buttons",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "sku",
+      "name": "SKU",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}

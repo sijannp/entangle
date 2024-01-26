@@ -1,0 +1,74 @@
+<div class="menu en-menu hidden lg:flex flex-wrap {% unless menu_style == 'left_left' %} justify-center {% endunless %} items-center">
+  {%- for link in menu.links -%}
+    {%- if link.links != blank -%}
+      {% comment %} Links level 1  {% endcomment %}
+      <div class="en-menu-item  {% if link.child_active -%} en-menu-item-active {%- endif %} flex flex-col gap-1 ">
+        <collapsible-button
+          target-id="menu-{{ link.handle | append: forloop.index }}"
+          class="flex items-center justify-between"
+        >
+          <span>
+            {{- link.title | escape -}}
+          </span>
+          <span class="en-collapsible-caret text-sm">
+            {% render 'icon-caret' %}
+          </span>
+        </collapsible-button>
+        <collapsible-content
+          data-id="menu-{{ link.handle | append: forloop.index }}"
+          class=" absolute top-full w-[11rem] shadow-lg"
+        >
+          <div class="collapsible-inner">
+            {% comment %} Links level 2  {% endcomment %}
+            {%- for childlink in link.links -%}
+              {%- if childlink.links != blank -%}
+                <div class="en-menu-item  {% if childlink.active -%} en-menu-item-active {%- endif %} flex flex-col gap-1 ">
+                  <collapsible-button
+                    target-id="menu-{{ childlink.handle | append: forloop.index }}"
+                    class="flex items-center justify-between"
+                  >
+                    <span>
+                      {{- childlink.title | escape -}}
+                    </span>
+                    <span class="en-collapsible-caret text-sm">
+                      {% render 'icon-caret' %}
+                    </span>
+                  </collapsible-button>
+                  <collapsible-content
+                    data-id="menu-{{ childlink.handle | append: forloop.index }}"
+                    class="w-[11rem] "
+                  >
+                    <div class="collapsible-inner">
+                      {% comment %} Links level 3  {% endcomment %}
+                      {%- for grandchildlink in childlink.links -%}
+                        <div class="en-menu-item  {% if grandchildlink.active -%} en-menu-item-active {%- endif %} py-2">
+                          <a href="{{ grandchildlink.url }}">
+                            {{- grandchildlink.title | escape -}}
+                          </a>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </collapsible-content>
+                </div>
+
+              {% else %}
+                <div class="en-menu-item  {% if link.active -%} en-menu-item-active {%- endif %} py-2">
+                  <a href="{{ link.url }}">
+                    {{- link.title | escape -}}
+                  </a>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </collapsible-content>
+      </div>
+
+    {% else %}
+      <div class="en-menu-item  {% if link.active -%} en-menu-item-active {%- endif %} py-2">
+        <a href="{{ link.url }}">
+          {{- link.title | escape -}}
+        </a>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>

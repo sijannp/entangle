@@ -1,0 +1,35 @@
+<style>
+  #section-{{ section.id }}{
+      padding-top: {{ section.settings.padding }}px;
+      padding-bottom: {{ section.settings.padding }}px;
+  }
+</style>
+
+<div class="newsletter page-width" id="section-{{ section.id }}">
+  <div class="flex flex-col gap-4">
+    <h1 class="en-title text-center">Newsletter</h1>
+    <p class="text-center">Sign up for exclusive deals and early access to new products.</p>
+    <div class="flex items-center justify-center">
+      {% render 'newsletter-form' %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 20,
+      "label": "Padding Top and Bottom",
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}

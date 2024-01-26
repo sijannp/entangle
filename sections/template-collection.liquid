@@ -1,0 +1,69 @@
+{% liquid
+  assign desktop_columns_class = 'lg:grid-cols-3'
+  if section.settings.columns_desktop == '3'
+    assign desktop_columns_class = 'lg:grid-cols-3'
+  elsif section.settings.columns_desktop == '4'
+    assign desktop_columns_class = 'lg:grid-cols-4'
+  elsif section.settings.columns_desktop == '5'
+    assign desktop_columns_class = 'lg:grid-cols-5'
+  endif
+%}
+
+<div class="page-width en-container">
+  <a href="{{ routes.collections_url }}" class="text-base hover:underline text-center block my-4"
+    >Go back to collections</a
+  >
+  {% paginate collection.products by section.settings.number_of_products_per_page %}
+    <h1 class="text-3xl text-center">{{ collection.title }}</h1>
+    <div class="facets relative flex items-center justify-between">
+      {% render 'filters', collection: collection, type: 'drawer' %}
+      {% render 'facets', collection: collection, position: 'left' %}
+    </div>
+    <div class="w-full">
+      <div class="grid en-grid-gap grid-cols-1 md:grid-cols-2 {{ desktop_columns_class }}">
+        {% for product in collection.products %}
+          {% render 'product-card', card_product: product, show_vendor: true %}
+        {% else %}
+          <div class="mx-auto col-span-3 py-32">There are no products inside of this collection.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% render 'pagination', pagination: paginate %}
+  {% endpaginate %}
+</div>
+
+{% schema %}
+{
+  "name": "Template Collection",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "number",
+      "id": "number_of_products_per_page",
+      "default": 6,
+      "label": "Number of products per page"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "default": "4",
+      "label": "No of columns on desktop",
+      "options": [
+        {
+          "label": "3",
+          "value": "3"
+        },
+        {
+          "label": "4",
+          "value": "4"
+        },
+        {
+          "label": "5",
+          "value": "5"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

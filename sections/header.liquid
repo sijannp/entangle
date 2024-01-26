@@ -1,0 +1,294 @@
+{% style %}
+  .logo {
+    grid-area: logo;
+  }
+
+  .en-menu {
+    grid-area: menu;
+  }
+
+  .icons {
+    grid-area: icons;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .search {
+    grid-area: search;
+  }
+
+  .drawer-icon {
+    grid-area: drawer;
+  }
+
+  .language-selector {
+    grid-area: language-selector;
+  }
+
+  .header {
+    grid-template-areas: 'drawer logo icons';
+  }
+
+  @media screen and (min-width: 1024px) {
+    .header {
+      grid-template-areas: 'logo menu icons';
+      grid-template-columns: min-content 1fr auto;
+    }
+
+    .header.twocol {
+      grid-template-areas:
+        'language-selector logo icons'
+        'menu menu menu';
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .header.drawer {
+      grid-template-areas: 'drawer logo icons';
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+{% endstyle %}
+
+<en-header
+  data-headertype="hideonscroll"
+  class="fixed left-0 top-0 w-full transition-all duration-500 z-[10] gradient color-{{ section.settings.color_scheme }} "
+>
+  <div class="en-container relative ">
+    <div class="page-width  flex flex-col gap-8 lg:py-6">
+      <div class="header grid gap-3 items-center {% if section.settings.menu_style == 'top_bottom' %} twocol {% elsif section.settings.menu_style == 'drawer' -%}drawer  {%- endif %}">
+        <open-drawer
+          data-drawer="menu"
+          class="drawer-icon en-menu-icon w-[30px] cursor-pointer flex flex-col items-center justify-center gap-1 {% unless section.settings.menu_style == 'drawer' %} lg:hidden {% endunless %}"
+        >
+          {% render 'icon-bars' %}
+        </open-drawer>
+
+        <div class="logo flex justify-center {% if section.settings.menu_style == 'left_center' or section.settings.menu_style == 'left_left' %} lg:justify-start {% endif %}">
+          <a href="{{ routes.root_url }}">
+            {%- if settings.logo != blank -%}
+              {% if settings.logo_mobile != blank %}
+                <div class="md:hidden">
+                  {%- assign logo_alt = settings.logo_mobile.alt | default: shop.name | escape -%}
+                  {%- assign logo_height = settings.logo_width_mobile
+                    | divided_by: settings.logo_mobile.aspect_ratio
+                  -%}
+                  {% capture sizes %}(max-width: {{ settings.logo_width_mobile | times: 2 }}px) 50vw, {{ settings.logo_width_mobile }}px{% endcapture %}
+                  {% capture widths %}{{ settings.logo_width_mobile }}, {{ settings.logo_width_mobile | times: 1.5 | round }}, {{ settings.logo_width_mobile | times: 2 }}{% endcapture %}
+                  {{
+                    settings.logo_mobile
+                    | image_url: width: 600
+                    | image_tag:
+                      class: 'logo',
+                      widths: widths,
+                      height: logo_height,
+                      width: settings.logo_width_mobile,
+                      alt: logo_alt,
+                      sizes: sizes,
+                      preload: true
+                  }}
+                </div>
+              {% endif %}
+              <div class="{% if settings.logo_mobile != blank %} hidden md:block {% endif %}">
+                {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+                {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
+                {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
+                {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+                {{
+                  settings.logo
+                  | image_url: width: 600
+                  | image_tag:
+                    class: 'logo',
+                    widths: widths,
+                    height: logo_height,
+                    width: settings.logo_width,
+                    alt: logo_alt,
+                    sizes: sizes,
+                    preload: true
+                }}
+              </div>
+            {%- else -%}
+              <h1 class="text-2xl uppercase">{{ shop.name }}</h1>
+            {%- endif -%}
+          </a>
+        </div>
+
+        {% unless section.settings.menu_style == 'drawer' %}
+          {% render 'mega-menu', menu: section.settings.menu, menu_style: section.settings.menu_style %}
+        {% endunless %}
+
+        {% if section.settings.menu_style == 'top_bottom' %}
+          <div class="language-selector hidden lg:flex gap-1 ">
+            {% if section.settings.enable_country_selector %}
+              {% render 'country-localization' %}
+            {% endif %}
+            {% if section.settings.enable_language_selector %}
+              {% render 'language-localization' %}
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="icons flex items-center justify-end gap-4 ml-auto">
+          {% if section.settings.menu_style != 'top_bottom' %}
+            <div class="language-selector hidden lg:flex gap-1 ">
+              {% if section.settings.enable_country_selector %}
+                {% render 'country-localization' %}
+              {% endif %}
+              {% if section.settings.enable_language_selector %}
+                {% render 'language-localization' %}
+              {% endif %}
+            </div>
+          {% endif %}
+          <collapsible-button target-id="header-search">
+            <div class="en-menu-icon">
+              {% render 'icon-search' %}
+            </div>
+          </collapsible-button>
+
+          {% if settings.cart_type == 'drawer' %}
+            <open-drawer data-drawer="cart-drawer" class="cursor-pointer">
+              {% unless section.settings.icon_style == 'text' %}
+                {% render 'icon-cart', items: cart.item_count, style: section.settings.icon_style %}
+              {% else %}
+                Cart
+              {% endunless %}
+            </open-drawer>
+
+          {% else %}
+            <div class="cart">
+              <a href="{{ routes.cart_url }}">
+                {% unless section.settings.icon_style == 'text' %}
+                  {% render 'icon-cart', items: cart.item_count, style: section.settings.icon_style %}
+                {% else %}
+                  Cart
+                {% endunless %}
+              </a>
+            </div>
+          {% endif %}
+
+          <a href="{{ routes.account_url }}">
+            {% unless section.settings.icon_style == 'text' %}
+              {% render 'icon-user', style: section.settings.icon_style %}
+            {% else %}
+              Cart
+            {% endunless %}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {% render 'menu-drawer', menu: section.settings.menu, menu_style: section.settings.menu_style %}
+  </div>
+  <collapsible-content
+    data-id="header-search"
+    class="absolute top-full w-full bg-[rgba(var(--primary-background))]"
+  >
+    <div class="collapsible-inner w-full">
+      <form action="{{ routes.search_url }}" class="">
+        <div class="max-w-xs mx-auto flex items-center border-b-[1px] border-b-black mb-8">
+          <input
+            type="text"
+            placeholder="Search"
+            name="q"
+            value="{{ search.terms | escape }}"
+            class="input w-full bg-[rgba(var(--primary-background))] border-none"
+            autofocus
+          >
+
+          <button type="submit" value="Search" class="">
+            {% render 'icon-search', class: 'opacity-[.6]' %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </collapsible-content>
+</en-header>
+
+<div
+  id="overlay"
+  class="overlay-full"
+></div>
+{% render 'cart-drawer-new' %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "Menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_style",
+      "default": "left_left",
+      "label": "Menu style",
+      "options": [
+        {
+          "label": "Logo top, menu bottom",
+          "value": "top_bottom"
+        },
+        {
+          "label": "Logo left, menu center",
+          "value": "left_center"
+        },
+        {
+          "label": "Logo left, menu left",
+          "value": "left_left"
+        },
+        {
+          "value": "drawer",
+          "label": "Drawer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "icon_style",
+      "default": "modern",
+      "label": "Icon style",
+      "options": [
+        {
+          "label": "Standard",
+          "value": "standard"
+        },
+        {
+          "value": "modern",
+          "label": "Modern"
+        },
+        {
+          "value": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Localization"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "default": true,
+      "label": "Enable country selector"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "default": false,
+      "label": "Enable language selector"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "label": "Color Scheme",
+      "id": "color_scheme",
+      "default": "background-1"
+    }
+  ]
+}
+{% endschema %}

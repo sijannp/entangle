@@ -1,0 +1,136 @@
+{% liquid
+  case section.settings.sort
+    when 'products_high', 'products_low'
+      assign collections = collections | sort: 'all_products_count'
+    when 'date', 'date_reversed'
+      assign collections = collections | sort: 'published_at'
+  endcase
+
+  if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+    assign collections = collections | reverse
+  endif
+
+  assign moduloResult = 28 | modulo: section.settings.columns_desktop
+  assign paginate_by = 30
+  if moduloResult == 0
+    assign paginate_by = 28
+  endif
+
+  assign desktop_columns_class = 'lg:grid-cols-3'
+  if section.settings.columns_desktop == '3'
+    assign desktop_columns_class = 'lg:grid-cols-3'
+  elsif section.settings.columns_desktop == '4'
+    assign desktop_columns_class = 'lg:grid-cols-4'
+  elsif section.settings.columns_desktop == '5'
+    assign desktop_columns_class = 'lg:grid-cols-5'
+  endif
+
+  assign mobile_columns_class = 'grid-cols-2'
+  if section.settings.columns_mobile == '1'
+    assign mobile_columns_class = 'grid-cols-1'
+  endif
+%}
+
+<div class="page-width en-container relative flex flex-col items-center my-8">
+  <h1 class="text-3xl font-medium">{{ section.settings.title }}</h1>
+
+  <div class="w-full">
+    {% paginate collections by paginate_by %}
+      <div class="grid en-grid-gap {{ mobile_columns_class }} md:grid-cols-2 {{ desktop_columns_class }}">
+        {% for collection in collections %}
+          {% render 'collection-card', collection: collection, count: section.settings.show_count %}
+        {% endfor %}
+      </div>
+
+      {% render 'pagination', pagination: paginate %}
+    {%- endpaginate -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "List Collections Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Collections",
+      "label": "Title"
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "options": [
+        {
+          "value": "alphabetical",
+          "label": "Alphabetically (A-Z)"
+        },
+        {
+          "value": "alphabetical_reversed",
+          "label": "Alphabetically (Z-A)"
+        },
+        {
+          "value": "date_reversed",
+          "label": "Date (new to old)"
+        },
+        {
+          "value": "date",
+          "label": "Date (old to new)"
+        },
+        {
+          "value": "products_high",
+          "label": "Products count (high to low)"
+        },
+        {
+          "value": "products_low",
+          "label": "Products count (low to high)"
+        }
+      ],
+      "default": "alphabetical",
+      "label": "Alphabetically (A-Z)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "default": true,
+      "label": "Show products count"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "default": "4",
+      "label": "No of columns on desktop",
+      "options": [
+        {
+          "label": "3",
+          "value": "3"
+        },
+        {
+          "label": "4",
+          "value": "4"
+        },
+        {
+          "label": "5",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "default": "2",
+      "label": "No of columns on mobile",
+      "options": [
+        {
+          "label": "1",
+          "value": "1"
+        },
+        {
+          "label": "2",
+          "value": "2"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

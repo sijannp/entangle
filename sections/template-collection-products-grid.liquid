@@ -1,0 +1,114 @@
+{% liquid
+  assign desktop_columns_class = 'lg:grid-cols-3'
+  if section.settings.columns_desktop == '3'
+    assign desktop_columns_class = 'lg:grid-cols-3'
+  elsif section.settings.columns_desktop == '4'
+    assign desktop_columns_class = 'lg:grid-cols-4'
+  elsif section.settings.columns_desktop == '5'
+    assign desktop_columns_class = 'lg:grid-cols-5'
+  endif
+%}
+
+<div class="page-width en-container relative">
+  {% paginate collection.products by section.settings.number_of_products_per_page %}
+    {% if collection.all_products_count > 0 %}
+      <div class="facets relative flex items-center justify-between">
+        {% render 'facets', collection: collection, position: 'left' %}
+      </div>
+      <div class="w-full flex flex-col md:flex-row md:gap-4">
+        {% render 'filters-new', collection: collection, type: 'drawer' %}
+        <div
+          class="grid en-grid-gap relative grid-cols-1 {% unless section.settings.display_style == 'list' %}  md:grid-cols-2 {{ desktop_columns_class }} {% endunless %} flex w-full"
+          id="products-grid"
+        >
+          <div
+            id="products-grid-overlay"
+            class="absolute w-full h-full top-0 left-0 transition duration-500"
+          ></div>
+          {% for product in collection.products %}
+            {% render 'product-card',
+              card_product: product,
+              show_vendor: section.settings.show_vendor,
+              quick_add: section.settings.quick_add,
+              type: section.settings.display_style,
+              swatches: section.settings.color_swatches
+            %}
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="text-xl py-32 text-center">There are no products inside of this collection.</div>
+    {% endif %}
+
+    {% render 'pagination', pagination: paginate %}
+  {% endpaginate %}
+</div>
+
+{% schema %}
+{
+  "name": "Products grid",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "number",
+      "id": "number_of_products_per_page",
+      "default": 6,
+      "label": "Number of products per page"
+    },
+    {
+      "type": "select",
+      "id": "display_style",
+      "default": "grid",
+      "label": "Display Style",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "label": "List",
+          "value": "list"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": true,
+      "label": "Show vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "color_swatches",
+      "default": true,
+      "label": "Enable Color Swatches"
+    },
+    {
+      "type": "checkbox",
+      "id": "quick_add",
+      "default": true,
+      "label": "Enable quick add"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "default": "4",
+      "label": "No of columns on desktop",
+      "options": [
+        {
+          "label": "3",
+          "value": "3"
+        },
+        {
+          "label": "4",
+          "value": "4"
+        },
+        {
+          "label": "5",
+          "value": "5"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

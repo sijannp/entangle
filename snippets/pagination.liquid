@@ -1,0 +1,19 @@
+{% if pagination.pages > 1 %}
+  <nav role="navigation" class="flex justify-center items-center my-8">
+    {% if pagination.previous %}
+      <a
+        href="{{ pagination.previous.url }}"
+        class="en-btn en-btn-outline hover:bg-[rgba(var(--primary-button-background))] hover:text-[rgba(var(--primary-button-text))] px-8 py-3 mx-1 rounded-sm font-medium"
+        >Previous</a
+      >
+    {% endif %}
+
+    {% if pagination.next %}
+      <a
+        href="{{ pagination.next.url }}"
+        class="en-btn en-btn-outline hover:bg-[rgba(var(--primary-button-background))] hover:text-[rgba(var(--primary-button-text))] px-8 py-3 mx-1 rounded-sm font-medium"
+        >Next</a
+      >
+    {% endif %}
+  </nav>
+{% endif %}

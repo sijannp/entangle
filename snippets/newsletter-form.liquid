@@ -1,0 +1,89 @@
+{%- liquid
+  assign placeholder_name = 'Name'
+  assign input_group_inline = true
+  assign btn_width = false
+
+  if extra_fields != blank or button_text != blank
+    assign button_class = 'input-group__btn btn'
+    assign input_group_inline = false
+    assign btn_width = true
+
+    if extra_fields == blank
+      assign btn_width = false
+    endif
+  endif
+
+  capture form_id
+    echo 'NewsletterForm--' | append: unique
+  endcapture
+
+  assign fields_class = 'input-group__fields'
+  unless extra_fields == blank
+    assign fields_class = fields_class | append: ' ' | append: fields_class | append: '--' | append: extra_fields
+  endunless
+-%}
+
+{%- form 'customer', id: form_id, data-newsletter-form: '', class: 'newsletter-form' -%}
+  <input type="hidden" name="contact[accepts_marketing]" value="true">
+
+  <div class="flex gap-4">
+    <div class="{{ fields_class }}">
+      {%- case extra_fields -%}
+        {%- when 'name' -%}
+          <div class="input-group__item input-group__item--name">
+            <input
+              type="text"
+              id="Name--{{ unique }}"
+              class="input"
+              value="{% if customer %}{{ customer.name }}{% endif %}"
+              placeholder="{{ placeholder_name }}"
+              name="contact[first_name]"
+              autocorrect="off"
+              autocapitalize="off"
+              aria-label="{{ placeholder_name }}"
+              {% if form.errors contains 'name' %}
+                aria-invalid="true"
+              {% endif %}
+            >
+          </div>
+      {%- endcase -%}
+
+      <div class="input-group__item input-group__item--email">
+        <input
+          type="email"
+          id="Email--{{ unique }}"
+          class="input"
+          value="{% if customer %}{{ customer.email }}{% endif %}"
+          placeholder="Email"
+          name="contact[email]"
+          autocorrect="off"
+          autocapitalize="off"
+          {% if form.errors contains 'email' %}
+            aria-invalid="true"
+          {% endif %}
+        >
+      </div>
+    </div>
+
+    <div class="input-group__item input-group__item--btn{% if btn_width %} input-group__item--btn-width{% endif %}">
+      <button
+        type="submit"
+        name="subscribe"
+        class="button button-primary"
+        id="SubscribeSubmit--{{ unique }}"
+        {% if is_popup %}
+          data-newsletter-submit
+        {% endif %}
+      >
+        <span class="">Subscribe</span>
+      </button>
+    </div>
+  </div>
+
+  {%- if form.posted_successfully? -%}
+    <div class="note form-success">Newsletter Success</div>
+  {%- endif -%}
+  {% if form.errors %}
+    <div class="errors">Newsletter Error</div>
+  {% endif %}
+{%- endform -%}

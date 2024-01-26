@@ -1,0 +1,52 @@
+{% if localization.available_languages.size >= 1 %}
+  <localization-form class="relative  text-sm">
+    {% form 'localization' %}
+      <collapsible-button
+        target-id="{{ "language-localization" | append: section.id }}"
+        close-on-click="true"
+        class="inline-block"
+      >
+        <button
+          type="button"
+          class="flex items-center gap-2 px-3 py-1"
+        >
+          <span>{{ localization.language.endonym_name | capitalize }}</span>
+          <span class="en-collapsible-caret text-sm">
+            {% render 'icon-caret' %}
+          </span>
+        </button>
+      </collapsible-button>
+
+      <collapsible-content
+        data-id="{{ "language-localization" | append: section.id }}"
+        class="absolute shadow-md {% if position == 'footer' %} top-0 -translate-y-[100%] {% else %} top-full {% endif %}"
+      >
+        <div class="collapsible-inner">
+          <ul
+            id="LanguageList"
+            class="border p-3 bg-[rgba(var(--primary-background))] {% if settings.corners == 'rounded' %}rounded {% endif %}"
+          >
+            {% for language in localization.available_languages %}
+              <li class="px-2 py-1" tabindex="-1">
+                <a
+                  href="#"
+                  {% if language.iso_code == localization.language.iso_code %}
+                    aria-current="true"
+                  {% endif %}
+                  hreflang="{{ language.iso_code }}"
+                  lang="{{ language.iso_code }}"
+                  data-value="{{ language.iso_code }}"
+                  class="transition-all duration-300 hover:underline"
+                >
+                  {{ language.endonym_name | capitalize }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </collapsible-content>
+
+      <input type="hidden" name="language_code" value="{{ localization.language.iso_code }}">
+    {% endform %}
+  </localization-form>
+{% endif %}

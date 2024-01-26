@@ -1,0 +1,132 @@
+<div class="js-menu__context bg-black/50 fixed left-0 top-0 opacity-0 transition-[opacity_0.3s,_visibility_0.3s] invisible w-full h-full z-[999]">
+  <div
+    id="cart-notification"
+    class="js-menu js-menu--right flex flex-col bg-[rgba(var(--primary-background))] absolute h-full w-full md:max-w-[30rem] m-0 z-[99]"
+  >
+    <cart-notification>
+      <div class="cart-notification-wrapper{% if desktop_menu_type != 'drawer' %} page-width{% endif %}">
+        <div
+          id="cart-notification"
+          class="cart-notification focus-inset{% if color_scheme %} color-{{ color_scheme }} gradient{% endif %}"
+          aria-modal="true"
+          aria-label="Item added to cart."
+          role="dialog"
+          tabindex="-1"
+        >
+          <div class="cart-notification__header">
+            <h2 class="cart-notification__heading caption-large text-body">Item added to cart.</h2>
+            <button
+              type="button"
+              class="cart-notification__close modal__close-button link link--text focus-inset"
+              aria-label="{{ 'accessibility.close' | t }}"
+            >
+              <svg class="icon icon-close" aria-hidden="true" focusable="false">
+                <use href="#icon-close">
+              </svg>
+            </button>
+          </div>
+          <div id="cart-notification-product" class="cart-notification-product"></div>
+          <div class="cart-notification__links">
+            <a
+              href="{{ routes.cart_url }}"
+              id="cart-notification-button"
+              class="button button--secondary button--full-width"
+            >
+              Cart Empty
+            </a>
+            <form action="{{ routes.cart_url }}" method="post" id="cart-notification-form">
+              <button class="button button--primary button--full-width" name="checkout">Checkout</button>
+            </form>
+            <button type="button" class="link button-label">Continue Shopping</button>
+          </div>
+        </div>
+      </div>
+    </cart-notification>
+  </div>
+</div>
+
+<script>
+  class CartNotification extends HTMLElement {
+    constructor() {
+      super();
+
+      this.notification = document.getElementById('cart-notification');
+      this.header = document.querySelector('sticky-header');
+      this.onBodyClick = this.handleBodyClick.bind(this);
+
+      this.notification.addEventListener('keyup', (evt) => evt.code === 'Escape' && this.close());
+      this.querySelectorAll('button[type="button"]').forEach((closeButton) =>
+        closeButton.addEventListener('click', this.close.bind(this))
+      );
+    }
+
+    open() {
+      this.notification.classList.add('animate', 'active');
+
+      this.notification.addEventListener(
+        'transitionend',
+        () => {
+          this.notification.focus();
+          trapFocus(this.notification);
+        },
+        { once: true }
+      );
+
+      document.body.addEventListener('click', this.onBodyClick);
+    }
+
+    close() {
+      this.notification.classList.remove('active');
+      document.body.removeEventListener('click', this.onBodyClick);
+
+      removeTrapFocus(this.activeElement);
+    }
+
+    renderContents(parsedState) {
+      this.cartItemKey = parsedState.key;
+      this.getSectionsToRender().forEach((section) => {
+        document.getElementById(section.id).innerHTML = this.getSectionInnerHTML(
+          parsedState.sections[section.id],
+          section.selector
+        );
+      });
+
+      if (this.header) this.header.reveal();
+      this.open();
+    }
+
+    getSectionsToRender() {
+      return [
+        {
+          id: 'cart-notification-product',
+          selector: `[id="cart-notification-product-${this.cartItemKey}"]`,
+        },
+        {
+          id: 'cart-notification-button',
+        },
+        {
+          id: 'cart-icon-bubble',
+        },
+      ];
+    }
+
+    getSectionInnerHTML(html, selector = '.shopify-section') {
+      return new DOMParser().parseFromString(html, 'text/html').querySelector(selector).innerHTML;
+    }
+
+    handleBodyClick(evt) {
+      const target = evt.target;
+      if (target !== this.notification && !target.closest('cart-notification')) {
+        const disclosure = target.closest('details-disclosure, header-menu');
+        this.activeElement = disclosure ? disclosure.querySelector('summary') : null;
+        this.close();
+      }
+    }
+
+    setActiveElement(element) {
+      this.activeElement = element;
+    }
+  }
+
+  customElements.define('cart-notification', CartNotification);
+</script>

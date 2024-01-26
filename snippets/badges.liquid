@@ -1,0 +1,13 @@
+{%- if product.available == false -%}
+  <span
+    class="bg-[rgba(var(--sold-out-background))] text-[rgba(var(--sold-out-text))] text-xs px-2 py-1"
+  >
+    Sold out
+  </span>
+{%- elsif product.compare_at_price > product.price and product.available -%}
+  <span
+    class="bg-[rgba(var(--sale-background))] text-[rgba(var(--sale-text))] text-xs px-2 py-1"
+  >
+    Sale
+  </span>
+{%- endif -%}
