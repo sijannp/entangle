@@ -232,3 +232,12 @@ en-drawer[expanded] .main-drawer {
     position: absolute;
     right: 0;
 }
+
+
+.splide__pagination__page {
+    background: rgba(var(--primary-text), 0.8);
+}
+
+.splide__pagination__page.is-active {
+    background: rgba(var(--primary-text));
+}

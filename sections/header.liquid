@@ -155,7 +155,7 @@
 
           {% else %}
             <div class="cart">
-              <a href="{{ routes.cart_url }}">
+              <a href="{{ routes.cart_url }}" aria-label="Go to cart">
                 {% unless section.settings.icon_style == 'text' %}
                   {% render 'icon-cart', items: cart.item_count, style: section.settings.icon_style %}
                 {% else %}
@@ -165,7 +165,7 @@
             </div>
           {% endif %}
 
-          <a href="{{ routes.account_url }}">
+          <a href="{{ routes.account_url }}" aria-label="Go to account">
             {% unless section.settings.icon_style == 'text' %}
               {% render 'icon-user', style: section.settings.icon_style %}
             {% else %}
@@ -194,7 +194,7 @@
             autofocus
           >
 
-          <button type="submit" value="Search" class="">
+          <button type="submit" value="Search" class="" aria-label="Search">
             {% render 'icon-search', class: 'opacity-[.6]' %}
           </button>
         </div>

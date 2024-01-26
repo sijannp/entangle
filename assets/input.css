@@ -4,11 +4,11 @@
 
 @layer components {
     .input {
-        @apply px-[var(--input-padding-x)] py-[var(--input-padding-y)] rounded-[var(--input-border-radius)] border-[rgba(var(--primary-text))]/[0.5] border-[length:var(--input-border-width)] inline-block text-sm outline-none focus:border-[rgba(var(--primary-text))];
+        @apply px-[var(--sm-input-padding-x)] lg:px-[var(--input-padding-x)] py-[var(--sm-input-padding-y)] lg:py-[var(--input-padding-y)] rounded-[var(--input-border-radius)] border-[rgba(var(--primary-text))]/[0.5] border-[length:var(--input-border-width)] inline-block text-sm outline-none focus:border-[rgba(var(--primary-text))];
     }
 
     .button {
-        @apply inline-block text-center px-[var(--button-padding-x)] py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none hover:border-solid;
+        @apply inline-block text-center px-[var(--sm-button-padding-x)] lg:px-[var(--button-padding-x)] py-[var(--sm-button-padding-y)] lg:py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none hover:border-solid;
     }
 
     .button-outline {

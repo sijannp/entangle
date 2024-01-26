@@ -5,11 +5,6 @@
 >
   {% assign selected_variant = product.selected_or_first_available_variant %}
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
-  <style>
-    .product--information {
-      height: fit-content;
-    }
-  </style>
 
   {% liquid
     assign media_width = 'md:w-[60%]'
@@ -34,37 +29,62 @@
             </div>
           {% endcomment %}
 
-          <div class="flex flex-col gap-8">
-            <splide-component
-              data-splide='{ "perPage": 1, "type": "loop" }'
-              data-thumbnails='{ "perPage": 4, "type": "loop" }'
-            >
-              <div class="splide">
-                <div class="splide__track">
-                  <ul class="splide__list">
-                    {% for media in product.media %}
-                      <div class="splide__slide">
+          {% if product.media.size > 1 %}
+            {% assign slider = true %}
+          {% endif %}
+
+          <div class="flex flex-col gap-8" id="product-media">
+            {% if slider %}
+              <splide-component
+                data-splide='{ "perPage": 1, "type": "fade" }'
+                data-thumbnails='{ "autoWidth": true, "type": "slide", "arrows": false }'
+              >
+            {% endif %}
+            <div class="{% if slider -%}splide{%- endif %}">
+              <div class="{% if slider -%}splide__track{%- endif %}">
+                <ul class="{% if slider -%}splide__list {% endif %}">
+                  {%- if product.selected_or_first_available_variant.featured_media != null -%}
+                    {%- assign media = product.selected_or_first_available_variant.featured_media -%}
+                    <div class="{% if slider %}splide__slide{% endif %}">
+                      <div class=" group w-full overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
+                        {{
+                          media
+                          | image_url: width: media.width
+                          | image_tag:
+                            class: 'h-full w-full object-contain absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out',
+                            loading: 'lazy'
+                        }}
+                      </div>
+                    </div>
+                  {% endif %}
+
+                  {% for media in product.media %}
+                    {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+                      <div class="{% if slider %}splide__slide{% endif %}">
                         {% render 'product-media', media: media, variant_images: variant_images %}
+                      </div>
+                    {% endunless %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            {% if product.media.size > 1 %}
+              <div class="splide-thumbnails mt-4 {% if slider -%}splide{%- endif %}">
+                <div class="{% if slider -%}splide__track{%- endif %}">
+                  <ul class="{% if slider -%}splide__list justify-center items-center{%- endif %}">
+                    {% for media in product.media %}
+                      <div class="{% if slider %}splide__slide{% endif %}">
+                        {% render 'product-media', media: media, thumbnail: true %}
                       </div>
                     {% endfor %}
                   </ul>
                 </div>
               </div>
-
-              {% if product.media.size > 1 %}
-                <div class="splide-thumbnails splide">
-                  <div class="splide__track">
-                    <ul class="splide__list">
-                      {% for media in product.media %}
-                        <div class="splide__slide">
-                          {% render 'product-media', media: media, thumbnail: true %}
-                        </div>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                </div>
-              {% endif %}
-            </splide-component>
+            {% endif %}
+            {% if slider %}
+              </splide-component>
+            {% endif %}
           </div>
         </div>
 
@@ -73,11 +93,11 @@
             {% case block.type %}
               {% when 'vendor' %}
                 <div class="my-3">
-                  <span class="text-xs text-gray-500">{{ product.vendor }}</span>
+                  <span class="text-xs ">{{ product.vendor }}</span>
                 </div>
               {% when 'title' %}
                 <div class="my-3">
-                  <h1 class="text-3xl text-gray-900">
+                  <h1 class="text-3xl">
                     {{ product.title }}
                   </h1>
                 </div>
@@ -156,39 +176,6 @@
                   {% endunless %}
                 </div>
 
-                {% comment %} slide to the variant image when the associated variant is selected  {% endcomment %}
-
-                {% if product.variants.size > 1 %}
-                  <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                      var variantSelector = document.querySelector('variant-selector');
-                      var imagesSlider = document.querySelector('.en-images-slider');
-                      var variantImages = JSON.parse('{{ product.media | json }}');
-                      variantSelector.addEventListener('change', function () {
-                        var variantId = variantSelector?.currentVariant?.featured_media?.id;
-                        if (variantId) {
-                          var variantImageIndex;
-                          for (var i = 0; i < variantImages.length; i++) {
-                            var variantImage = variantImages[i];
-                            let variantImageId = variantImage.id;
-                            if (variantImageId == variantId) {
-                              variantImageIndex = i;
-                              break;
-                            }
-                            if (variantImageIndex !== undefined) {
-                              break;
-                            }
-                          }
-                        }
-
-                        if (variantImageIndex !== undefined) {
-                          flkty.select(variantImageIndex);
-                        }
-                      });
-                    });
-                  </script>
-                {% endif %}
-
               {% when 'quantity' %}
                 <div class="my-3">
                   <label for="Quantity-{{ section.id }}">Quantity</label>
@@ -206,12 +193,12 @@
                 </div>
               {% when 'description' %}
                 <div class="my-3">
-                  <p class="text-gray-700">{{ product.description }}</p>
+                  <p class="">{{ product.description }}</p>
                 </div>
 
               {% when 'sku' %}
                 {%- assign current_variant = product.selected_or_first_available_variant -%}
-                <span class="opacity-60"
+                <span class=""
                   >SKU: <span class="sku--text">{{ current_variant.sku }}</span>
                 </span>
 

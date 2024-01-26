@@ -376,6 +376,7 @@ class VariantSelector extends HTMLElement {
         sku.textContent = this.currentVariant.sku;
     }
 
+
     updatePrice() {
         fetch(`${this.dataset.url}?variant=${this.currentVariant.id}&section_id=${this.dataset.section}`)
             .then((response) => response.text())
@@ -387,6 +388,11 @@ class VariantSelector extends HTMLElement {
                 const newPrice = html.getElementById(priceId);
 
                 if (oldPrice && newPrice) oldPrice.innerHTML = newPrice.innerHTML;
+
+                const oldMedia = document.querySelector('#product-media')
+                const newMedia = html.querySelector('#product-media')
+
+                if (oldMedia && newMedia) oldMedia.innerHTML = newMedia.innerHTML
 
                 const buttonsId = `buttons-${this.dataset.section}`;
                 const newButtons = html.getElementById(buttonsId);
@@ -811,7 +817,7 @@ class SplideComponent extends HTMLElement {
 
         const splideOptions = {
             type: 'slide',
-            rewind: 'false',
+            rewind: false,
             ...this.splideData,
         };
 
@@ -826,15 +832,18 @@ class SplideComponent extends HTMLElement {
         if (this.thumbnailsElement) {
 
             try {
-                this.thumbnailsData = JSON.parse(this.getAttribute("data-splide")) || {};
+                this.thumbnailsData = JSON.parse(this.getAttribute("data-thumbnails")) || {};
             } catch (error) {
                 console.error("Error parsing data-splide attribute:", error);
                 this.thumbnailsData = {};
             }
 
             const thumbnailOptions = {
+                isNavigation: true,
                 ...this.thumbnailsData,
             };
+
+            console.log(thumbnailOptions)
             this.thumbnails = new Splide(this.thumbnailsElement, thumbnailOptions);
 
             this.main.sync(this.thumbnails);

@@ -4,7 +4,7 @@
       <h2 class="text-3xl font-bold mb-6 text-center">{{ 'customer.login_page.title' | t }}</h2>
 
       {% form 'customer_login' %}
-        {%- unless form.errors -%}
+        {%- if form.errors -%}
           <div class="text-red-400">
             <h2 class="text-semibold text-lg">
               {{ 'templates.contact.form.error_heading' | t }}
@@ -24,7 +24,7 @@
               {%- endfor -%}
             </ul>
           </div>
-        {%- endunless -%}
+        {%- endif -%}
         <div class="mb-6">
           <label for="email" class="block mb-2">
             {{- 'customer.login_page.email' | t -}}
