@@ -34,12 +34,16 @@
           <ul class="{% if is_slider %} splide__list {% endif %} {{ wrapper_class }}">
             {% for product in collection.products limit: section.settings.max_products_to_show %}
               <li class="{% if is_slider %} splide__slide {% endif %} {{ item_class }}">
-                {% render 'product-card', card_product: product, quick_add: section.settings.enable_quick_add %}
+                {% render 'product-card',
+                  card_product: product,
+                  blocks: section.blocks,
+                  quick_add: section.settings.enable_quick_add
+                %}
               </li>
             {% else %}
               {% for item in (1..4) %}
                 <li class="{% if is_slider %} splide__slide {% endif %} {{ item_class }}">
-                  {% render 'product-card-empty', index: forloop.index %}
+                  {% render 'product-card-empty', blocks: section.blocks, index: forloop.index %}
                 </li>
               {% endfor %}
             {% endfor %}
@@ -54,6 +58,23 @@
 {
   "name": "Featured Collection",
   "tag": "section",
+  "blocks": [
+    {
+      "name": "Product title",
+      "type": "title",
+      "limit": 1
+    },
+    {
+      "name": "Product price",
+      "type": "price",
+      "limit": 1
+    },
+    {
+      "name": "Product vendor",
+      "type": "vendor",
+      "limit": 1
+    }
+  ],
   "settings": [
     {
       "type": "text",
@@ -137,7 +158,18 @@
   ],
   "presets": [
     {
-      "name": "Featured Collection"
+      "name": "Featured Collection",
+      "blocks": [
+        {
+          "type": "vendor"
+        },
+        {
+          "type": "title"
+        },
+        {
+          "type": "price"
+        }
+      ]
     }
   ]
 }

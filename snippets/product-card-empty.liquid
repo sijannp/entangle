@@ -21,16 +21,20 @@
     </div>
 
     <div class="flex flex-col py-4 px-2">
-      {% if show_vendor %}
-        <span class="text-sm">{{ card_product.vendor }}</span>
-      {% endif %}
-
-      <a href="#" class="flex flex-col gap-2">
-        <h3 class=" font-bold">Example Title</h3>
-        <div class="price text-sm">
-          {{ 2990.00 | money_with_currency }}
-        </div>
-      </a>
+      {% for block in blocks %}
+        {% case block.type %}
+          {% when 'vendor' %}
+            <span class="text-sm">Vendor</span>
+          {% when 'title' %}
+            <a href="#" class="flex flex-col gap-2">
+              <h3 class=" font-bold">Example Title</h3>
+            </a>
+          {% when 'price' %}
+            <div class="price text-sm">
+              {{ 2990.00 | money_with_currency }}
+            </div>
+        {% endcase %}
+      {% endfor %}
     </div>
   </div>
 </div>

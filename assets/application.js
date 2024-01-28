@@ -1,46 +1,3 @@
-Shopify.queryParams = {};
-
-if (location.search.length) {
-    var params = location.search.substr(1).split('&');
-
-    for (var i = 0; i < params.length; i++) {
-        var keyValue = params[i].split('=');
-
-        if (keyValue.length) {
-            Shopify.queryParams[decodeURIComponent(keyValue[0])] = decodeURIComponent(keyValue[1]);
-        }
-    }
-}
-
-
-
-class SortBy extends HTMLElement {
-    constructor() {
-        super();
-        this.elem = this.querySelector("select")
-    }
-
-    connectedCallback() {
-        this.elem.addEventListener("change", () => this.handleChange())
-    }
-
-
-    disconnectedCallback() {
-        this.elem.removeEventListener("change", () => this.handleChange())
-    }
-
-    handleChange() {
-        var value = this.elem.value;
-        Shopify.queryParams.sort_by = value;
-        location.search = new URLSearchParams(Shopify.queryParams).toString();
-
-    }
-
-}
-
-customElements.define("sort-by", SortBy)
-
-
 class CollapsibleContent extends HTMLElement {
     constructor() {
         super();
@@ -144,7 +101,8 @@ class FilterForm extends HTMLElement {
         this.shadowRoot.innerHTML = `
           <slot></slot>
         `;
-        this.inputs = this.querySelectorAll('input');
+        this.inputs = this.querySelectorAll('input, select');
+
         this.handleFormChange = this.handleFormChange.bind(this);
         this.setupEventListeners();
     }
@@ -167,7 +125,7 @@ class FilterForm extends HTMLElement {
         this.filterComponent = document.querySelector('#active-filters');
         const formData = new FormData(this.querySelector('form'));
         const formString = new URLSearchParams(formData).toString();
-        const url = `${window.location.pathname}?section_id=en-collection-products-grid&${formString}`;
+        const url = `${window.location.pathname}?${formString}`;
         document.querySelector('#products-grid-overlay').classList.add('bg-[rgba(var(--primary-background))]', 'z-[101]');
         fetch(url)
             .then((response) => response.text())

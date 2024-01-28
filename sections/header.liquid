@@ -165,7 +165,7 @@
             </div>
           {% endif %}
 
-          <a href="{{ routes.account_url }}" aria-label="Go to account">
+          <a href="{{ routes.account_url }}" aria-label="Go to account" class="hidden sm:block">
             {% unless section.settings.icon_style == 'text' %}
               {% render 'icon-user', style: section.settings.icon_style %}
             {% else %}

@@ -12,11 +12,7 @@
 <div class="page-width en-container relative">
   {% paginate collection.products by section.settings.number_of_products_per_page %}
     {% if collection.all_products_count > 0 %}
-      <div class="facets relative flex items-center justify-between">
-        {% render 'facets', collection: collection, position: 'left' %}
-      </div>
       <div class="w-full flex flex-col md:flex-row md:gap-4">
-        {% render 'filters-new', collection: collection, type: 'drawer' %}
         <div
           class="grid en-grid-gap relative grid-cols-1 {% unless section.settings.display_style == 'list' %}  md:grid-cols-2 {{ desktop_columns_class }} {% endunless %} flex w-full"
           id="products-grid"
@@ -40,7 +36,7 @@
       <div class="text-xl py-32 text-center">There are no products inside of this collection.</div>
     {% endif %}
 
-    {% render 'pagination', pagination: paginate %}
+    {% render 'pagination', paginate: paginate %}
   {% endpaginate %}
 </div>
 
@@ -48,6 +44,7 @@
 {
   "name": "Products grid",
   "tag": "section",
+  "class": "grow shrink basis-0",
   "settings": [
     {
       "type": "number",

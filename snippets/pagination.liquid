@@ -1,19 +1,74 @@
-{% if pagination.pages > 1 %}
-  <nav role="navigation" class="flex justify-center items-center my-8">
-    {% if pagination.previous %}
-      <a
-        href="{{ pagination.previous.url }}"
-        class="en-btn en-btn-outline hover:bg-[rgba(var(--primary-button-background))] hover:text-[rgba(var(--primary-button-text))] px-8 py-3 mx-1 rounded-sm font-medium"
-        >Previous</a
-      >
-    {% endif %}
+{% comment %}
+  Renders a set of links for paginated results. Must be used within paginate tags.
 
-    {% if pagination.next %}
-      <a
-        href="{{ pagination.next.url }}"
-        class="en-btn en-btn-outline hover:bg-[rgba(var(--primary-button-background))] hover:text-[rgba(var(--primary-button-text))] px-8 py-3 mx-1 rounded-sm font-medium"
-        >Next</a
-      >
-    {% endif %}
-  </nav>
-{% endif %}
+  Usage:
+  {% paginate results by 2 %}
+    {% render 'pagination', paginate: paginate, anchor: '#yourID' %}
+  {% endpaginate %}
+
+  Accepts:
+  - paginate: {Object}
+  - anchor: {String} (optional) This can be added so that on page reload it takes you to wherever you've placed your anchor tag.
+{% endcomment %}
+
+{{ 'component-pagination.css' | asset_url | stylesheet_tag }}
+
+{%- if paginate.parts.size > 0 -%}
+  <div class="">
+    <nav class="" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+      <ul class="flex items-center gap-4 justify-center py-3" role="list">
+        {%- if paginate.previous -%}
+          <li>
+            <a
+              href="{{ paginate.previous.url }}{{ anchor }}"
+              class="flex border p-1 button button-outline"
+              aria-label="{{ 'general.pagination.previous' | t }}"
+            >
+              {% render 'icon-caret', class: 'rotate-90' %}
+            </a>
+          </li>
+        {%- endif -%}
+
+        {%- for part in paginate.parts -%}
+          <li>
+            {%- if part.is_link -%}
+              <a
+                href="{{ part.url }}{{ anchor }}"
+                class="opacity-90"
+                aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+              >
+                {{- part.title -}}
+              </a>
+            {%- else -%}
+              {%- if part.title == paginate.current_page -%}
+                <a
+                  role="link"
+                  aria-disabled="true"
+                  class=""
+                  aria-current="page"
+                  aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+                >
+                  {{- part.title -}}
+                </a>
+              {%- else -%}
+                <span class="">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+
+        {%- if paginate.next -%}
+          <li>
+            <a
+              href="{{ paginate.next.url }}{{ anchor }}"
+              class="flex border p-1 button button-outline"
+              aria-label="{{ 'general.pagination.next' | t }}"
+            >
+              {%- render 'icon-caret', class: '-rotate-90' -%}
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    </nav>
+  </div>
+{%- endif -%}

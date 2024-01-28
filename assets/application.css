@@ -63,7 +63,8 @@ button:disabled {
 .page-width {
     max-width: var(--page-width);
     margin: 0 auto;
-    padding: 10px;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
 }
 
 .en-grid-gap {
@@ -135,7 +136,7 @@ collapsible-button {
 }
 
 
-@media screen and (min-width: 750px) {
+@media screen and (max-width: 750px) {
     .page-width {
         padding-left: 1rem;
         padding-right: 1rem;
@@ -240,4 +241,10 @@ en-drawer[expanded] .main-drawer {
 
 .splide__pagination__page.is-active {
     background: rgba(var(--primary-text));
+}
+
+/* Collection Page */
+
+.collection .shopify-section {
+    width: 100%;
 }

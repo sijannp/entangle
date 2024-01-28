@@ -112,12 +112,17 @@
         --input-border-width: {{ settings.input_border_width }}px;
 
         --input-padding-x: {{ settings.input_horizontal_offset }}px;
+        --sm-input-padding-x: {{ settings.input_horizontal_offset | times: 0.75 }}px;
         --input-padding-y: {{ settings.input_vertical_offset }}px;
+        --sm-input-padding-y: {{ settings.input_vertical_offset | times: 0.75 }}px;
 
         --button-border-width: {{ settings.button_border_width }}px;
 
         --button-padding-x: {{ settings.button_horizontal_offset }}px;
+        --sm-button-padding-x: {{ settings.button_horizontal_offset | times: 0.75 }}px;
         --button-padding-y: {{ settings.button_vertical_offset }}px;
+        --sm-button-padding-y: {{ settings.button_vertical_offset | times: 0.75 }}px;
+
 
         {% if settings.corners == 'rounded' %}
         --input-border-radius: {{ settings.input_border_radius }}px;

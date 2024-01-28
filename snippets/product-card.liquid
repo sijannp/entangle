@@ -2,7 +2,7 @@
   usage:
   render 'product-card',
   card_product: product,
-  show_vendor: true,
+  blocks: section.blocks,
   quick_add: true
 {% endcomment %}
 
@@ -32,6 +32,21 @@
 
         {% else %}
           {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover ' }}
+        {% endif %}
+
+        {% if swatches %}
+          {% for option in card_product.options_with_values %}
+            {% if option.name == 'Color' %}
+              <div class="my-2 flex gap-2 flex-wrap absolute left-2 bottom-0">
+                {% for value in option.values %}
+                  <div
+                    class="h-4 w-4"
+                    style="background-color: {{- value -}};"
+                  ></div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endfor %}
         {% endif %}
       </a>
 
@@ -106,30 +121,20 @@
     </div>
 
     <div class="flex flex-col py-4 px-2">
-      {% if show_vendor %}
-        <span class="text-sm">{{ card_product.vendor }}</span>
-      {% endif %}
+      {% for block in blocks %}
+        {% case block.type %}
+          {% when 'vendor' %}
+            <span class="text-sm">{{ card_product.vendor }}</span>
 
-      <a href="{{ card_product.url }}" class="font-bold">
-        <h3>{{ card_product.title }}</h3>
-      </a>
+          {% when 'title' %}
+            <a href="{{ card_product.url }}" class="font-bold">
+              <h3>{{ card_product.title }}</h3>
+            </a>
 
-      {% render 'price', product: card_product %}
-
-      {% if swatches %}
-        {% for option in card_product.options_with_values %}
-          {% if option.name == 'Color' %}
-            <div class="my-2 flex gap-2 flex-wrap">
-              {% for value in option.values %}
-                <div
-                  class="h-4 w-4"
-                  style="background-color: {{- value -}};"
-                ></div>
-              {% endfor %}
-            </div>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
+          {% when 'price' %}
+            {% render 'price', product: card_product %}
+        {% endcase %}
+      {% endfor %}
     </div>
   </div>
 </div>

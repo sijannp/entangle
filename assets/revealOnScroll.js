@@ -1,5 +1,5 @@
 let rafId = null;
-const delay = 200;
+const delay = 100;
 let lTime = 0;
 
 function scroll() {

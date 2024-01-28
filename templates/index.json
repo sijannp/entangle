@@ -27,7 +27,23 @@
             ]
         },
         "featured_collection": {
-            "type": "featured-collection"
+            "type": "featured-collection",
+            "blocks": {
+                "vendor": {
+                    "type": "vendor"
+                },
+                "title": {
+                    "type": "title"
+                },
+                "price": {
+                    "type": "price"
+                }
+            },
+            "block_order": [
+                "vendor",
+                "title",
+                "price"
+            ]
         },
         "hotspots": {
             "type": "image-hotspots"
