@@ -37,7 +37,12 @@
 
               {% else %}
                 {% for i in (1..3) %}
-                  <li class="splide__slide w-full text-center uppercase">Announce something here...</li>
+                  <li class="splide__slide w-full text-center uppercase flex items-center justify-center gap-2">
+                    <span>
+                      {% render 'icon', icon: 'check_mark' %}
+                    </span>
+                    <span> Announce something here... </span>
+                  </li>
                 {% endfor %}
               {% endfor %}
             </ul>

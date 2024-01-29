@@ -8,7 +8,7 @@
     }
 
     .button {
-        @apply uppercase inline-block text-center px-[var(--sm-button-padding-x)] lg:px-[var(--button-padding-x)] py-[var(--sm-button-padding-y)] lg:py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none hover:border-solid;
+        @apply uppercase inline-block text-center md:max-w-[26rem] px-[var(--sm-button-padding-x)] lg:px-[var(--button-padding-x)] py-[var(--sm-button-padding-y)] lg:py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none hover:border-solid;
     }
 
     .button-outline {
@@ -16,12 +16,13 @@
     }
 
     .button-primary {
-        @apply inline-block text-sm font-medium text-[rgba(var(--primary-button-text))] bg-[rgba(var(--primary-button-background))] border border-[rgba(var(--primary-button-background))] active:text-[rgba(var(--primary-button-background))] hover:bg-[rgba(var(--primary-button-text))] hover:text-[rgba(var(--primary-button-background))]/[0.9] hover:border-[rgba(var(--primary-button-background))]/[0.9] focus:outline-none focus:ring duration-300
+        @apply inline-block text-sm font-medium text-[rgba(var(--primary-button-text))] bg-[rgba(var(--primary-button-background))] border border-[rgba(var(--primary-button-background))] active:text-[rgba(var(--primary-button-background))] hover:bg-[rgba(var(--primary-button-text))] hover:text-[rgba(var(--primary-button-background))] hover:border-[rgba(var(--primary-button-background))]/[0.9] focus:outline-none focus:ring duration-300
     }
 
     .button-secondary {
         @apply inline-block text-sm font-medium text-[rgba(var(--secondary-button-text))] bg-[rgba(var(--secondary-button-background))] border border-[rgba(var(--secondary-button-background))] active:text-[rgba(var(--secondary-button-background))] hover:bg-[rgba(var(--secondary-button-background))]/[0.8] focus:outline-none focus:ring duration-300
     }
+
 
     .en-title {
         @apply text-[1.2rem] md:text-[1.5rem] block font-bold;

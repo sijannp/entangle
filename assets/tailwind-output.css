@@ -601,6 +601,12 @@ video {
   border-style: solid;
 }
 
+@media (min-width: 768px) {
+  .button {
+    max-width: 26rem;
+  }
+}
+
 @media (min-width: 1024px) {
   .button {
     padding-left: var(--button-padding-x);
@@ -648,7 +654,7 @@ video {
 .button-primary:hover {
   border-color: rgba(var(--primary-button-background), 0.9);
   background-color: rgba(var(--primary-button-text));
-  color: rgba(var(--primary-button-background), 0.9);
+  color: rgba(var(--primary-button-background));
 }
 
 .button-primary:focus {
@@ -1957,6 +1963,10 @@ video {
   color: rgba(var(--primary-text), 0.75);
 }
 
+.text-\[rgba\(var\(--primary-text\)\2c \.9\)\] {
+  color: rgba(var(--primary-text),.9);
+}
+
 .text-\[rgba\(var\(--sale-text\)\)\] {
   color: rgba(var(--sale-text));
 }
@@ -2013,22 +2023,6 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.text-\[rgba\(var\(--primary-text\)\)\] {
-  color: rgba(var(--primary-text));
-}
-
-.text-\[rgba\(var\(--primary-text\)\2c \.5\)\] {
-  color: rgba(var(--primary-text),.5);
-}
-
-.text-\[rgba\(var\(--primary-text\)\2c \.8\)\] {
-  color: rgba(var(--primary-text),.8);
-}
-
-.text-\[rgba\(var\(--primary-text\)\2c \.9\)\] {
-  color: rgba(var(--primary-text),.9);
 }
 
 .underline {

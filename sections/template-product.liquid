@@ -114,15 +114,39 @@
                 <div class="my-3">
                   <label for="Quantity-{{ section.id }}">Quantity</label>
 
-                  <div class="my-2">
+                  {% comment %}
+                    <div class="my-2">
+                      <input
+                        type="number"
+                        name="quantity"
+                        id="Quantity-{{ section.id }}"
+                        value="1"
+                        min="1"
+                        class="w-full border px-3 py-3"
+                      >
+                    </div>
+                  {% endcomment %}
+                  <div class="w-20 md:w-32 h-full relative border ">
                     <input
                       type="number"
                       name="quantity"
-                      id="Quantity-{{ section.id }}"
                       value="1"
                       min="1"
-                      class="w-full border px-3 py-3"
+                      id="Quantity-{{ section.id }}"
+                      class="w-full h-full p-2 px-6 text-center focus:outline-none"
                     >
+                    <quantity-button
+                      data-section="cart-drawer"
+                      class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
+                    >
+                      -
+                    </quantity-button>
+                    <quantity-button
+                      data-section="cart-drawer"
+                      class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
+                    >
+                      +
+                    </quantity-button>
                   </div>
                 </div>
               {% when 'description' %}
@@ -150,7 +174,7 @@
                       <button
                         type="submit"
 
-                        class="inline-block relative button button-primary text-lg w-full text-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="inline-block relative button button-primary disabled:opacity-50 disabled:cursor-not-allowed"
                         {% if selected_variant.available == false %}
                           disabled
                         {% endif %}
