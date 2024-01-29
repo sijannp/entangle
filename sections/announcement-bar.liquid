@@ -1,7 +1,345 @@
-<slider-component>
-  <div class="main-carousel">
-    <div class="slide w-full text-center">Slide 1</div>
-    <div class="slide w-full text-center">Slide 2</div>
-    <div class="slide w-full text-center">Slide 3</div>
+{% if section.settings.homepage_only and template != 'index' %}
+{% else %}
+  {%- style -%}
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    }
+
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      }
+    }
+  {%- endstyle -%}
+
+  <div class="color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding">
+    <div class="page-width">
+      <splide-component
+        data-splide='{ "type": "loop", {% unless section.settings.show_arrows %} "arrows": false, {% endunless %}  "pagination": false, {% if section.settings.autoplay %} "autoplay": true, {% endif %}"interval": {{ section.settings.duration | times: 1000 }} }'
+        class="announcement-bar"
+      >
+        <div class="splide">
+          <div class="splide__track">
+            <ul class="splide__list">
+              {% for block in section.blocks %}
+                <li class="splide__slide w-full text-center flex items-center gap-2 justify-center">
+                  {% if block.settings.icon %}
+                    <span class="{% if block.settings.icon_position == 'last' %} order-last {% endif %}">
+                      {% render 'icon', icon: block.settings.icon %}
+                    </span>
+                  {% endif %}
+                  <span>
+                    {{ block.settings.text }}
+                  </span>
+                </li>
+
+              {% else %}
+                {% for i in (1..3) %}
+                  <li class="splide__slide w-full text-center uppercase">Announce something here...</li>
+                {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </splide-component>
+    </div>
   </div>
-</slider-component>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "Slide text"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "t:general.icon.options__1.label"
+            },
+            {
+              "value": "apple",
+              "label": "t:general.icon.options__2.label"
+            },
+            {
+              "value": "banana",
+              "label": "t:general.icon.options__3.label"
+            },
+            {
+              "value": "bottle",
+              "label": "t:general.icon.options__4.label"
+            },
+            {
+              "value": "box",
+              "label": "t:general.icon.options__5.label"
+            },
+            {
+              "value": "carrot",
+              "label": "t:general.icon.options__6.label"
+            },
+            {
+              "value": "chat_bubble",
+              "label": "t:general.icon.options__7.label"
+            },
+            {
+              "value": "check_mark",
+              "label": "t:general.icon.options__8.label"
+            },
+            {
+              "value": "clipboard",
+              "label": "t:general.icon.options__9.label"
+            },
+            {
+              "value": "dairy",
+              "label": "t:general.icon.options__10.label"
+            },
+            {
+              "value": "dairy_free",
+              "label": "t:general.icon.options__11.label"
+            },
+            {
+              "value": "dryer",
+              "label": "t:general.icon.options__12.label"
+            },
+            {
+              "value": "eye",
+              "label": "t:general.icon.options__13.label"
+            },
+            {
+              "value": "fire",
+              "label": "t:general.icon.options__14.label"
+            },
+            {
+              "value": "gluten_free",
+              "label": "t:general.icon.options__15.label"
+            },
+            {
+              "value": "heart",
+              "label": "t:general.icon.options__16.label"
+            },
+            {
+              "value": "iron",
+              "label": "t:general.icon.options__17.label"
+            },
+            {
+              "value": "leaf",
+              "label": "t:general.icon.options__18.label"
+            },
+            {
+              "value": "leather",
+              "label": "t:general.icon.options__19.label"
+            },
+            {
+              "value": "lightning_bolt",
+              "label": "t:general.icon.options__20.label"
+            },
+            {
+              "value": "lipstick",
+              "label": "t:general.icon.options__21.label"
+            },
+            {
+              "value": "lock",
+              "label": "t:general.icon.options__22.label"
+            },
+            {
+              "value": "map_pin",
+              "label": "t:general.icon.options__23.label"
+            },
+            {
+              "value": "nut_free",
+              "label": "t:general.icon.options__24.label"
+            },
+            {
+              "value": "pants",
+              "label": "t:general.icon.options__25.label"
+            },
+            {
+              "value": "paw_print",
+              "label": "t:general.icon.options__26.label"
+            },
+            {
+              "value": "pepper",
+              "label": "t:general.icon.options__27.label"
+            },
+            {
+              "value": "perfume",
+              "label": "t:general.icon.options__28.label"
+            },
+            {
+              "value": "plane",
+              "label": "t:general.icon.options__29.label"
+            },
+            {
+              "value": "plant",
+              "label": "t:general.icon.options__30.label"
+            },
+            {
+              "value": "price_tag",
+              "label": "t:general.icon.options__31.label"
+            },
+            {
+              "value": "question_mark",
+              "label": "t:general.icon.options__32.label"
+            },
+            {
+              "value": "recycle",
+              "label": "t:general.icon.options__33.label"
+            },
+            {
+              "value": "return",
+              "label": "t:general.icon.options__34.label"
+            },
+            {
+              "value": "ruler",
+              "label": "t:general.icon.options__35.label"
+            },
+            {
+              "value": "serving_dish",
+              "label": "t:general.icon.options__36.label"
+            },
+            {
+              "value": "shirt",
+              "label": "t:general.icon.options__37.label"
+            },
+            {
+              "value": "shoe",
+              "label": "t:general.icon.options__38.label"
+            },
+            {
+              "value": "silhouette",
+              "label": "t:general.icon.options__39.label"
+            },
+            {
+              "value": "snowflake",
+              "label": "t:general.icon.options__40.label"
+            },
+            {
+              "value": "star",
+              "label": "t:general.icon.options__41.label"
+            },
+            {
+              "value": "stopwatch",
+              "label": "t:general.icon.options__42.label"
+            },
+            {
+              "value": "truck",
+              "label": "t:general.icon.options__43.label"
+            },
+            {
+              "value": "washing",
+              "label": "t:general.icon.options__44.label"
+            }
+          ],
+          "default": "check_mark",
+          "label": "t:general.icon.label"
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "label": "Icon position",
+          "default": "first",
+          "options": [
+            {
+              "label": "Before text",
+              "value": "first"
+            },
+            {
+              "label": "After text",
+              "value": "last"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "homepage_only",
+      "default": false,
+      "label": "Show on home page only"
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "label": "Direction",
+      "default": "left",
+      "options": [
+        {
+          "label": "Left",
+          "value": "left"
+        },
+        {
+          "label": "Right",
+          "value": "right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "default": false,
+      "label": "Show arrows"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "default": true,
+      "label": "Auto change slides"
+    },
+    {
+      "type": "range",
+      "label": "Change slides every",
+      "default": 4,
+      "id": "duration",
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "inverse"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 30,
+      "default": 10,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 30,
+      "default": 10,
+      "step": 1,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar"
+    }
+  ]
+}
+{% endschema %}

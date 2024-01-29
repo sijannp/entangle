@@ -19,73 +19,7 @@
     <div class="mx-auto my-8">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="product--medias w-full {{ media_width }} {% if section.settings.media_position == "right" %} order-last {% endif %}">
-          {% comment %}
-            <div class="hidden md:block">
-              {% for media in product.media %}
-                <div class="h-100 overflow-hidden p-2">
-                  {% render 'product-media', media: media %}
-                </div>
-              {% endfor %}
-            </div>
-          {% endcomment %}
-
-          {% if product.media.size > 1 %}
-            {% assign slider = true %}
-          {% endif %}
-
-          <div class="flex flex-col gap-8" id="product-media">
-            {% if slider %}
-              <splide-component
-                data-splide='{ "perPage": 1, "type": "fade" }'
-                data-thumbnails='{ "autoWidth": true, "type": "slide", "arrows": false }'
-              >
-            {% endif %}
-            <div class="{% if slider -%}splide{%- endif %}">
-              <div class="{% if slider -%}splide__track{%- endif %}">
-                <ul class="{% if slider -%}splide__list {% endif %}">
-                  {%- if product.selected_or_first_available_variant.featured_media != null -%}
-                    {%- assign media = product.selected_or_first_available_variant.featured_media -%}
-                    <div class="{% if slider %}splide__slide{% endif %}">
-                      <div class=" group w-full overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
-                        {{
-                          media
-                          | image_url: width: media.width
-                          | image_tag:
-                            class: 'h-full w-full object-contain absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out',
-                            loading: 'lazy'
-                        }}
-                      </div>
-                    </div>
-                  {% endif %}
-
-                  {% for media in product.media %}
-                    {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
-                      <div class="{% if slider %}splide__slide{% endif %}">
-                        {% render 'product-media', media: media, variant_images: variant_images %}
-                      </div>
-                    {% endunless %}
-                  {% endfor %}
-                </ul>
-              </div>
-            </div>
-
-            {% if product.media.size > 1 %}
-              <div class="splide-thumbnails mt-4 {% if slider -%}splide{%- endif %}">
-                <div class="{% if slider -%}splide__track{%- endif %}">
-                  <ul class="{% if slider -%}splide__list justify-center items-center{%- endif %}">
-                    {% for media in product.media %}
-                      <div class="{% if slider %}splide__slide{% endif %}">
-                        {% render 'product-media', media: media, thumbnail: true %}
-                      </div>
-                    {% endfor %}
-                  </ul>
-                </div>
-              </div>
-            {% endif %}
-            {% if slider %}
-              </splide-component>
-            {% endif %}
-          </div>
+          {% render 'product-medias' %}
         </div>
 
         <div class="product--information sticky w-full md:w-[40%] top-5 p-2 ">

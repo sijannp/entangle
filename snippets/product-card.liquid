@@ -3,7 +3,9 @@
   render 'product-card',
   card_product: product,
   blocks: section.blocks,
-  quick_add: true
+  quick_add: true,
+  color_scheme: background-1,
+  card_style: standard (Optional, default: card)
 {% endcomment %}
 
 {% style %}
@@ -11,6 +13,10 @@
     padding: var(--product-card-image-padding);
   }
 {% endstyle %}
+
+{% unless color_scheme %}
+  {% assign color_scheme = 'background-1' %}
+{% endunless %}
 
 {% liquid
   assign imageclass = 'h-full w-full object-cover absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out transform hover:scale-105'
@@ -20,7 +26,7 @@
   endif
 %}
 <div
-  class="{% if settings.reveal_on_scroll %} reveal {% endif %} {% if settings.product_card_style == 'card' %} product-card {% endif %} {% if settings.corners == "rounded" %} rounded-lg {% endif %} w-full my-4 overflow-hidden duration-300 hover:shadow-md "
+  class="{% if settings.reveal_on_scroll %} reveal {% endif %} {% unless card_style == 'standard' %} color-{{ color_scheme }} border {% endunless %} {% if settings.corners == "rounded" %} rounded-lg {% endif %} w-full my-4 overflow-hidden duration-300 hover:shadow-md "
 >
   <div class="relative w-full overflow-hidden  group {% if type == 'list' %} flex{% endif %}">
     <div class="en-product-image--padding relative w-full {% if type == 'list' %} max-w-[200px]{% endif %}">
@@ -120,14 +126,14 @@
       </div>
     </div>
 
-    <div class="flex flex-col py-4 px-2">
+    <div class=" flex flex-col gap-1 py-3 px-3">
       {% for block in blocks %}
         {% case block.type %}
           {% when 'vendor' %}
-            <span class="text-sm">{{ card_product.vendor }}</span>
+            <span class="text-sm text-[rgba(var(--primary-text),.9)]">{{ card_product.vendor }}</span>
 
           {% when 'title' %}
-            <a href="{{ card_product.url }}" class="font-bold">
+            <a href="{{ card_product.url }}" class="font-bold text-lg">
               <h3>{{ card_product.title }}</h3>
             </a>
 

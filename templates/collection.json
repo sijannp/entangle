@@ -8,7 +8,23 @@
             "type": "filters"
         },
         "product_grid": {
-            "type": "template-collection-products-grid"
+            "type": "template-collection-products-grid",
+            "blocks": {
+                "title": {
+                    "type": "title"
+                },
+                "vendor": {
+                    "type": "vendor"
+                },
+                "price": {
+                    "type": "price"
+                }
+            },
+            "block_order": [
+                "vendor",
+                "title",
+                "price"
+            ]
         }
     },
     "order": [

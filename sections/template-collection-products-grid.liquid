@@ -9,22 +9,17 @@
   endif
 %}
 
-<div class="page-width en-container relative">
+<div class="page-width en-container relative" id="products-grid">
   {% paginate collection.products by section.settings.number_of_products_per_page %}
-    {% if collection.all_products_count > 0 %}
+    {% if collection.products.size > 0 %}
       <div class="w-full flex flex-col md:flex-row md:gap-4">
         <div
           class="grid en-grid-gap relative grid-cols-1 {% unless section.settings.display_style == 'list' %}  md:grid-cols-2 {{ desktop_columns_class }} {% endunless %} flex w-full"
-          id="products-grid"
         >
-          <div
-            id="products-grid-overlay"
-            class="absolute w-full h-full top-0 left-0 transition duration-500"
-          ></div>
           {% for product in collection.products %}
             {% render 'product-card',
               card_product: product,
-              show_vendor: section.settings.show_vendor,
+              blocks: section.blocks,
               quick_add: section.settings.quick_add,
               type: section.settings.display_style,
               swatches: section.settings.color_swatches
@@ -33,11 +28,23 @@
         </div>
       </div>
     {% else %}
-      <div class="text-xl py-32 text-center">There are no products inside of this collection.</div>
+      {% if collection.all_products_count > 0 %}
+        <div class="text-xl py-32 text-center">
+          No Products found. Use fewer filters or
+          <a href="{{ collection.url }}" class="underline cursor-pointer"> Remove all</a>
+        </div>
+
+      {% else %}
+        <div class="text-xl py-32 text-center">There are no products in this collection.</div>
+      {% endif %}
     {% endif %}
 
     {% render 'pagination', paginate: paginate %}
   {% endpaginate %}
+  <div
+    id="products-grid-overlay"
+    class="absolute w-full h-full top-0 left-0 transition duration-500 z-[-1]"
+  ></div>
 </div>
 
 {% schema %}
@@ -45,6 +52,20 @@
   "name": "Products grid",
   "tag": "section",
   "class": "grow shrink basis-0",
+  "blocks": [
+    {
+      "type": "vendor",
+      "name": "Product vendor"
+    },
+    {
+      "type": "title",
+      "name": "Product title"
+    },
+    {
+      "type": "price",
+      "name": "Product price"
+    }
+  ],
   "settings": [
     {
       "type": "number",
@@ -67,12 +88,6 @@
           "value": "list"
         }
       ]
-    },
-    {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "default": true,
-      "label": "Show vendor"
     },
     {
       "type": "checkbox",

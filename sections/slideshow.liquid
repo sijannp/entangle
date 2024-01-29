@@ -11,6 +11,10 @@
     assign height_class = 'h-[6000px] md:h-[900px]'
   endif
 
+  if settings.corners == 'rounded' and section.settings.full_width == false
+    assign height_class = height_class | append: ' rounded-lg overflow-hidden'
+  endif
+
   assign image_class = height_class | append: 'w-full object-none'
 %}
 
@@ -18,9 +22,10 @@
   <div class="{% unless section.settings.full_width %} page-width {% endunless %}">
     <splide-component
       data-splide='{"type":"fade", "rewind": true, "arrows": false}'
+      class=""
     >
       <div class="splide">
-        <div class="splide__track relative ">
+        <div class="splide__track relative">
           <div class="splide__list">
             {% for block in section.blocks %}
               {% liquid

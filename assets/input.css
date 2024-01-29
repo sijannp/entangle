@@ -8,7 +8,7 @@
     }
 
     .button {
-        @apply inline-block text-center px-[var(--sm-button-padding-x)] lg:px-[var(--button-padding-x)] py-[var(--sm-button-padding-y)] lg:py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none hover:border-solid;
+        @apply uppercase inline-block text-center px-[var(--sm-button-padding-x)] lg:px-[var(--button-padding-x)] py-[var(--sm-button-padding-y)] lg:py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none hover:border-solid;
     }
 
     .button-outline {

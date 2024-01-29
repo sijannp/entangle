@@ -5,9 +5,9 @@ html {
     font-size: calc(var(--font-scale) * 100%);
 }
 
-main {
+/* main {
     margin-top: var(--header-height);
-}
+} */
 
 body,
 button,
@@ -25,10 +25,10 @@ body {
     padding: 0;
 }
 
-body {
+/* body {
     display: flex;
     flex-direction: column;
-}
+} */
 
 main {
     flex: 1;

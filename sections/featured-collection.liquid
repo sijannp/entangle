@@ -37,13 +37,18 @@
                 {% render 'product-card',
                   card_product: product,
                   blocks: section.blocks,
-                  quick_add: section.settings.enable_quick_add
+                  quick_add: section.settings.enable_quick_add,
+                  color_scheme: section.settings.card_color_scheme
                 %}
               </li>
             {% else %}
               {% for item in (1..4) %}
                 <li class="{% if is_slider %} splide__slide {% endif %} {{ item_class }}">
-                  {% render 'product-card-empty', blocks: section.blocks, index: forloop.index %}
+                  {% render 'product-card-empty',
+                    blocks: section.blocks,
+                    index: forloop.index,
+                    color_scheme: section.settings.card_color_scheme
+                  %}
                 </li>
               {% endfor %}
             {% endfor %}
@@ -153,6 +158,12 @@
       "type": "color_scheme",
       "label": "Color Scheme",
       "id": "color_scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "label": "Product card color scheme",
+      "id": "card_color_scheme",
       "default": "background-1"
     }
   ],

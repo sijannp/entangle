@@ -25,6 +25,10 @@
     grid-area: language-selector;
   }
 
+  .initial {
+    display: initial;
+  }
+
   .header {
     grid-template-areas: 'drawer logo icons';
   }
@@ -51,7 +55,7 @@
 
 <en-header
   data-headertype="hideonscroll"
-  class="fixed left-0 top-0 w-full transition-all duration-500 z-[10] gradient color-{{ section.settings.color_scheme }} "
+  class="block top-0 sticky transition-all duration-500 z-[10] gradient py-3 color-{{ section.settings.color_scheme }} "
 >
   <div class="en-container relative ">
     <div class="page-width  flex flex-col gap-8 lg:py-6">
@@ -212,6 +216,7 @@
 {% schema %}
 {
   "name": "Header",
+  "class": "initial",
   "settings": [
     {
       "type": "link_list",

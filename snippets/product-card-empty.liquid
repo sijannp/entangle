@@ -1,5 +1,11 @@
+{% liquid
+  unless color_scheme
+    assign color_scheme = 'background-1'
+  endunless
+%}
+
 <div
-  class="color-{{ settings.product_card_color_scheme }} {% if settings.reveal_on_scroll %} reveal {% endif %} {% if settings.product_card_style == 'card' %} border {% endif %} {% if settings.corners == 'rounded' %} rounded-lg {% endif %} w-full my-4 overflow-hidden cursor-pointer duration-300 hover:shadow-md"
+  class="color-{{ color_scheme }} {% if settings.reveal_on_scroll %} reveal {% endif %} {% if settings.product_card_style == 'card' %} border {% endif %} {% if settings.corners == 'rounded' %} rounded-lg {% endif %} w-full my-4 overflow-hidden cursor-pointer duration-300 hover:shadow-md"
 >
   <div class="relative w-full overflow-hidden group">
     <div class="relative group w-full bg-gray-200">

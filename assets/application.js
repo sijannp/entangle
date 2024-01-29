@@ -652,41 +652,53 @@ class EnHeader extends HTMLElement {
     constructor() {
         super();
         this.headerType = this.getAttribute("data-headertype");
-        // document.querySelector("main").style.paddingTop = `${this.offsetHeight}px`;
-        if (this.headerType === "sticky") this.stickyHeader.bind(this)();
-        else if (this.headerType === "hideonscroll") this.hideOnScroll.bind(this)();
+        this.announcementBarHeight = this.calculateAnnouncementBarHeight(); // New line
+        this.headerHeight = this.offsetHeight;
+        this.prevScrollpos = window.scrollY;
+
+        if (this.headerType === "sticky") {
+            this.stickyHeader.bind(this)();
+        } else if (this.headerType === "hideonscroll") {
+            this.hideOnScroll.bind(this)();
+        }
+
         window.matchMedia('(max-width: 1024px)').addEventListener('change', this.setHeaderHeight.bind(this));
-        document.documentElement.style.setProperty('--header-height', `${this.offsetHeight}px`);;
+        document.documentElement.style.setProperty('--header-height', `${this.headerHeight}px`);
+    }
+
+    calculateAnnouncementBarHeight() {
+        const announcementBar = document.querySelector(".announcement-bar"); // Adjust the selector
+        return announcementBar ? announcementBar.offsetHeight : 0;
     }
 
     setHeaderHeight() {
-        document.documentElement.style.setProperty('--header-height', `${this.offsetHeight}px`);
+        this.headerHeight = this.offsetHeight;
+        document.documentElement.style.setProperty('--header-height', `${this.headerHeight}px`);
     }
 
     stickyHeader() {
-        // Explicitly bind the function to the current instance
+        // Your code for making the header sticky goes here
     }
 
     hideOnScroll() {
-        var prevScrollpos = window.scrollY;
-        var headerHeight = this.offsetHeight;
-        window.onscroll = function () {
-            var currentScrollPos = window.scrollY;
-            if (prevScrollpos > currentScrollPos) {
-                this.style.top = "0";
+        window.onscroll = () => {
+            const currentScrollPos = window.scrollY;
+            const scrollDirection = currentScrollPos > this.prevScrollpos ? 'down' : 'up';
 
+            if (scrollDirection === 'up' || currentScrollPos < this.announcementBarHeight) {
+                this.style.top = "0";
             } else {
-                this.style.top = `-${headerHeight}px`;
+                this.style.top = `-${this.headerHeight}px`;
             }
 
-
-            prevScrollpos = currentScrollPos;
-        }.bind(this);
-
+            this.prevScrollpos = currentScrollPos;
+        };
     }
 }
 
 customElements.define("en-header", EnHeader);
+
+
 
 
 
