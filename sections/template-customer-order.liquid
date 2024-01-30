@@ -41,12 +41,12 @@
 {% endstyle %}
 
 <div class="mt-4 pt-8 px-4 mb-4 page-width">
-  <h1 class="font-bold text-4xl">{{ 'customer.account.title' | t }}</h1>
+  <h1 class="">{{ 'customer.account.title' | t }}</h1>
   <a href="{{ routes.account_url }}" class="mt-8">{{ 'customer.account.return' | t }}</a>
 
   <div class=" mt-8">
     <div class="">
-      <h2 class="text-2xl font-bold">{{ 'customer.order.title' | t: name: order.name }}</h2>
+      <h2 class="h3">{{ 'customer.order.title' | t: name: order.name }}</h2>
       {%- assign order_date = order.created_at | time_tag: format: 'date_at_time' -%}
       <p>{{ 'customer.order.date_html' | t: date: order_date }}</p>
       {%- if order.cancelled -%}
@@ -378,7 +378,7 @@
 
         <div class="md:col-span-2 lg:col-span-2 md:row-span-2 lg:col-start-4 lg:row-span-2">
           <div class="mb-4">
-            <h2 class="text-3xl font-bold mb-2">{{ 'customer.order.billing_address' | t }}</h2>
+            <h2 class="">{{ 'customer.order.billing_address' | t }}</h2>
             <p>
               <strong>{{ 'customer.order.payment_status' | t }}:</strong>
               {{ order.financial_status_label }}
@@ -387,7 +387,7 @@
           </div>
 
           <div>
-            <h2 class="text-3xl font-bold mb-2">{{ 'customer.order.shipping_address' | t }}</h2>
+            <h2 class="">{{ 'customer.order.shipping_address' | t }}</h2>
             <p>
               <strong>{{ 'customer.order.fulfillment_status' | t }}:</strong>
               {{ order.fulfillment_status_label }}

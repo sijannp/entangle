@@ -133,8 +133,8 @@
             <span class="text-sm text-[rgba(var(--primary-text),.9)]">{{ card_product.vendor }}</span>
 
           {% when 'title' %}
-            <a href="{{ card_product.url }}" class="font-bold text-lg">
-              <h3>{{ card_product.title }}</h3>
+            <a href="{{ card_product.url }}" class="">
+              <h3 class="h4">{{ card_product.title }}</h3>
             </a>
 
           {% when 'price' %}

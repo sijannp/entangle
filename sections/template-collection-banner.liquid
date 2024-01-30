@@ -7,7 +7,7 @@
 
 <div class="en-container relative">
   {% if section.settings.title_position == 'above_image' or section.settings.title_position == 'inside_image' %}
-    <h1 class="text-3xl block {{ title_classes }}">{{ collection.title }}</h1>
+    <h1 class="block {{ title_classes }}">{{ collection.title }}</h1>
   {% endif %}
 
   {% if section.settings.show_collection_image and collection.featured_image %}
@@ -22,7 +22,7 @@
     </div>
   {% endif %}
   {% if section.settings.title_position == 'below_image' %}
-    <h1 class="text-3xl block {{ title_classes }}">{{ collection.title }}</h1>
+    <h1 class="block {{ title_classes }}">{{ collection.title }}</h1>
   {% endif %}
   {% if section.settings.show_collection_description and collection.description != blank %}
     <div class="description text-center">

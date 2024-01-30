@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+
+
     .input {
-        @apply px-[var(--sm-input-padding-x)] lg:px-[var(--input-padding-x)] py-[var(--sm-input-padding-y)] lg:py-[var(--input-padding-y)] rounded-[var(--input-border-radius)] border-[rgba(var(--primary-text))]/[0.5] border-[length:var(--input-border-width)] inline-block text-sm outline-none focus:border-[rgba(var(--primary-text))];
+        @apply bg-transparent px-[var(--sm-input-padding-x)] lg:px-[var(--input-padding-x)] py-[var(--sm-input-padding-y)] lg:py-[var(--input-padding-y)] rounded-[var(--input-border-radius)] border-[rgba(var(--primary-text))]/[0.5] border-[length:var(--input-border-width)] inline-block text-sm outline-none focus:border-[rgba(var(--primary-text))];
     }
 
     .button {
@@ -21,19 +23,6 @@
 
     .button-secondary {
         @apply inline-block text-sm font-medium text-[rgba(var(--secondary-button-text))] bg-[rgba(var(--secondary-button-background))] border border-[rgba(var(--secondary-button-background))] active:text-[rgba(var(--secondary-button-background))] hover:bg-[rgba(var(--secondary-button-background))]/[0.8] focus:outline-none focus:ring duration-300
-    }
-
-
-    .en-title {
-        @apply text-[1.2rem] md:text-[1.5rem] block font-bold;
-    }
-
-    .en-title-lg {
-        @apply text-[1.3rem] md:text-[1.9rem] block font-bold;
-    }
-
-    .en-title-xl {
-        @apply text-[1.5rem] md:text-[2rem] lg:text-[3rem] block font-bold uppercase;
     }
 
     .visually-hidden {
@@ -55,6 +44,35 @@
 
     .overlay-full {
         @apply bg-black/50 fixed left-0 top-0 opacity-0 duration-[.3s] invisible w-full h-full z-[98];
+    }
+
+    .h0 {
+        @apply text-3xl md:text-5xl py-2 md:py-4;
+    }
+
+    h1,
+    .h1 {
+        @apply text-2xl md:text-4xl py-2 md:py-4;
+    }
+
+    h2,
+    .h2 {
+        @apply text-xl md:text-3xl py-3;
+    }
+
+    h3,
+    .h3 {
+        @apply text-lg md:text-2xl py-2;
+    }
+
+    h4,
+    .h4 {
+        @apply text-base md:text-lg py-2;
+    }
+
+    body,
+    .p {
+        @apply text-sm md:text-base;
     }
 
 

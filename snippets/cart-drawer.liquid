@@ -31,7 +31,7 @@
 
                   <div class="max-w-full flex flex-col gap-2 justify-center">
                     <a href="{{ item.url }}">
-                      <h3 class="font-semibold">{{ item.product.title | truncatewords: 5 }}</h3>
+                      <h3 class="h4">{{ item.product.title | truncatewords: 5 }}</h3>
                     </a>
                     <span class="text-sm text-[rgba(var(--primary-text))]/75">
                       {%- if item.original_price != item.final_price -%}
@@ -177,12 +177,12 @@
   {% else %}
     <div class="flex p-4 gap-4 items-center">
       {% render 'icon-info' %}
-      <h1 class="text-lg ">Your cart is empty</h1>
+      <h1 class="h3">Your cart is empty</h1>
     </div>
   {% endif %}
 
   <div class="cart-no-item flex hidden p-4 gap-4 items-center">
     {% render 'icon-info' %}
-    <h1 class="text-lg ">Your cart is empty</h1>
+    <h1 class="h3">Your cart is empty</h1>
   </div>
 </div>

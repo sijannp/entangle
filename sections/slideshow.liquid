@@ -84,7 +84,7 @@
                 </div>
                 <div class="{{ content_class }} text-{{ alignment_mobile }} lg:text-{{ alignment }} color-{{ block.settings.color_scheme }} {% unless container %} bg-transparent {% endunless %}">
                   {% if heading != blank %}
-                    <h2 class="text-4xl fade-in-text">{{ heading }}</h2>
+                    <h2 class="{{ block.settings.heading_size }}">{{ heading }}</h2>
                   {% endif %}
                   {% if content != blank %}
                     <p class="fade-in-text">{{ content }}</p>
@@ -113,7 +113,7 @@
                   </div>
 
                   <div class="{{ content_class }} text-{{ alignment_mobile }} lg:text-{{ alignment }} color-{{ block.settings.color_scheme }}">
-                    <h2 class="text-4xl">Slide Heading</h2>
+                    <h2 class="h1">Slide Heading</h2>
 
                     <p>Give customers details about the banner image(s) or content on the template</p>
 
@@ -221,6 +221,30 @@
           "id": "heading",
           "label": "Heading",
           "default": "Slider Heding"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "options": [
+            {
+              "value": "h3",
+              "label": "Small"
+            },
+            {
+              "value": "h2",
+              "label": "Medium"
+            },
+            {
+              "value": "h1",
+              "label": "Large"
+            },
+            {
+              "value": "h0",
+              "label": "Extra large"
+            }
+          ],
+          "default": "h1"
         },
         {
           "type": "richtext",

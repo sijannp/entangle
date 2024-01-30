@@ -1,12 +1,12 @@
 <div class="relative h-full w-full flex flex-col justify-center color-{{ section.settings.color_scheme }}">
   <div class="flex items-center justify-center py-8">
     <div class="w-full max-w-md p-8 rounded">
-      <h2 class="text-3xl font-bold mb-6 text-center">{{ 'customer.login_page.title' | t }}</h2>
+      <h2 class="text-center">{{ 'customer.login_page.title' | t }}</h2>
 
       {% form 'customer_login' %}
         {%- if form.errors -%}
           <div class="text-red-400">
-            <h2 class="text-semibold text-lg">
+            <h2 class="">
               {{ 'templates.contact.form.error_heading' | t }}
             </h2>
             <ul>
@@ -60,7 +60,7 @@
       <div class="collapsible-inner">
         <div class="h-full w-full flex flex-col justify-center color-{{ section.settings.color_scheme }}">
           <div class="w-full max-w-md rounded">
-            <h2 class="text-3xl font-bold mb-1 text-center">{{ 'customer.login_page.forgot_password' | t }}</h2>
+            <h2 class="text-center">{{ 'customer.login_page.forgot_password' | t }}</h2>
             <p class="text-justify  text-wrap mb-8">{{ 'customer.recover_password.subtext' | t }}</p>
 
             {% form 'recover_customer_password' %}

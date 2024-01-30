@@ -1,13 +1,10 @@
 <div class="h-full w-full flex flex-col justify-center items-center color-{{ section.settings.color_scheme }}">
   <div class="w-full max-w-md p-8 rounded">
-    <h2 class="text-3xl font-bold mb-6 text-center">{{ 'customer.register.title' | t }}</h2>
+    <h2 class="text-center">{{ 'customer.register.title' | t }}</h2>
 
     {% form 'create_customer' %}
       {%- if form.errors -%}
         <h2 class="form__message" tabindex="-1" autofocus>
-          <svg aria-hidden="true" focusable="false">
-            <use href="#icon-error" />
-          </svg>
           {{ 'templates.contact.form.error_heading' | t }}
         </h2>
         <ul>

@@ -1,14 +1,41 @@
 {
     "sections": {
-        "template": {
-            "type": "template-page"
-        },
         "contact-form": {
-            "type": "page-contact"
+            "type": "contact-form",
+            "blocks": {
+                "name": {
+                    "type": "name"
+                },
+                "email": {
+                    "type": "email",
+                    "settings": {
+                        "block_width": "half_width"
+                    }
+                },
+                "phone": {
+                    "type": "phone_number",
+                    "settings": {
+                        "block_width": "half_width"
+                    }
+                },
+                "message": {
+                    "type": "textarea",
+                    "label": "Message"
+                },
+                "submit": {
+                    "type": "submit"
+                }
+            },
+            "block_order": [
+                "name",
+                "email",
+                "phone",
+                "message",
+                "submit"
+            ]
         }
     },
     "order": [
-        "template",
         "contact-form"
     ]
 }

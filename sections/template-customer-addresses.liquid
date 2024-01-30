@@ -11,7 +11,7 @@
         </symbol>
       </svg>
       <div class="">
-        <h1 class="text-5xl font-bold mb-6 text-center">{{ 'customer.addresses.title' | t }}</h1>
+        <h1 class="text-center">{{ 'customer.addresses.title' | t }}</h1>
         <div class=" flex items-center justify-center mt-3">
           <span class="mr-2">
             <a href="{{ routes.account_url }}">
@@ -49,7 +49,7 @@
           <collapsible-content data-id="addAddress">
             <div class="collapsible-inner">
               <div id="AddAddress">
-                <h2 class=" mt-8 text-xl" id="AddressNewHeading">{{ 'customer.addresses.add_new' | t }}</h2>
+                <h2 class="h3" id="AddressNewHeading">{{ 'customer.addresses.add_new' | t }}</h2>
                 {%- form 'customer_address', customer.new_address, aria-labelledBy: 'AddressNewHeading' -%}
                   <div class="mt-4">
                     <label for="AddressFirstNameNew" class="block mb-2 ">
@@ -199,7 +199,7 @@
                 <div class="flex items-center justify-center">
                   <div>
                     {%- if address == customer.default_address -%}
-                      <h2 class=" mb-3 text-xl">{{ 'customer.addresses.default' | t }}</h2>
+                      <h2 class="h3">{{ 'customer.addresses.default' | t }}</h2>
                     {%- endif -%}
                     {{ address | format_address }}
                   </div>
@@ -257,7 +257,7 @@
               <collapsible-content data-id="address-{{ forloop.index }}" class="">
                 <div class="collapsible-inner">
                   <div id="EditAddress_{{ address.id }}">
-                    <h2 class=" mt-8 text-xl mb-3">{{ 'customer.addresses.edit_address' | t }}</h2>
+                    <h2 class="h3">{{ 'customer.addresses.edit_address' | t }}</h2>
                     {%- form 'customer_address', address -%}
                       <label for="AddressFirstName_{{ form.id }}" class="block mb-2 ">
                         {{- 'customer.addresses.first_name' | t -}}

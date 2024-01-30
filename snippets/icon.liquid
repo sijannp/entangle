@@ -1,6 +1,9 @@
 {%- if icon != 'none' -%}
+  {% unless class %}
+    {% assign class = 'h-6 w-6' %}
+  {% endunless %}
   <svg
-    class="h-6 w-6 {{ class }}"
+    class="{{ class }}"
     aria-hidden="true"
     focusable="false"
     xmlns="http://www.w3.org/2000/svg"

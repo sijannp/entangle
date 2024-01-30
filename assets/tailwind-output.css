@@ -561,6 +561,7 @@ video {
   border-radius: var(--input-border-radius);
   border-width: var(--input-border-width);
   border-color: rgba(var(--primary-text), 0.5);
+  background-color: transparent;
   padding-left: var(--sm-input-padding-x);
   padding-right: var(--sm-input-padding-x);
   padding-top: var(--sm-input-padding-y);
@@ -697,37 +698,6 @@ video {
   color: rgba(var(--secondary-button-background));
 }
 
-.en-title {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-
-@media (min-width: 768px) {
-  .en-title {
-    font-size: 1.5rem;
-  }
-}
-
-.en-title-xl {
-  display: block;
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-@media (min-width: 768px) {
-  .en-title-xl {
-    font-size: 2rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .en-title-xl {
-    font-size: 3rem;
-  }
-}
-
 .visually-hidden {
   position: absolute;
   height: 0.25rem;
@@ -789,6 +759,102 @@ video {
   background-color: rgb(0 0 0 / 0.5);
   opacity: 0;
   transition-duration: .3s;
+}
+
+.h0 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+@media (min-width: 768px) {
+  .h0 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+h1,
+    .h1 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 768px) {
+  h1,
+    .h1 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+
+h2,
+    .h2 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  h2,
+    .h2 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+}
+
+h3,
+    .h3 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  h3,
+    .h3 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+}
+
+h4,
+    .h4 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  h4,
+    .h4 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+body,
+    .p {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  body,
+    .p {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
 }
 
 .sr-only {
@@ -1293,6 +1359,10 @@ video {
   min-width: 40px;
 }
 
+.max-w-2xl {
+  max-width: 42rem;
+}
+
 .max-w-6xl {
   max-width: 72rem;
 }
@@ -1496,6 +1566,10 @@ video {
 .gap-x-8 {
   -moz-column-gap: 2rem;
        column-gap: 2rem;
+}
+
+.gap-y-2 {
+  row-gap: 0.5rem;
 }
 
 .gap-y-8 {
@@ -2367,6 +2441,14 @@ video {
     height: 900px;
   }
 
+  .md\:h-6 {
+    height: 1.5rem;
+  }
+
+  .md\:h-5 {
+    height: 1.25rem;
+  }
+
   .md\:max-h-full {
     max-height: 100%;
   }
@@ -2391,6 +2473,10 @@ video {
     width: 40%;
   }
 
+  .md\:w-\[49\%\] {
+    width: 49%;
+  }
+
   .md\:w-\[50\%\] {
     width: 50%;
   }
@@ -2413,6 +2499,14 @@ video {
 
   .md\:w-auto {
     width: auto;
+  }
+
+  .md\:w-6 {
+    width: 1.5rem;
+  }
+
+  .md\:w-5 {
+    width: 1.25rem;
   }
 
   .md\:max-w-\[25rem\] {
@@ -2459,6 +2553,10 @@ video {
     gap: 1rem;
   }
 
+  .md\:gap-y-4 {
+    row-gap: 1rem;
+  }
+
   .md\:bg-\[rgba\(var\(--primary-background\)\)\] {
     background-color: rgba(var(--primary-background));
   }
@@ -2480,6 +2578,11 @@ video {
 
   .md\:text-\[2\.5rem\] {
     font-size: 2.5rem;
+  }
+
+  .md\:text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 }
 

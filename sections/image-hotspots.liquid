@@ -14,7 +14,7 @@
 
 <div class="">
   <div class="page-width section-{{ section.id }}-padding {% if settings.reveal_on_scroll %} reveal {% endif %}">
-    <h1 class="text-2xl font-bold py-4">Image Hotspots</h1>
+    <h2 class="h2">Image Hotspots</h2>
     <div class="w-full flex items-center">
       <div class="w-full relative overflow-hidden {% if settings.corners == "rounded" %} rounded-lg {% endif %}{%- if section.settings.image == blank %} bg-gray-300 {% endif %} ">
         {% if section.settings.image %}
@@ -58,7 +58,7 @@
                 >
                   <div class="collapsible-inner">
                     <div class="p-4">
-                      <h3 class="font-bold pb-2 mb-2">Product title</h3>
+                      <h3 class="h4 mb-2">Product title</h3>
                       <p>This is some text that goes in the label. It describes the item.</p>
                     </div>
                   </div>
@@ -94,13 +94,13 @@
               <div class="collapsible-inner">
                 <div class="lg-hotspot__label absolute bg-[rgba(var(--primary-background))] text-xs p-4 w-[14em] max-w-[40vw] shadow-lg z-[-1] opacity-0 hidden transition-all duration-500 {% if settings.corners == "rounded" %} rounded-lg {% endif %}">
                   {% if block.settings.product != blank %}
-                    <h3 class="font-bold pb-2 ">{{ block.settings.product.title }}</h3>
+                    <h3 class="h4 ">{{ block.settings.product.title }}</h3>
                     <p class="pb-2">{{ block.settings.description }}</p>
                     <div class="flex items-center gap-2">
                       <button class="button-primary px-0 w-full text-xs py-2 text-center">Quick View</button>
                     </div>
                   {% else %}
-                    <h3 class="font-bold pb-2 mb-2">Product title</h3>
+                    <h3 class="h4 mb-2">Product title</h3>
                     <p>This is some text that goes in the label. It describes the item.</p>
                   {% endif %}
                 </div>

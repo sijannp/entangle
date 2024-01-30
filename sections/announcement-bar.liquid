@@ -20,14 +20,14 @@
         data-splide='{ "type": "loop", {% unless section.settings.show_arrows %} "arrows": false, {% endunless %}  "pagination": false, {% if section.settings.autoplay %} "autoplay": true, {% endif %}"interval": {{ section.settings.duration | times: 1000 }} }'
         class="announcement-bar"
       >
-        <div class="splide">
+        <div class="splide text-xs md:text-sm">
           <div class="splide__track">
             <ul class="splide__list">
               {% for block in section.blocks %}
                 <li class="splide__slide w-full text-center flex items-center gap-2 justify-center">
                   {% if block.settings.icon %}
                     <span class="{% if block.settings.icon_position == 'last' %} order-last {% endif %}">
-                      {% render 'icon', icon: block.settings.icon %}
+                      {% render 'icon', class: 'w-4 h-4 md:w-5 md:h-5', icon: block.settings.icon %}
                     </span>
                   {% endif %}
                   <span>
@@ -36,13 +36,22 @@
                 </li>
 
               {% else %}
-                {% for i in (1..3) %}
-                  <li class="splide__slide w-full text-center uppercase flex items-center justify-center gap-2">
-                    <span>
-                      {% render 'icon', icon: 'check_mark' %}
-                    </span>
-                    <span> Announce something here... </span>
-                  </li>
+                {% for i in (1..2) %}
+                  {% if i == 2 %}
+                    <li class="splide__slide w-full text-center flex items-center justify-center gap-2">
+                      <span>
+                        {% render 'icon', class: 'w-4 h-4 md:w-5 md:h-5', icon: 'price_tag' %}
+                      </span>
+                      <span> Affordable price </span>
+                    </li>
+                  {% else %}
+                    <li class="splide__slide w-full text-center flex items-center justify-center gap-2">
+                      <span> Fastest delivery </span>
+                      <span>
+                        {% render 'icon', class: 'w-4 h-4 md:w-5 md:h-5', icon: 'lightning_bolt' %}
+                      </span>
+                    </li>
+                  {% endif %}
                 {% endfor %}
               {% endfor %}
             </ul>
