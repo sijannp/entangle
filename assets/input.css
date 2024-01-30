@@ -72,7 +72,7 @@
 
     body,
     .p {
-        @apply text-sm md:text-base;
+        @apply text-base;
     }
 
 
