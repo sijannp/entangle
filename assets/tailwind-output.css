@@ -1565,6 +1565,10 @@ p,
   cursor: pointer;
 }
 
+.cursor-crosshair {
+  cursor: crosshair;
+}
+
 .resize-none {
   resize: none;
 }
@@ -2001,6 +2005,10 @@ p,
   padding-top: 2rem;
 }
 
+.pb-\[100\%\] {
+  padding-bottom: 100%;
+}
+
 .text-left {
   text-align: left;
 }
@@ -2109,6 +2117,10 @@ p,
   color: rgba(var(--primary-text), 0.75);
 }
 
+.text-\[rgba\(var\(--primary-text\)\2c \.6\)\] {
+  color: rgba(var(--primary-text),.6);
+}
+
 .text-\[rgba\(var\(--primary-text\)\2c \.9\)\] {
   color: rgba(var(--primary-text),.9);
 }
@@ -2169,14 +2181,6 @@ p,
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.text-\[var\(rgba\(--primary-text\)\2c \.6\)\] {
-  color: var(rgba(--primary-text),.6);
-}
-
-.text-\[rgba\(var\(--primary-text\)\2c \.6\)\] {
-  color: rgba(var(--primary-text),.6);
 }
 
 .underline {

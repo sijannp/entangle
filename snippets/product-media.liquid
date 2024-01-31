@@ -1,3 +1,5 @@
+<style></style>
+
 {% if thumbnail %}
   <div class="w-[50px] h-[50px] md:w-[80px] md:h-[80px]">
     {{
@@ -9,12 +11,17 @@
 {% else %}
   {% case media.media_type %}
     {% when 'image' %}
-      <div class=" group {% if thumbnail %} w-[50px] md:w-[80px]  {% else %} w-full {% endif %} overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
+      {% assign padding = media.height | times: 100 | divided_by: media.width %}
+      {% assign is_scalable = true %}
+      <div
+        class="{% if is_scalable %} scalable-image-container {% endif %} group {% if thumbnail %} w-[50px] md:w-[80px]  {% else %} w-full {% endif %} overflow-hidden relative before:content-[''] before:block"
+        style="padding-bottom: {{ padding }}%"
+      >
         {{
           media
           | image_url: width: media.width
           | image_tag:
-            class: 'h-full w-full object-contain absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out',
+            class: 'scalable-image cursor-crosshair w-full absolute transition duration-700 ease-in-out',
             loading: 'lazy'
         }}
       </div>

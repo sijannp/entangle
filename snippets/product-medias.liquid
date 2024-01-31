@@ -15,7 +15,7 @@
 <div class="flex flex-col gap-8" id="product-media">
   {% if slider %}
     <splide-component
-      data-splide='{ "perPage": 1, "type": "fade", "pagination": false, "lazyLoad": true }'
+      data-splide='{  "type": "fade", "pagination": false,  "autoHeight": true }'
       data-thumbnails='{ "autoWidth": true, "gap": 10, "type": "slide", "arrows": false, "pagination": false, "perMove": 1, "lazyLoad": true }'
     >
   {% endif %}
@@ -25,22 +25,14 @@
         {%- if product.selected_or_first_available_variant.featured_media != null -%}
           {%- assign media = product.selected_or_first_available_variant.featured_media -%}
 
-          <li class="{% if slider %}splide__slide{% endif %}" data-imageid="{{ media.id }}">
-            <div class=" group w-full overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
-              {{
-                media
-                | image_url: width: media.width
-                | image_tag:
-                  class: 'h-full w-full object-contain absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out',
-                  loading: 'lazy'
-              }}
-            </div>
+          <li class="{% if slider %}splide__slide flex items-center{% endif %}" data-imageid="{{ media.id }}">
+            {% render 'product-media', media: media, variant_images: variant_images %}
           </li>
         {% endif %}
 
         {% for media in product.media %}
           {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
-            <li class="{% if slider %}splide__slide{% endif %}" data-imageid="{{ media.id }}">
+            <li class="{% if slider %}splide__slide flex items-center{% endif %}" data-imageid="{{ media.id }}">
               {% render 'product-media', media: media, variant_images: variant_images %}
             </li>
           {% endunless %}
@@ -56,13 +48,7 @@
           {%- if product.selected_or_first_available_variant.featured_media != null -%}
             {%- assign media = product.selected_or_first_available_variant.featured_media -%}
             <li class="{% if slider %}splide__slide{% endif %}">
-              <div class="w-[50px] h-[50px] md:w-[80px] md:h-[80px]">
-                {{
-                  media
-                  | image_url: width: media.width
-                  | image_tag: class: 'h-full w-full object-contain transition duration-700 ease-in-out'
-                }}
-              </div>
+              {% render 'product-media', media: media, thumbnail: true %}
             </li>
           {% endif %}
 
@@ -81,3 +67,36 @@
     </splide-component>
   {% endif %}
 </div>
+
+<script>
+  const scalers = document.querySelectorAll('.scalable-image');
+
+  scalers.forEach((scaler) => {
+    const imageBlock = scaler.closest('.scalable-image-container');
+
+    imageBlock.addEventListener('mousemove', function (e) {
+      const x = e.clientX - imageBlock.getBoundingClientRect().left;
+      const y = e.clientY - imageBlock.getBoundingClientRect().top;
+
+      scaler.style.transformOrigin = `${x}px ${y}px`;
+    });
+  });
+</script>
+
+<style>
+  .scalable-image-container {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .scalable-image {
+    width: 100%;
+    height: auto;
+    transition: transform 0.1s;
+  }
+
+  .scalable-image-container:hover .scalable-image {
+    transform-origin: 50% 50%;
+    transform: scale(2);
+  }
+</style>
