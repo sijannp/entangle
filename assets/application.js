@@ -288,6 +288,20 @@ class VariantSelector extends HTMLElement {
             this.updatePrice();
             this.updateSKU();
         }
+
+
+
+        const variantChangeEvent = new CustomEvent('variantChange', {
+
+            detail: {
+                variantId: this.currentVariant.id,
+                imageId: this.currentVariant.featured_media.id,
+            },
+        });
+        document.dispatchEvent(variantChangeEvent);
+
+
+
     }
 
     disableButtons() {
@@ -347,10 +361,7 @@ class VariantSelector extends HTMLElement {
 
                 if (oldPrice && newPrice) oldPrice.innerHTML = newPrice.innerHTML;
 
-                const oldMedia = document.querySelector('#product-media')
-                const newMedia = html.querySelector('#product-media')
 
-                if (oldMedia && newMedia) oldMedia.innerHTML = newMedia.innerHTML
 
                 const buttonsId = `buttons-${this.dataset.section}`;
                 const newButtons = html.getElementById(buttonsId);
@@ -793,6 +804,11 @@ class SplideComponent extends HTMLElement {
 
         this.main = new Splide(this.splideElement, splideOptions);
 
+        this.main.on('mounted', () => {
+            console.log("Splide mounted");
+            document.addEventListener('variantChange', this.onVariantChange.bind(this));
+
+        });
 
 
 
@@ -817,13 +833,15 @@ class SplideComponent extends HTMLElement {
             this.thumbnails = new Splide(this.thumbnailsElement, thumbnailOptions);
 
             this.main.sync(this.thumbnails);
+
             this.main.mount();
             this.thumbnails.mount();
-
 
         } else {
             this.main.mount();
         }
+
+
     }
 
     disconnectedCallback() {
@@ -834,6 +852,27 @@ class SplideComponent extends HTMLElement {
             }
         }
     }
+
+    onVariantChange(event) {
+        const imageId = event.detail.imageId;
+
+        console.log(imageId, "___image");
+
+        const slideIndex = Array.from(this.splideElement.querySelectorAll('.splide__slide')).findIndex(
+            (slide) => slide.getAttribute('data-imageid') === imageId.toString()
+        );
+
+        console.log(slideIndex);
+
+        if (slideIndex !== -1) {
+            this.main.go(slideIndex);
+        } else {
+            console.log("No variants found");
+        }
+    }
+
+
+
 }
 
 customElements.define("splide-component", SplideComponent);

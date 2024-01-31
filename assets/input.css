@@ -2,15 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@layer base {
+    .rte a {
+        @apply border-b transition-all duration-300 hover:border-b-2;
+    }
+
+    .rte ul {
+        @apply list-disc py-2 md:py-3 ml-4;
+    }
+
+    .rte ol {
+        @apply list-decimal ml-4;
+    }
+
+    .rte table {
+        @apply py-3 md:my-4;
+    }
+
+    .rte td {
+        @apply border border-collapse p-1 md:p-2;
+    }
+
+    .rte blockquote {
+        @apply my-3 md:my-4 ml-4 italic border-l-2 pl-2;
+    }
+}
+
 @layer components {
-
-
     .input {
         @apply bg-transparent px-[var(--sm-input-padding-x)] lg:px-[var(--input-padding-x)] py-[var(--sm-input-padding-y)] lg:py-[var(--input-padding-y)] rounded-[var(--input-border-radius)] border-[rgba(var(--primary-text))]/[0.5] border-[length:var(--input-border-width)] inline-block text-sm outline-none focus:border-[rgba(var(--primary-text))];
     }
 
     .button {
-        @apply uppercase inline-block text-center md:max-w-[26rem] px-[var(--sm-button-padding-x)] lg:px-[var(--button-padding-x)] py-[var(--sm-button-padding-y)] lg:py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none hover:border-solid;
+        @apply uppercase inline-block text-center px-[var(--sm-button-padding-x)] lg:px-[var(--button-padding-x)] py-[var(--sm-button-padding-y)] lg:py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none hover:border-solid;
     }
 
     .button-outline {
@@ -70,9 +95,24 @@
         @apply text-base md:text-lg py-2;
     }
 
+    h5,
+    .h5 {
+        @apply text-base py-2;
+    }
+
+    h6,
+    .h6 {
+        @apply text-sm py-2;
+    }
+
     body,
     .p {
         @apply text-base;
+    }
+
+    p,
+    .p {
+        @apply py-2 md:py-3;
     }
 
 

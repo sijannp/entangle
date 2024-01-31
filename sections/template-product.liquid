@@ -81,6 +81,7 @@
                         <label for="Option-{{ section.id }}-{{ forloop.index0 }}">{{ option.name }}</label>
                         <div class="my-2 flex gap-4 flex-wrap">
                           {% for value in option.values %}
+                            {%- assign product_available = product.variants[forloop.index0].available -%}
                             <div class="en-varient-selector-item px-4 py-1 border-2  min-w-[40px] relative">
                               <input
                                 type="radio"
@@ -93,7 +94,7 @@
                                 {% endif %}
                               >
                               <label
-                                class=" flex items-center justify-center"
+                                class=" flex items-center justify-center  {% unless product_available %} text-[rgba(var(--primary-text),.6)] line-through decoration-1{% endunless %}"
                                 for="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
                               >
                                 {{- value -}}
@@ -150,8 +151,8 @@
                   </div>
                 </div>
               {% when 'description' %}
-                <div class="my-3">
-                  <p class="">{{ product.description }}</p>
+                <div class="my-3 rte">
+                  {{ product.description }}
                 </div>
 
               {% when 'sku' %}

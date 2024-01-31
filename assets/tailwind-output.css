@@ -434,6 +434,76 @@ video {
   display: none;
 }
 
+.rte a {
+  border-bottom-width: 1px;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.rte a:hover {
+  border-bottom-width: 2px;
+}
+
+.rte ul {
+  margin-left: 1rem;
+  list-style-type: disc;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .rte ul {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+}
+
+.rte ol {
+  margin-left: 1rem;
+  list-style-type: decimal;
+}
+
+.rte table {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .rte table {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.rte td {
+  border-collapse: collapse;
+  border-width: 1px;
+  padding: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .rte td {
+    padding: 0.5rem;
+  }
+}
+
+.rte blockquote {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  margin-left: 1rem;
+  border-left-width: 2px;
+  padding-left: 0.5rem;
+  font-style: italic;
+}
+
+@media (min-width: 768px) {
+  .rte blockquote {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -600,12 +670,6 @@ video {
 
 .button:hover {
   border-style: solid;
-}
-
-@media (min-width: 768px) {
-  .button {
-    max-width: 26rem;
-  }
 }
 
 @media (min-width: 1024px) {
@@ -843,10 +907,40 @@ h4,
   }
 }
 
+h5,
+    .h5 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+h6,
+    .h6 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 body,
     .p {
   font-size: 1rem;
   line-height: 1.5rem;
+}
+
+p,
+    .p {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  p,
+    .p {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
 }
 
 .sr-only {
@@ -2077,12 +2171,24 @@ body,
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
+.text-\[var\(rgba\(--primary-text\)\2c \.6\)\] {
+  color: var(rgba(--primary-text),.6);
+}
+
+.text-\[rgba\(var\(--primary-text\)\2c \.6\)\] {
+  color: rgba(var(--primary-text),.6);
+}
+
 .underline {
   text-decoration-line: underline;
 }
 
 .line-through {
   text-decoration-line: line-through;
+}
+
+.decoration-1 {
+  text-decoration-thickness: 1px;
 }
 
 .opacity-0 {

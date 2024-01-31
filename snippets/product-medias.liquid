@@ -15,8 +15,8 @@
 <div class="flex flex-col gap-8" id="product-media">
   {% if slider %}
     <splide-component
-      data-splide='{ "perPage": 1, "type": "fade" }'
-      data-thumbnails='{ "autoWidth": true, "type": "slide", "arrows": false }'
+      data-splide='{ "perPage": 1, "type": "fade", "pagination": false, "lazyLoad": true }'
+      data-thumbnails='{ "autoWidth": true, "gap": 10, "type": "slide", "arrows": false, "pagination": false, "perMove": 1, "lazyLoad": true }'
     >
   {% endif %}
   <div class="{% if slider -%}splide{%- endif %}">
@@ -24,7 +24,8 @@
       <ul class="{% if slider -%}splide__list {% endif %}">
         {%- if product.selected_or_first_available_variant.featured_media != null -%}
           {%- assign media = product.selected_or_first_available_variant.featured_media -%}
-          <div class="{% if slider %}splide__slide{% endif %}">
+
+          <li class="{% if slider %}splide__slide{% endif %}" data-imageid="{{ media.id }}">
             <div class=" group w-full overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
               {{
                 media
@@ -34,14 +35,14 @@
                   loading: 'lazy'
               }}
             </div>
-          </div>
+          </li>
         {% endif %}
 
         {% for media in product.media %}
           {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
-            <div class="{% if slider %}splide__slide{% endif %}">
+            <li class="{% if slider %}splide__slide{% endif %}" data-imageid="{{ media.id }}">
               {% render 'product-media', media: media, variant_images: variant_images %}
-            </div>
+            </li>
           {% endunless %}
         {% endfor %}
       </ul>
@@ -51,25 +52,25 @@
   {% if product.media.size > 1 %}
     <div class="splide-thumbnails mt-4 {% if slider -%}splide{%- endif %}">
       <div class="{% if slider -%}splide__track{%- endif %}">
-        <ul class="{% if slider -%}splide__list justify-center items-center{%- endif %}">
+        <ul class="{% if slider -%}splide__list items-center{%- endif %}">
           {%- if product.selected_or_first_available_variant.featured_media != null -%}
             {%- assign media = product.selected_or_first_available_variant.featured_media -%}
-            <div class="{% if slider %}splide__slide{% endif %}">
-              <div class="mr-2 w-[50px] h-[50px] md:w-[80px] md:h-[80px]">
+            <li class="{% if slider %}splide__slide{% endif %}">
+              <div class="w-[50px] h-[50px] md:w-[80px] md:h-[80px]">
                 {{
                   media
                   | image_url: width: media.width
                   | image_tag: class: 'h-full w-full object-contain transition duration-700 ease-in-out'
                 }}
               </div>
-            </div>
+            </li>
           {% endif %}
 
           {% for media in product.media %}
             {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
-              <div class="{% if slider %}splide__slide{% endif %}">
+              <li class="{% if slider %}splide__slide{% endif %}">
                 {% render 'product-media', media: media, thumbnail: true %}
-              </div>
+              </li>
             {% endunless %}
           {% endfor %}
         </ul>

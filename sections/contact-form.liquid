@@ -104,7 +104,7 @@
                 ></textarea>
               </div>
             {%- when 'submit' -%}
-              <div class="{% if block.settings.fullwidth %}w-full{% else %} mr-2{% endif %} mb-4">
+              <div class="{% if block.settings.full_width %}w-full{% else %} mr-2{% endif %} mb-4">
                 <button
                   type="submit"
                   class="button button-primary {% if block.settings.full_width %}w-full {% endif %}"
@@ -363,7 +363,7 @@
     },
     {
       "type": "submit",
-      "name": "submit",
+      "name": "Submit",
       "limit": 1,
       "settings": [
         {
@@ -374,8 +374,8 @@
         },
         {
           "type": "checkbox",
-          "id": "fullwidth",
-          "label": "Fullwidth"
+          "id": "full_width",
+          "label": "Full width"
         }
       ]
     },
