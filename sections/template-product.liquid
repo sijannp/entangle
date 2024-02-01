@@ -46,7 +46,7 @@
                   {% render 'badges', product: product %}
                 </div>
 
-                <div class="product__tax caption rte">
+                <div class="rte">
                   {%- if cart.taxes_included -%}
                     {{ 'products.product.include_taxes' | t }}
                   {%- endif -%}
@@ -61,6 +61,7 @@
                     {{ form | payment_terms }}
                   {%- endform -%}
                 </div>
+
               {% when 'variant_selector' %}
                 <div class="my-3">
                   {% unless product.has_only_default_variant %}
@@ -102,19 +103,6 @@
               {% when 'quantity' %}
                 <div class="my-3">
                   <label for="Quantity-{{ section.id }}">Quantity</label>
-
-                  {% comment %}
-                    <div class="my-2">
-                      <input
-                        type="number"
-                        name="quantity"
-                        id="Quantity-{{ section.id }}"
-                        value="1"
-                        min="1"
-                        class="w-full border px-3 py-3"
-                      >
-                    </div>
-                  {% endcomment %}
                   <div class="w-20 md:w-32 h-full relative border ">
                     <input
                       type="number"
@@ -125,19 +113,74 @@
                       class="w-full h-full p-2 px-6 text-center focus:outline-none"
                     >
                     <quantity-button
-                      data-section="cart-drawer"
+                      data-section="product-page"
                       class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
                     >
                       -
                     </quantity-button>
                     <quantity-button
-                      data-section="cart-drawer"
+                      data-section="product-page"
                       class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
                     >
                       +
                     </quantity-button>
                   </div>
                 </div>
+              {%- when 'inventory' -%}
+                <p
+                  class="flex gap-2 items-center{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
+                  {{ block.shopify_attributes }}
+                  id="Inventory-{{ section.id }}"
+                  role="status"
+                >
+                  {%- if product.selected_or_first_available_variant.inventory_management == 'shopify' -%}
+                    {%- if product.selected_or_first_available_variant.inventory_quantity > 0 -%}
+                      {%- if product.selected_or_first_available_variant.inventory_quantity
+                          <= block.settings.inventory_threshold
+                      -%}
+                        <svg width="15" height="15" aria-hidden="true">
+                          <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(238,148,65, 0.3)"/>
+                          <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(238,148,65)"/>
+                        </svg>
+                        {%- if block.settings.show_inventory_quantity -%}
+                          {{-
+                            'products.product.inventory_low_stock_show_count'
+                            | t: quantity: product.selected_or_first_available_variant.inventory_quantity
+                          -}}
+                        {%- else -%}
+                          {{- 'products.product.inventory_low_stock' | t -}}
+                        {%- endif -%}
+                      {%- else -%}
+                        <svg width="15" height="15" aria-hidden="true">
+                          <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(62,214,96, 0.3)"/>
+                          <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(62,214,96)"/>
+                        </svg>
+                        {%- if block.settings.show_inventory_quantity -%}
+                          {{-
+                            'products.product.inventory_in_stock_show_count'
+                            | t: quantity: product.selected_or_first_available_variant.inventory_quantity
+                          -}}
+                        {%- else -%}
+                          {{- 'products.product.inventory_in_stock' | t -}}
+                        {%- endif -%}
+                      {%- endif -%}
+                    {%- else -%}
+                      {%- if product.selected_or_first_available_variant.inventory_policy == 'continue' -%}
+                        <svg width="15" height="15" aria-hidden="true">
+                          <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(62,214,96, 0.3)"/>
+                          <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(62,214,96)"/>
+                        </svg>
+                        {{- 'products.product.inventory_out_of_stock_continue_selling' | t -}}
+                      {%- else -%}
+                        <svg width="15" height="15" aria-hidden="true">
+                          <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(200,200,200, 0.3)"/>
+                          <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(200,200,200)"/>
+                        </svg>
+                        {{- 'products.product.inventory_out_of_stock' | t -}}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                </p>
               {% when 'description' %}
                 <div class="my-3 rte">
                   {{ product.description }}
@@ -145,9 +188,8 @@
 
               {% when 'sku' %}
                 {%- assign current_variant = product.selected_or_first_available_variant -%}
-                <span class=""
-                  >SKU: <span class="sku--text">{{ current_variant.sku }}</span>
-                </span>
+                <span class="visually-hidden">{{- 'products.product.sku' | t }}: </span>
+                <span class="sku--text">{{ current_variant.sku }}</span>
 
               {% when 'checkout_buttons' %}
                 <div class="my-3" id="buttons-{{ section.id }}">
@@ -201,6 +243,59 @@
       }
     </style>
   </div>
+
+  {%- liquid
+    if product.selected_or_first_available_variant.featured_media
+      assign seo_media = product.selected_or_first_available_variant.featured_media
+    else
+      assign seo_media = product.featured_media
+    endif
+  -%}
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org/",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "url": {{ request.origin | append: product.url | json }},
+      {% if seo_media -%}
+        "image": [
+          {{ seo_media | image_url: width: 1920 | prepend: "https:" | json }}
+        ],
+      {%- endif %}
+      "description": {{ product.description | strip_html | json }},
+      {% if product.selected_or_first_available_variant.sku != blank -%}
+        "sku": {{ product.selected_or_first_available_variant.sku | json }},
+      {%- endif %}
+      "brand": {
+        "@type": "Brand",
+        "name": {{ product.vendor | json }}
+      },
+      "offers": [
+        {%- for variant in product.variants -%}
+          {
+            "@type" : "Offer",
+            {%- if variant.sku != blank -%}
+              "sku": {{ variant.sku | json }},
+            {%- endif -%}
+            {%- if variant.barcode.size == 12 -%}
+              "gtin12": {{ variant.barcode }},
+            {%- endif -%}
+            {%- if variant.barcode.size == 13 -%}
+              "gtin13": {{ variant.barcode }},
+            {%- endif -%}
+            {%- if variant.barcode.size == 14 -%}
+              "gtin14": {{ variant.barcode }},
+            {%- endif -%}
+            "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+            "price" : {{ variant.price | divided_by: 100.00 | json }},
+            "priceCurrency" : {{ cart.currency.iso_code | json }},
+            "url" : {{ request.origin | append: variant.url | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
 </div>
 {% schema %}
 {
@@ -321,6 +416,29 @@
       "type": "sku",
       "name": "SKU",
       "limit": 1
+    },
+    {
+      "type": "inventory",
+      "name": "Inventory",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "inventory_threshold",
+          "label": "Invenrory threshold",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "info": "Choose 0 to always show in stock if available.",
+          "default": 10
+        },
+        {
+          "type": "checkbox",
+          "id": "show_inventory_quantity",
+          "label": "Show inventory quantity",
+          "default": true
+        }
+      ]
     }
   ]
 }
