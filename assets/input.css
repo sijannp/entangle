@@ -34,8 +34,14 @@
         @apply bg-transparent px-[var(--sm-input-padding-x)] lg:px-[var(--input-padding-x)] py-[var(--sm-input-padding-y)] lg:py-[var(--input-padding-y)] rounded-[var(--input-border-radius)] border-[rgba(var(--primary-text))]/[0.5] border-[length:var(--input-border-width)] inline-block text-sm outline-none focus:border-[rgba(var(--primary-text))];
     }
 
-    .button {
-        @apply uppercase inline-block text-center px-[var(--sm-button-padding-x)] lg:px-[var(--button-padding-x)] py-[var(--sm-button-padding-y)] lg:py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none hover:border-solid;
+    .button,
+    .shopify-payment-button__button {
+        @apply uppercase inline-block text-center px-[var(--sm-button-padding-x)] lg:px-[var(--button-padding-x)] py-[var(--sm-button-padding-y)] lg:py-[var(--button-padding-y)] rounded-[var(--button-border-radius)] outline-none;
+    }
+
+    .button-full,
+    .shopify-payment-button__button {
+        @apply px-[calc(var(--sm-button-padding-x)_*_1.3)] lg:px-[calc(var(--button-padding-x)_*_1.3)] py-[calc(var(--sm-button-padding-y)_*_1.3)] lg:py-[calc(var(--button-padding-y)_*_1.3)];
     }
 
     .button-outline {

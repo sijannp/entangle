@@ -1,71 +1,102 @@
 {% comment %}
-  <div class="hidden md:block">
-    {% for media in product.media %}
-      <div class="h-100 overflow-hidden p-2">
-        {% render 'product-media', media: media %}
-      </div>
-    {% endfor %}
-  </div>
+  slider_desktop: {{ Boolean }}
+  thumbnails_direction: {{ ttb, rtl }}
+  zoom_on_hover: { Boolean }
+  hide_thumbnails_on_mobile: {{ Boolean }}
 {% endcomment %}
 
-{% if product.media.size > 1 %}
-  {% assign slider = true %}
+{% if product.media.size > 1 and slider_desktop %}
+  {% assign slider_desktop = true %}
 {% endif %}
 
-<div class="flex flex-col gap-8" id="product-media">
-  {% if slider %}
-    <splide-component
-      data-splide='{  "type": "fade", "pagination": false,  "autoHeight": true }'
-      data-thumbnails='{ "autoWidth": true, "gap": 10, "type": "slide", "arrows": false, "pagination": false, "perMove": 1, "lazyLoad": true }'
-    >
-  {% endif %}
-  <div class="{% if slider -%}splide{%- endif %}">
-    <div class="{% if slider -%}splide__track{%- endif %}">
-      <ul class="{% if slider -%}splide__list {% endif %}">
-        {%- if product.selected_or_first_available_variant.featured_media != null -%}
-          {%- assign media = product.selected_or_first_available_variant.featured_media -%}
-
-          <li class="{% if slider %}splide__slide flex items-center{% endif %}" data-imageid="{{ media.id }}">
-            {% render 'product-media', media: media, variant_images: variant_images %}
-          </li>
-        {% endif %}
-
-        {% for media in product.media %}
-          {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
-            <li class="{% if slider %}splide__slide flex items-center{% endif %}" data-imageid="{{ media.id }}">
-              {% render 'product-media', media: media, variant_images: variant_images %}
-            </li>
-          {% endunless %}
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-  {% if product.media.size > 1 %}
-    <div class="splide-thumbnails mt-4 {% if slider -%}splide{%- endif %}">
-      <div class="{% if slider -%}splide__track{%- endif %}">
-        <ul class="{% if slider -%}splide__list items-center{%- endif %}">
+<div
+  class="flex {% unless slider_desktop and thumbnails_direction == 'ttb' %} flex-col {% endunless %} gap-8"
+  id="product-media"
+>
+  <splide-component
+    data-splide='
+      {
+        "type": "fade",
+        "pagination": false,
+        "drag": false,
+        {% unless slider_desktop %}
+        "mediaQuery": "min",
+        "breakpoints": { "1024": { "destroy": true } },
+        {% endunless %}
+        "autoHeight": true
+      }
+    '
+    data-thumbnails='
+      {
+        "autoWidth": true,
+        "gap": 10,
+        "type": "slide",
+        "arrows": false,
+        "pagination": false,
+        "perMove": 1,
+        {% unless slider_desktop %}
+        "mediaQuery": "min",
+        "breakpoints": {
+          "1024": {
+            "destroy": true
+          }
+        },
+      {% endunless %}
+        "lazyLoad": true
+      }
+    '
+  >
+    <div class="splide">
+      <div class="splide__track">
+        <ul class="splide__list items-center {% unless slider_desktop %} lg:flex lg:flex-wrap lg:gap-3 {% endunless %}">
           {%- if product.selected_or_first_available_variant.featured_media != null -%}
             {%- assign media = product.selected_or_first_available_variant.featured_media -%}
-            <li class="{% if slider %}splide__slide{% endif %}">
-              {% render 'product-media', media: media, thumbnail: true %}
+
+            <li
+              class="splide__slide {% unless slider_desktop %} lg:flex lg:w-full {% endunless %} "
+              data-imageid="{{ media.id }}"
+            >
+              {% render 'product-media', media: media, zoom_on_hover: zoom_on_hover, variant_images: variant_images %}
             </li>
           {% endif %}
 
           {% for media in product.media %}
             {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
-              <li class="{% if slider %}splide__slide{% endif %}">
-                {% render 'product-media', media: media, thumbnail: true %}
+              <li
+                class="splide__slide {% unless slider_desktop %} lg:flex lg:w-[48%] {% endunless %}"
+                data-imageid="{{ media.id }}"
+              >
+                {% render 'product-media', media: media, zoom_on_hover: zoom_on_hover, variant_images: variant_images %}
               </li>
             {% endunless %}
           {% endfor %}
         </ul>
       </div>
     </div>
-  {% endif %}
-  {% if slider %}
-    </splide-component>
-  {% endif %}
+
+    {% if product.media.size > 1 %}
+      <div class="splide-thumbnails mt-4 splide {% if hide_thumbnails_on_mobile  %} hidden lg:block {% endif %} {% unless slider_desktop %} lg:hidden {%- endunless %}">
+        <div class="splide__track">
+          <ul class="splide__list">
+            {%- if product.selected_or_first_available_variant.featured_media != null -%}
+              {%- assign media = product.selected_or_first_available_variant.featured_media -%}
+              <li class="splide__slide">
+                {% render 'product-media', media: media, zoom_on_hover: zoom_on_hover, thumbnail: true %}
+              </li>
+            {% endif %}
+
+            {% for media in product.media %}
+              {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+                <li class="splide__slide">
+                  {% render 'product-media', media: media, zoom_on_hover: zoom_on_hover, thumbnail: true %}
+                </li>
+              {% endunless %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% endif %}
+  </splide-component>
 </div>
 
 <script>
@@ -99,4 +130,16 @@
     transform-origin: 50% 50%;
     transform: scale(2);
   }
+
+  {% if adaptive_height and slider_desktop %}
+
+  .splide__list {
+    align-items: flex-start;
+  }
+
+  .splide__slide:not(.is-active) {
+    height: 0;
+  }
+
+  {% endif %}
 </style>

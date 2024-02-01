@@ -17,12 +17,17 @@
 
   <div class="page-width en-container">
     <div class="mx-auto my-8">
-      <div class="flex flex-col md:flex-row gap-8">
+      <div class="flex flex-col lg:flex-row gap-8">
         <div class="product--medias w-full {{ media_width }} {% if section.settings.media_position == "right" %} order-last {% endif %}">
-          {% render 'product-medias' %}
+          {% render 'product-medias',
+            slider_desktop: section.settings.desktop_slider,
+            zoom_on_hover: section.settings.zoom_on_hover,
+            hide_thumbnails_on_mobile: section.settings.hide_thumbnails_on_mobile,
+            adaptive_height: section.settings.adaptive_height
+          %}
         </div>
 
-        <div class="product--information sticky w-full md:w-[40%] top-5 p-2 ">
+        <div class="product--information sticky w-full lg:w-[40%] top-5 p-2 ">
           {% for block in section.blocks %}
             {% case block.type %}
               {% when 'vendor' %}
@@ -36,43 +41,26 @@
                   </h1>
                 </div>
               {% when 'price' %}
-                <div class="price-wrap flex flex-col">
-                  <div class="my-3 flex gap-2 items-center flex-wrap" id="price-{{ section.id }}">
-                    <span class="text-base text-red-400 line-through">
-                      {{- selected_variant.compare_at_price | money -}}
-                    </span>
-                    <span class="text-lg">{{ selected_variant.price | money }}</span>
-
-                    <div class="">
-                      {%- if product.available == false -%}
-                        <span
-                          class="bg-red-400 px-2 py-1"
-                        >
-                          Sold out
-                        </span>
-                      {%- elsif product.compare_at_price > product.price and product.available -%}
-                        <span
-                          class="bg-green-400 px-2 py-1"
-                        >
-                          Sale
-                        </span>
-                      {%- endif -%}
-                    </div>
-                  </div>
-                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                  {{ form | payment_terms }}
+                <div class="flex flex-wrap gap-4 items-center">
+                  {% render 'price', product: product, product_page: true %}
+                  {% render 'badges', product: product %}
                 </div>
 
-                {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
-                  <div class="product__tax caption rte">
-                    {%- if cart.taxes_included -%}
-                      Tax included
-                    {%- endif -%}
-                    {%- if shop.shipping_policy.body != blank -%}
-                      Shipping calculated at checkout.
-                    {%- endif -%}
-                  </div>
-                {%- endif -%}
+                <div class="product__tax caption rte">
+                  {%- if cart.taxes_included -%}
+                    {{ 'products.product.include_taxes' | t }}
+                  {%- endif -%}
+                  {%- if shop.shipping_policy.body != blank -%}
+                    {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                  {%- endif -%}
+                </div>
+                <div {{ block.shopify_attributes }}>
+                  {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id -%}
+                  {%- form 'product', product, id: product_form_installment_id, class: 'installment caption-large' -%}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    {{ form | payment_terms }}
+                  {%- endform -%}
+                </div>
               {% when 'variant_selector' %}
                 <div class="my-3">
                   {% unless product.has_only_default_variant %}
@@ -82,7 +70,7 @@
                         <div class="my-2 flex gap-4 flex-wrap">
                           {% for value in option.values %}
                             {%- assign product_available = product.variants[forloop.index0].available -%}
-                            <div class="en-varient-selector-item px-4 py-1 border-2  min-w-[40px] relative">
+                            <div class="en-varient-selector-item px-4 py-1 border-2  min-w-[40px] relative {% if settings.corners == 'rounded' %} rounded-lg {% endif %}">
                               <input
                                 type="radio"
                                 name="options[{{ option.name | escape }}]"
@@ -175,7 +163,7 @@
                       <button
                         type="submit"
 
-                        class="inline-block relative button button-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="inline-block relative button button-full button-outline disabled:opacity-50 disabled:cursor-not-allowed"
                         {% if selected_variant.available == false %}
                           disabled
                         {% endif %}
@@ -220,6 +208,10 @@
   "tag": "section",
   "settings": [
     {
+      "type": "header",
+      "content": "Product media"
+    },
+    {
       "type": "select",
       "id": "media_position",
       "default": "left",
@@ -255,6 +247,30 @@
         }
       ],
       "info": "Width is automatically adjusted for mobile devices."
+    },
+    {
+      "type": "checkbox",
+      "id": "desktop_slider",
+      "label": "Enable carousel in desktop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_thumbnails_on_mobile",
+      "label": "Hide thumbnails on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "zoom_on_hover",
+      "label": "Zoom product image on hover",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "adaptive_height",
+      "label": "Adaptive height of slides",
+      "default": true
     }
   ],
   "blocks": [

@@ -107,7 +107,7 @@
               <div class="{% if block.settings.full_width %}w-full{% else %} mr-2{% endif %} mb-4">
                 <button
                   type="submit"
-                  class="button button-primary {% if block.settings.full_width %}w-full {% endif %}"
+                  class="button button-primary {% if block.settings.full_width %}w-full button-full {% endif %}"
                 >
                   {{ block.settings.submit }}
                 </button>
@@ -118,12 +118,6 @@
     </div>
   </div>
 </div>
-<style>
-  .custom-section {
-    max-width: {{ section.settings.Customwidth }}px;
-    margin: 0 auto;
-  }
-</style>
 
 {% schema %}
 {

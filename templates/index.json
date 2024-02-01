@@ -47,11 +47,27 @@
         },
         "hotspots": {
             "type": "image-hotspots"
+        },
+        "newsletter": {
+            "type": "newsletter",
+            "blocks": {
+                "newsletter": {
+                    "type": "newsletter"
+                },
+                "subscribe": {
+                    "type": "newsletter_signup"
+                }
+            },
+            "block_order": [
+                "newsletter",
+                "subscribe"
+            ]
         }
     },
     "order": [
         "slideshow",
         "featured_collection",
-        "hotspots"
+        "hotspots",
+        "newsletter"
     ]
 }

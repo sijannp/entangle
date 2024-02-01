@@ -1,29 +1,49 @@
-<style></style>
+{% liquid
+  if zoom_on_hover
+    assign is_scalable = true
+  endif
+%}
 
 {% if thumbnail %}
-  <div class="w-[50px] h-[50px] md:w-[80px] md:h-[80px]">
+  <div class="relative w-[50px] h-[50px] md:w-[80px] md:h-[80px] {% if settings.corners == 'rounded' %} rounded-lg {% endif %}">
     {{
       media
       | image_url: width: media.width
       | image_tag: class: 'h-full w-full object-contain transition duration-700 ease-in-out'
     }}
+
+    <span class="absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[rgba(var(--primary-background))] rounded-full">
+      {% if media.media_type == 'external_video' or media.media_type == 'video' %}
+        {% render 'icon-play', class: 'w-6 h-6' %}
+      {% elsif media.media_type == 'model' %}
+        {% render 'icon-model-viewer', class: 'w-6 h-6' %}
+      {% endif %}
+    </span>
+
+    {% if media.media_type == 'external_video' or media.media_type == 'video' %}
+      <span class="absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[rgba(var(--primary-background))] rounded-full">
+        {% render 'icon-play', class: 'w-6 h-6' %}
+      </span>
+    {% endif %}
   </div>
 {% else %}
   {% case media.media_type %}
     {% when 'image' %}
       {% assign padding = media.height | times: 100 | divided_by: media.width %}
-      {% assign is_scalable = true %}
       <div
-        class="{% if is_scalable %} scalable-image-container {% endif %} group {% if thumbnail %} w-[50px] md:w-[80px]  {% else %} w-full {% endif %} overflow-hidden relative before:content-[''] before:block"
+        class="{% if is_scalable %} scalable-image-container {% if settings.corners == 'rounded' %} rounded-lg {% endif %} {% endif %} group {% if thumbnail %} w-[50px] md:w-[80px]  {% else %} w-full {% endif %} overflow-hidden relative before:content-[''] before:block"
         style="padding-bottom: {{ padding }}%"
       >
-        {{
-          media
-          | image_url: width: media.width
-          | image_tag:
-            class: 'scalable-image cursor-crosshair w-full absolute transition duration-700 ease-in-out',
-            loading: 'lazy'
-        }}
+        {% liquid
+          assign image_class = 'w-full absolute transition duration-700 ease-in-out'
+          if is_scalable
+            assign image_class = image_class | append: ' scalable-image cursor-crosshair '
+          endif
+          if settings.corners == 'rounded'
+            assign image_class = image_class | append: ' rounded-lg'
+          endif
+        %}
+        {{ media | image_url: width: media.width | image_tag: class: image_class, loading: 'lazy' }}
       </div>
 
     {% when 'external_video' %}
@@ -50,25 +70,26 @@
           {{ media | image_url: width: media.width | image_tag }}
         </div>
       {% else %}
-        <en-model-viewer class="en-model-viewer w-full h-full group overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
+        <en-model-viewer class="model-viewer w-full h-full group overflow-hidden relative before:content-[''] before:block before:pt-[100%]">
           {{
             media
             | model_viewer_tag:
+              interaction-policy: 'allow-when-focused',
               class: 'h-full w-full object-contain absolute left-1/2 top-0 -translate-x-1/2 transition duration-700 ease-in-out'
           }}
 
           <div
             id="model-open"
-            class="absolute z-[100] cursor-pointer top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden"
+            class="absolute z-[100] cursor-pointer top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[rgba(var(--primary-background))] p-2 {% if settings.corners %} rounded-lg {% endif %}"
           >
             {% render 'icon-model-viewer' %}
           </div>
 
-          <div class="absolute top-4 right-4 z-[100] cursor-pointer" id="model-close">
+          <div class="absolute top-4 right-4 z-[100] cursor-pointer hidden" id="model-close">
             {% render 'icon-close' %}
           </div>
 
-          <div class="absolute top-0 left-0 w-full h-full bg-black/20 hidden" id="model-overlay"></div>
+          <div class="absolute top-0 left-0 w-full h-full bg-black/20 " id="model-overlay"></div>
         </en-model-viewer>
       {% endif %}
 
