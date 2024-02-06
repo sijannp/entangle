@@ -54,7 +54,7 @@
                 ></div>
                 <collapsible-content
                   data-id="hotspot-{{ section.id | append: forloop.index }}"
-                  class="lg-hotspot__label absolute bg-[rgba(var(--primary-background))] text-xs  w-[14em] max-w-[40vw] shadow-lg z-[-1] transition-all duration-500 {% if settings.corners == "rounded" %} rounded-lg {% endif %}"
+                  class="lg-hotspot__label absolute bg-[rgba(var(--color-bg))] text-xs  w-[14em] max-w-[40vw] shadow-lg z-[-1] transition-all duration-500 {% if settings.corners == "rounded" %} rounded-lg {% endif %}"
                 >
                   <div class="collapsible-inner">
                     <div class="p-4">
@@ -92,7 +92,7 @@
             ></collapsible-button>
             <collapsible-content data-id="hotspot-{{ section.id | append: forloop.index }}">
               <div class="collapsible-inner">
-                <div class="lg-hotspot__label absolute bg-[rgba(var(--primary-background))] text-xs p-4 w-[14em] max-w-[40vw] shadow-lg z-[-1] opacity-0 hidden transition-all duration-500 {% if settings.corners == "rounded" %} rounded-lg {% endif %}">
+                <div class="lg-hotspot__label absolute bg-[rgba(var(--color-bg))] text-xs p-4 w-[14em] max-w-[40vw] shadow-lg z-[-1] opacity-0 hidden transition-all duration-500 {% if settings.corners == "rounded" %} rounded-lg {% endif %}">
                   {% if block.settings.product != blank %}
                     <h3 class="h4 ">{{ block.settings.product.title }}</h3>
                     <p class="pb-2">{{ block.settings.description }}</p>

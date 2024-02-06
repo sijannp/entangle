@@ -232,49 +232,13 @@
                     }
                 },
                 "header__1": {
-                    "content": "General"
+                    "content": "Additional colors"
                 },
-                "primary_background_color": {
-                    "label": "Primary background color"
+                "error_color": {
+                    "label": "Error color"
                 },
-                "primary_text_color": {
-                    "label": "Primary text color"
-                },
-                "secondary_background_color": {
-                    "label": "Secondary background color"
-                },
-                "secondary_text_color": {
-                    "label": "Secondary text color"
-                },
-                "line_color": {
-                    "label": "Lines"
-                },
-                "header__2": {
-                    "content": "Primary Button"
-                },
-                "primary_button_text": {
-                    "label": "Color"
-                },
-                "primary_button_background": {
-                    "label": "Background"
-                },
-                "header__3": {
-                    "content": "Secondary Button"
-                },
-                "secondary_button_text": {
-                    "label": "Color"
-                },
-                "secondary_button_background": {
-                    "label": "Background"
-                },
-                "header__4": {
-                    "content": "Outline Button"
-                },
-                "outline_button_text": {
-                    "label": "Color"
-                },
-                "outline_button_color": {
-                    "label": "Background"
+                "success_color": {
+                    "label": "Success color"
                 }
             }
         },

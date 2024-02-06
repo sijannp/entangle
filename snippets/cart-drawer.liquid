@@ -1,5 +1,5 @@
 <div
-  class="en-content-collapsible absolute top-full max-h-[40rem] left-0 md:left-auto bg-[rgba(var(--primary-background))] shadow-xl w-full m-0 md:max-w-md z-[101]"
+  class="en-content-collapsible absolute top-full max-h-[40rem] left-0 md:left-auto bg-[rgba(var(--color-bg))] shadow-xl w-full m-0 md:max-w-md z-[101]"
   id="en-cart-drawer"
   style="overflow-y: scroll !important"
 >
@@ -33,7 +33,7 @@
                     <a href="{{ item.url }}">
                       <h3 class="h4">{{ item.product.title | truncatewords: 5 }}</h3>
                     </a>
-                    <span class="text-sm text-[rgba(var(--primary-text))]/75">
+                    <span class="text-sm text-[rgba(var(--color-text))]/75">
                       {%- if item.original_price != item.final_price -%}
                         <div class="">
                           <span class="visually-hidden">
@@ -90,12 +90,12 @@
                           class="w-full h-full p-2 px-6 text-center focus:outline-none"
                         >
                         <button
-                          class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
+                          class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
                         >
                           -
                         </button>
                         <button
-                          class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
+                          class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
                         >
                           +
                         </button>

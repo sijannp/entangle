@@ -21,7 +21,7 @@
   </collapsible-button>
   <collapsible-content
     data-id="filters"
-    class=" bg-[rgba(var(--primary-background))] w-full md:flex z-[9] md:relative md:px-0 md:max-h-full"
+    class=" bg-[rgba(var(--color-bg))] w-full md:flex z-[9] md:relative md:px-0 md:max-h-full"
   >
     <div
       id="en-filters"
@@ -78,7 +78,7 @@
               </collapsible-button>
               <collapsible-content
                 data-id="filter-{{ filter.label }}"
-                class="en-content-collapsible{% if desktop_position == 'top' %} md:absolute md:top-full md:bg-[rgba(var(--primary-background))] {% endif %}"
+                class="en-content-collapsible{% if desktop_position == 'top' %} md:absolute md:top-full md:bg-[rgba(var(--color-bg))] {% endif %}"
                 {% if filter.active_values.size > 0
                   or filter.min_value.value != null
                   or filter.max_value.value != null
@@ -211,7 +211,7 @@
                 {%- if filter.min_value.value != null or filter.max_value.value != null -%}
                   {% if filter.range_max != filter.max_value.value or filter.min_value.value != 0 %}
                     <remove-filter
-                      class="active-filters__remove-filter cursor-pointer rounded-full inline-block text-sm border border-[rgba(var(--primary-text))] px-3 py-1"
+                      class="active-filters__remove-filter cursor-pointer rounded-full inline-block text-sm border border-[rgba(var(--color-text))] px-3 py-1"
                       data-url="{{ filter.url_to_remove }}"
                     >
                       {{ filter.range_min }}
@@ -224,7 +224,7 @@
               {%- else -%}
                 {%- for filter_value in filter.active_values -%}
                   <remove-filter
-                    class="active-filters__remove-filter cursor-pointer rounded-full inline-block text-sm border border-[rgba(var(--primary-text))] px-3 py-1"
+                    class="active-filters__remove-filter cursor-pointer rounded-full inline-block text-sm border border-[rgba(var(--color-text))] px-3 py-1"
                     data-url="{{ filter_value.url_to_remove }}"
                   >
                     {{ filter.label }}: {{ filter_value.label }} X

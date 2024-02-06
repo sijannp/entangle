@@ -18,7 +18,7 @@
     assign is_slider = true
     assign item_class = ''
   else
-    assign wrapper_class = 'en-grid-gap grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+    assign wrapper_class = 'grid-gap grid grid-cols-' | append: section.settings.columns_mobile | append: ' sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
   endif
 %}
 
@@ -28,7 +28,7 @@
 
     {% assign collection_handle = section.settings.collection %}
     {% assign collection = collections[collection_handle] %}
-    <splide-component data-splide='{"type":"loop","perPage":4, "perMove": 1, "gap": "{{ settings.grid_gap_horizontal | append: 'px' }}", "breakpoints": {  "1023": { "perPage": 3}, "767": { "perPage": 2},"479": { "perPage": 1} }  }'>
+    <splide-component data-splide='{"type":"loop","perPage":4, "perMove": 1, "gap": "{{ settings.grid_gap_horizontal | append: 'px' }}", "breakpoints": {  "1023": { "perPage": 3}, "767": { "perPage": 2},"479": { "perPage": {{ section.settings.columns_mobile }}} }  }'>
       <div class="{% if is_slider %}splide{% endif %}">
         <div class="{% if is_slider %} splide__track {% endif %}">
           <ul class="{% if is_slider %} splide__list {% endif %} {{ wrapper_class }}">

@@ -37,19 +37,19 @@
       {{ settings.type_header_font | font_face: font_display: 'swap' }}
 
       {% for scheme in settings.color_schemes -%}
-        {% assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
+        {%- assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
         {% if forloop.index == 1 -%}
           :root,
-        {%- endif %}
+        {%- endif -%}
         .color-{{ scheme.id }} {
-          --primary-background: {{ scheme.settings.background.red }},{{ scheme.settings.background.green }},{{ scheme.settings.background.blue }};
-        {% if scheme.settings.background_gradient != empty %}
+          --color-bg: {{ scheme.settings.background.red }},{{ scheme.settings.background.green }},{{ scheme.settings.background.blue }};
+        {%- if scheme.settings.background_gradient != empty %}
           --gradient-background: {{ scheme.settings.background_gradient }};
         {% else %}
           --gradient-background: {{ scheme.settings.background }};
-        {% endif %}
+        {% endif -%}
 
-        {% liquid
+        {%- liquid
           assign background_color = scheme.settings.background
           assign background_color_brightness = background_color | color_brightness
           if background_color_brightness <= 26
@@ -59,21 +59,22 @@
           else
             assign background_color_contrast = background_color | color_darken: 25
           endif
-        %}
-        --primary-heading: {{ scheme.settings.heading.red }},{{ scheme.settings.heading.green }},{{ scheme.settings.heading.blue }};
-        --primary-text: {{ scheme.settings.text.red }},{{ scheme.settings.text.green }},{{ scheme.settings.text.blue }};
+        -%}
+        --color-heading: {{ scheme.settings.heading.red }},{{ scheme.settings.heading.green }},{{ scheme.settings.heading.blue }};
+        --color-text: {{ scheme.settings.text.red }},{{ scheme.settings.text.green }},{{ scheme.settings.text.blue }};
+        --color-bg-contrast: {{ background_color_contrast.red }}, {{ background_color_contrast.green }}, {{ background_color_contrast.blue }};
         --color-shadow: {{ scheme.settings.shadow.red }},{{ scheme.settings.shadow.green }},{{ scheme.settings.shadow.blue }};
-        --primary-button-background: {{ scheme.settings.button.red }},{{ scheme.settings.button.green }},{{ scheme.settings.button.blue }};
-        --primary-button-text: {{ scheme.settings.button_label.red }},{{ scheme.settings.button_label.green }},{{ scheme.settings.button_label.blue }};
-        --secondary-button-background: {{ scheme.settings.secondary_button.red }},{{ scheme.settings.secondary_button.green }},{{ scheme.settings.secondary_button.blue }};
-        --secondary-button-text: {{ scheme.settings.secondary_button_label.red }},{{ scheme.settings.secondary_button_label.green }},{{ scheme.settings.secondary_button_label.blue }};
+        --color-btn: {{ scheme.settings.button.red }},{{ scheme.settings.button.green }},{{ scheme.settings.button.blue }};
+        --color-btn-text: {{ scheme.settings.button_label.red }},{{ scheme.settings.button_label.green }},{{ scheme.settings.button_label.blue }};
+        --color-sec-btn: {{ scheme.settings.secondary_button.red }},{{ scheme.settings.secondary_button.green }},{{ scheme.settings.secondary_button.blue }};
+        --color-sec-btn-text: {{ scheme.settings.secondary_button_label.red }},{{ scheme.settings.secondary_button_label.green }},{{ scheme.settings.secondary_button_label.blue }};
         --color-icons: {{ scheme.settings.text.red }},{{ scheme.settings.text.green }},{{ scheme.settings.text.blue }};
       }
       {% endfor %}
 
       {{ scheme_classes | prepend: 'body' }} {
-        color: rgba(var(--primary-text));
-        background-color: rgb(var(--primary-background));
+        color: rgba(var(--color-text));
+        background-color: rgb(var(--color-bg));
       }
 
 
@@ -89,39 +90,24 @@
 
         --font-scale: {{ settings.font_scale | divided_by: 100.0 }};
 
-        --primary-background: {{ settings.primary_background_color.red }}, {{ settings.primary_background_color.green }}, {{ settings.primary_background_color.blue }};
-        --secondary-background: {{ settings.secondary_background_color.red }}, {{ settings.secondary_background_color.green }}, {{ settings.secondary_background_color.blue }};
-
-        --primary-text: {{ settings.primary_text_color.red }},{{ settings.primary_text_color.green }}, {{ settings.primary_text_color.blue }};
-        --secondary-text: {{ settings.secondary_text_color.red }},{{ settings.secondary_text_color.green }}, {{ settings.secondary_text_color.blue }};
-
-        --primary-button-background: {{ settings.primary_button_background.red }}, {{ settings.primary_button_background.green }}, {{ settings.primary_button_background.blue }};
-        --primary-button-text: {{ settings.primary_button_text.red }}, {{ settings.primary_button_text.green }}, {{ settings.primary_button_text.blue }};
-        --secondary-button-background: {{ settings.secondary_button_background.red }}, {{ settings.secondary_button_background.green }}, {{ settings.secondary_button_background.blue }};
-        --secondary-button-text: {{ settings.secondary_button_text.red }}, {{ settings.secondary_button_text.green }}, {{ settings.secondary_button_text.blue }};
-        --outline-button-color: {{ settings.outline_button_color.red }}, {{ settings.outline_button_color.green }}, {{ settings.outline_button_color.blue }};
-        --outline-button-text: {{ settings.outline_button_text.red }}, {{ settings.outline_button_text.green }}, {{ settings.outline_button_text.blue }};
-
-        --line-color: {{ settings.line_color.red }}, {{ settings.line_color.green }}, {{ settings.line_color.blue }};
 
         --page-width: {{ settings.max_width }}px;
-        --grid-gap-vertical: {{ settings.grid_gap_vertical }}px;
-        --grid-gap-horizontal: {{ settings.grid_gap_horizontal }}px;
+        --grid-gap-y: {{ settings.grid_gap_vertical }}px;
+        --grid-gap-x: {{ settings.grid_gap_horizontal }}px;
         --icons-weight: {{ settings.icons_style }};
 
         --input-border-width: {{ settings.input_border_width }}px;
-
         --input-padding-x: {{ settings.input_horizontal_offset }}px;
         --sm-input-padding-x: {{ settings.input_horizontal_offset | times: 0.75 }}px;
         --input-padding-y: {{ settings.input_vertical_offset }}px;
         --sm-input-padding-y: {{ settings.input_vertical_offset | times: 0.75 }}px;
 
         --button-border-width: {{ settings.button_border_width }}px;
-
         --button-padding-x: {{ settings.button_horizontal_offset }}px;
         --sm-button-padding-x: {{ settings.button_horizontal_offset | times: 0.75 }}px;
         --button-padding-y: {{ settings.button_vertical_offset }}px;
         --sm-button-padding-y: {{ settings.button_vertical_offset | times: 0.75 }}px;
+
 
 
         {% if settings.corners == 'rounded' %}
@@ -133,17 +119,20 @@
         --card-background: {{ settings.card_background_color }};
         --card-text: {{ settings.card_text_color }};
 
-        --product-cart-image-padding: {{ section.settings.product_card_image_padding }}px;
+        --product-cart-image-padding: {{ settings.product_card_image_padding }}px;
         --product-card-background : {{ settings.product_card_background.red }}, {{ settings.product_card_background.green }}, {{ settings.product_card_background.blue }};
         --product-card-text : {{ settings.product_card_text.red }}, {{ settings.product_card_text.green }}, {{ settings.product_card_text.blue }};
         --product-card-image-padding: {{ settings.product_card_image_padding }}px;
 
 
         --badge-border-radius: {{ settings.badge_corner_radius }}px;
-        --sold-out-background: {{ settings.sold_out_background.red }}, {{ settings.sold_out_background.green }}, {{ settings.sold_out_background.blue }};
-        --sold-out-text: {{ settings.sold_out_text.red }}, {{ settings.sold_out_text.green }}, {{ settings.sold_out_text.blue }};
-        --sale-background: {{ settings.sale_background.red }}, {{ settings.sale_background.green }}, {{ settings.sale_background.blue }};
-        --sale-text: {{ settings.sale_text.red }}, {{ settings.sale_text.green }}, {{ settings.sale_text.blue }};
+        --color-soldout-bg: {{ settings.sold_out_background.red }}, {{ settings.sold_out_background.green }}, {{ settings.sold_out_background.blue }};
+        --color-soldout-text: {{ settings.sold_out_text.red }}, {{ settings.sold_out_text.green }}, {{ settings.sold_out_text.blue }};
+        --color-sale-bg: {{ settings.sale_background.red }}, {{ settings.sale_background.green }}, {{ settings.sale_background.blue }};
+        --color-sale-text: {{ settings.sale_text.red }}, {{ settings.sale_text.green }}, {{ settings.sale_text.blue }};
+
+        --color-error: {{ settings.error_color.red }}, {{ settings.error_color.green }}, {{ settings.error_color.blue }};
+        --color-success: {{ settings.success_color.red }}, {{ settings.success_color.green }}, {{ settings.success_color.blue }};
 
       }
     {% endstyle %}

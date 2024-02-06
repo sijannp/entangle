@@ -1,6 +1,6 @@
 <div
   id="MainProduct-{{ section.id }}"
-  class="page-width section-{{ section.id }}-padding bg-[rgba(var(--primary-background))]"
+  class="page-width section-{{ section.id }}-padding bg-[rgba(var(--color-bg))]"
   data-section="{{ section.id }}"
 >
   {% assign selected_variant = product.selected_or_first_available_variant %}
@@ -83,7 +83,7 @@
                                 {% endif %}
                               >
                               <label
-                                class=" flex items-center justify-center  {% unless product_available %} text-[rgba(var(--primary-text),.6)] line-through decoration-1{% endunless %}"
+                                class=" flex items-center justify-center  {% unless product_available %} text-[rgba(var(--color-text),.6)] line-through decoration-1{% endunless %}"
                                 for="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
                               >
                                 {{- value -}}
@@ -114,13 +114,13 @@
                     >
                     <quantity-button
                       data-section="product-page"
-                      class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
+                      class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
                     >
                       -
                     </quantity-button>
                     <quantity-button
                       data-section="product-page"
-                      class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
+                      class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
                     >
                       +
                     </quantity-button>

@@ -12,7 +12,7 @@
       | image_tag: class: 'h-full w-full object-contain transition duration-700 ease-in-out'
     }}
 
-    <span class="absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[rgba(var(--primary-background))] rounded-full">
+    <span class="absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[rgba(var(--color-bg))] rounded-full">
       {% if media.media_type == 'external_video' or media.media_type == 'video' %}
         {% render 'icon-play', class: 'w-6 h-6' %}
       {% elsif media.media_type == 'model' %}
@@ -21,7 +21,7 @@
     </span>
 
     {% if media.media_type == 'external_video' or media.media_type == 'video' %}
-      <span class="absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[rgba(var(--primary-background))] rounded-full">
+      <span class="absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[rgba(var(--color-bg))] rounded-full">
         {% render 'icon-play', class: 'w-6 h-6' %}
       </span>
     {% endif %}
@@ -80,7 +80,7 @@
 
           <div
             id="model-open"
-            class="absolute z-[100] cursor-pointer top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[rgba(var(--primary-background))] p-2 {% if settings.corners %} rounded-lg {% endif %}"
+            class="absolute z-[100] cursor-pointer top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[rgba(var(--color-bg))] p-2 {% if settings.corners %} rounded-lg {% endif %}"
           >
             {% render 'icon-model-viewer' %}
           </div>

@@ -4,10 +4,10 @@
   class="fixed left-0 top-0 w-full h-full z-[99] overlay-full color-background-1"
 >
   <div
-    class="main-drawer main-drawer--right flex flex-col bg-[rgba(var(--primary-background))] absolute h-full w-full md:max-w-[25rem] m-0 z-[99]"
+    class="main-drawer main-drawer--right flex flex-col bg-[rgba(var(--color-bg))] absolute h-full w-full md:max-w-[25rem] m-0 z-[99]"
     id="main-nav"
   >
-    <div class="close-drawer absolute bg-[rgba(var(--primary-background))] z-[100] flex items-center rounded-full right-2 top-2 cursor-pointer">
+    <div class="close-drawer absolute bg-[rgba(var(--color-bg))] z-[100] flex items-center rounded-full right-2 top-2 cursor-pointer">
       {% render 'icon-close', class: 'close-drawer' %}
     </div>
     <div id="cart-drawer" class=" flex flex-col h-full pt-4">
@@ -38,7 +38,7 @@
                         <a href="{{ item.url }}">
                           <h3 class="h4">{{ item.product.title | truncatewords: 5 }}</h3>
                         </a>
-                        <span class="text-sm text-[rgba(var(--primary-text))]/75">
+                        <span class="text-sm text-[rgba(var(--color-text))]/75">
                           {%- if item.original_price != item.final_price -%}
                             <div class="">
                               <span class="visually-hidden">
@@ -96,13 +96,13 @@
                             >
                             <quantity-button
                               data-section="cart-drawer"
-                              class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
+                              class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
                             >
                               -
                             </quantity-button>
                             <quantity-button
                               data-section="cart-drawer"
-                              class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--primary-background))]"
+                              class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
                             >
                               +
                             </quantity-button>

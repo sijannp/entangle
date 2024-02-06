@@ -1,0 +1,280 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  .image-with-text .image {
+    width: {{ section.settings.image_width }}%;
+  }
+
+  @media screen and (max-width: 768px){
+    .image-with-text .image {
+    width: 100%;
+  }
+
+  }
+{%- endstyle -%}
+
+<div>
+  <div class="image-with-text {% if section.settings.page_width %}page-width{% endif %} section-{{ section.id }}-padding text-{{ section.settings.vertical_alignment }}   ">
+    <div class="grid-gap flex flex-col md:flex-row {{ section.settings.image_placement}} ">
+      <div class="image shrink-0">
+        {% assign image = section.settings.image %}
+        {% if image %}
+          {% assign image_class = ' w-full h-full object-cover ' %}
+          {% if settings.corners == 'rounded' %}
+            {% assign image_class = image_class | append: ' rounded-md' %}
+          {% endif %}
+          {{ image | image_url: width: image.width | image_tag: class: image_class }}
+        {% else %}
+          {{ 'detailed-apparel-1' | placeholder_svg_tag: ' w-full h-full object-cover ' }}
+        {% endif %}
+      </div>
+      <div
+        class="
+          flex
+          flex-col
+          {{ section.settings.content_position }}
+          color-{{ section.settings.color_scheme }}
+          p-4
+        "
+      >
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'heading' %}
+              <h2 class="{{ block.settings.heading_size }}">{{ block.settings.heading }}</h2>
+            {% when 'sub_heading' %}
+              <div class=" rte {{ block.settings.sub_heading_size }}">{{ block.settings.sub_heading }}</div>
+            {% when 'button' %}
+              <div class="">
+                <a href="{{ block.settings.button_url }}" class="button button-primary">
+                  {{ block.settings.button }}
+                </a>
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "page_width",
+      "label": "Page Width",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_placement",
+      "label": "Image Placement",
+      "options": [
+        {
+          "value": "flex",
+          "label": "Left"
+        },
+        {
+          "value": "flex flex-col-reverse md:flex-row-reverse",
+          "label": "Right"
+        }
+      ],
+      "default": "flex"
+    },
+
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image Width",
+      "min": 20,
+      "max": 80,
+      "default": 50,
+      "step": 5,
+      "unit": "%"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content position",
+      "options": [
+        {
+          "value": "justify-start",
+          "label": "Top"
+        },
+        {
+          "value": "justify-center",
+          "label": "Middle"
+        },
+        {
+          "value": "justify-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "justify-center"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 100,
+      "default": 25,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "default": 25,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "color_scheme",
+      "label": "Color Scheme",
+      "id": "color_scheme",
+      "default": "background-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Image with text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Image with text"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "options": [
+            {
+              "value": "h3",
+              "label": "Small"
+            },
+            {
+              "value": "h2",
+              "label": "Medium"
+            },
+            {
+              "value": "h1",
+              "label": "Large"
+            }
+          ],
+          "default": "h2"
+        }
+      ]
+    },
+    {
+      "type": "sub_heading",
+      "name": "Pair text with an image",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "sub_heading",
+          "label": "Sub heading",
+          "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>"
+        },
+        {
+          "type": "select",
+          "id": "sub_heading_size",
+          "label": "Sub Heading Size",
+          "options": [
+            {
+              "value": "p",
+              "label": "Small"
+            },
+            {
+              "value": "h4",
+              "label": "Medium"
+            },
+            {
+              "value": "h3",
+              "label": "Large"
+            }
+          ],
+          "default": "h4"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image and Image",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "sub_heading"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

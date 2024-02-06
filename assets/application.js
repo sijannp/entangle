@@ -73,7 +73,7 @@ class RemoveFilter extends HTMLElement {
     handleClick() {
         this.productsOverlayGrid = document.querySelector('#products-grid-overlay');
         this.productsGrid = document.querySelector('#products-grid');
-        this.productsOverlayGrid.classList.add('bg-[rgba(var(--primary-background))]', 'z-[101]');
+        this.productsOverlayGrid.classList.add('bg-[rgba(var(--color-bg))]', 'z-[101]');
         this.filterComponent = document.querySelector('#en-filters');
         fetch(this.url)
             .then((response) => response.text())
@@ -87,7 +87,7 @@ class RemoveFilter extends HTMLElement {
                 console.error('Error fetching data:', error);
             })
             .finally(() => {
-                document.querySelector('#products-grid-overlay').classList.remove('bg-[rgba(var(--primary-background))]', 'z-[101]');
+                document.querySelector('#products-grid-overlay').classList.remove('bg-[rgba(var(--color-bg))]', 'z-[101]');
             });
     }
 }
@@ -126,7 +126,7 @@ class FilterForm extends HTMLElement {
         const formData = new FormData(this.querySelector('form'));
         const formString = new URLSearchParams(formData).toString();
         const url = `${window.location.pathname}?${formString}`;
-        document.querySelector('#products-grid-overlay').classList.add('bg-[rgba(var(--primary-background))]', 'z-[101]');
+        document.querySelector('#products-grid-overlay').classList.add('bg-[rgba(var(--color-bg))]', 'z-[101]');
         fetch(url)
             .then((response) => response.text())
             .then((data) => {
@@ -139,7 +139,7 @@ class FilterForm extends HTMLElement {
                 console.error('Error fetching data:', error);
             })
             .finally(() => {
-                document.querySelector('#products-grid-overlay').classList.remove('bg-[rgba(var(--primary-background))]', 'z-[101]');
+                document.querySelector('#products-grid-overlay').classList.remove('bg-[rgba(var(--color-bg))]', 'z-[101]');
             });
     }
 
