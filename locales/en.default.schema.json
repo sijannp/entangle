@@ -531,5 +531,55 @@
                 }
             }
         }
+    },
+    "sections": {
+        "all": {
+            "colors": {
+                "label": "Color scheme"
+            },
+            "heading_size": {
+                "label": "Heading size",
+                "options__1": {
+                    "label": "Small"
+                },
+                "options__2": {
+                    "label": "Medium"
+                },
+                "options__3": {
+                    "label": "Large"
+                },
+                "options__4": {
+                    "label": "Extra large"
+                }
+            },
+            "image_height": {
+                "label": "Image height",
+                "option__1": {
+                    "label": "Adapt"
+                },
+                "option__2": {
+                    "label": "Small"
+                },
+                "option__3": {
+                    "label": "Medium"
+                },
+                "option__4": {
+                    "label": "Large"
+                }
+            },
+            "padding": {
+                "section_padding_heading": "Section padding",
+                "padding_top": "Top padding",
+                "padding_bottom": "Bottom padding"
+            }
+        },
+        "image-with-text": {
+            "name": "Image with text",
+            "settings": {
+                "image": {
+                    "label": "Image"
+                }
+            }
+        }
     }
 }

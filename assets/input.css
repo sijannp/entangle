@@ -133,4 +133,8 @@
         @apply text-[rgba(var(--color-success))];
     }
 
+    .not-available label {
+        @apply line-through;
+    }
+
 }

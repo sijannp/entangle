@@ -262,119 +262,273 @@ customElements.define("en-model-viewer", ModelViewer)
 class VariantSelector extends HTMLElement {
     constructor() {
         super();
-    }
-
-    connectedCallback() {
         this.addEventListener('change', this.onVariantChange);
     }
 
-    disconnectedCallback() {
-        this.removeEventListener('change', this.onVariantChange);
-    }
 
-    onVariantChange() {
+    onVariantChange(event) {
+        this.updateOptions();
+        this.updateMasterId();
+        this.updateSelectedSwatchValue(event);
+        this.toggleAddButton(true, '', false);
 
-        this.disableButtons();
+        this.updateVariantStatuses();
 
-        this.getSelectedOptions();
-        this.getSelectedVariant();
 
-        if (this.currentVariant) {
-            const quickAddModal = this.closest('quick-add-modal');
-            if (!quickAddModal) {
-                this.updateURL();
-            }
-            this.updateFormID();
-            this.updatePrice();
-            this.updateSKU();
+
+        console.log(this.currentVariant)
+        if (!this.currentVariant) {
+            this.setUnavailable();
+            console.log('---unav---')
+        } else {
+            this.updateVariantInput();
+            console.log('---av---')
         }
 
 
+        // this.disableButtons();
+        // this.getSelectedOptions();
 
-        const variantChangeEvent = new CustomEvent('variantChange', {
+        // this.getSelectedVariant();
 
-            detail: {
-                variantId: this.currentVariant.id,
-                imageId: this.currentVariant.featured_media.id,
-            },
+        // if (this.currentVariant) {
+        //     const quickAddModal = this.closest('quick-add-modal');
+        //     if (!quickAddModal) {
+        //         this.updateURL();
+        //     }
+        //     this.updateFormID();
+        //     this.updatePrice();
+        //     this.updateSKU();
+        // } else {
+
+        // }
+
+        // const variantChangeEvent = new CustomEvent('variantChange', {
+
+        //     detail: {
+        //         variantId: this.currentVariant.id,
+        //         imageId: this.currentVariant.featured_media.id,
+        //     },
+        // });
+        // document.dispatchEvent(variantChangeEvent);
+
+    }
+
+    updateOptions() {
+        this.options = Array.from(this.querySelectorAll('select, fieldset'), (element) => {
+            if (element.tagName === 'SELECT') {
+                return element.value;
+            }
+            if (element.tagName === 'FIELDSET') {
+                return Array.from(element.querySelectorAll('input')).find((radio) => radio.checked)?.value;
+            }
         });
-        document.dispatchEvent(variantChangeEvent);
-
-
-
     }
 
-    disableButtons() {
-        let buttons = document.querySelector("product-form").querySelectorAll('button')
-        if (!buttons) return
-        buttons.forEach((button) => {
-            button.disabled = true
-        })
-    }
-
-    getSelectedOptions() {
-        this.options = Array.from(this.querySelectorAll('input[type="radio"]:checked'), (input) => input.value);
-    }
-
-    getVariantJSON() {
-        this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
-        return this.variantData;
-    }
-
-    getSelectedVariant() {
-        this.currentVariant = this.getVariantJSON().find((variant) => {
-            const findings = !variant.options
+    updateMasterId() {
+        this.currentVariant = this.getVariantData().find((variant) => {
+            return !variant.options
                 .map((option, index) => {
                     return this.options[index] === option;
                 })
                 .includes(false);
-
-            if (findings) return variant;
         });
     }
 
-    updateURL() {
-        if (!this.currentVariant) return;
-        window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+    updateSelectedSwatchValue({ target }) {
+        const { name, value, tagName } = target;
+
+        if (tagName === 'SELECT' && target.selectedOptions.length) {
+            const swatchValue = target.selectedOptions[0].dataset.optionSwatchValue;
+            const selectedDropdownSwatchValue = this.querySelector(`[data-selected-dropdown-swatch="${name}"] > .swatch`);
+            if (!selectedDropdownSwatchValue) return;
+            if (swatchValue) {
+                selectedDropdownSwatchValue.style.setProperty('--swatch--background', swatchValue);
+                selectedDropdownSwatchValue.classList.remove('swatch--unavailable');
+            } else {
+                selectedDropdownSwatchValue.style.setProperty('--swatch--background', 'unset');
+                selectedDropdownSwatchValue.classList.add('swatch--unavailable');
+            }
+        } else if (tagName === 'INPUT' && target.type === 'radio') {
+            const selectedSwatchValue = this.querySelector(`[data-selected-swatch-value="${name}"]`);
+            if (selectedSwatchValue) selectedSwatchValue.innerHTML = value;
+        }
     }
 
-    updateFormID() {
-        const form_input = document.querySelector('#product-form').querySelector('input[name="id"]');
-        form_input.value = this.currentVariant.id;
+    updateVariantInput() {
+        const productForms = document.querySelectorAll(
+            `#product-form-${this.dataset.section}, #product-form-installment-${this.dataset.section}`
+        );
+
+        productForms.forEach((productForm) => {
+            const input = productForm.querySelector('input[name="id"]');
+            input.value = this.currentVariant.id;
+            console.log(input, "-----input-----")
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        });
     }
 
-    updateSKU() {
-        const sku = document.querySelector('.sku--text');
-        sku.textContent = this.currentVariant.sku;
+    updateVariantStatuses() {
+        const selectedOptionOneVariants = this.variantData.filter(
+            (variant) => this.querySelector(':checked').value === variant.option1
+        );
+        const inputWrappers = [...this.querySelectorAll('.product-form__input')];
+        inputWrappers.forEach((option, index) => {
+            if (index === 0) return;
+            const optionInputs = [...option.querySelectorAll('input[type="radio"], option')];
+            const previousOptionSelected = inputWrappers[index - 1].querySelector(':checked').value;
+            const availableOptionInputsValue = selectedOptionOneVariants
+                .filter((variant) => variant.available && variant[`option${index}`] === previousOptionSelected)
+                .map((variantOption) => variantOption[`option${index + 1}`]);
+            this.setInputAvailability(optionInputs, availableOptionInputsValue);
+        });
+    }
+
+    setInputAvailability(elementList, availableValuesList) {
+        console.log(elementList)
+        console.log(availableValuesList)
+        elementList.forEach((element) => {
+            const value = element.getAttribute('value');
+            const availableElement = availableValuesList.includes(value);
+
+            if (element.tagName === 'INPUT') {
+                element.classList.toggle('disabled', !availableElement);
+                element.parentNode.classList.toggle('not-available', !availableElement)
+            } else if (element.tagName === 'OPTION') {
+                element.innerText = availableElement
+                    ? value
+                    : window.variantStrings.unavailable_with_option.replace('[value]', value);
+            }
+        });
+    }
+
+    toggleAddButton(disable = true, text, modifyClass = true) {
+        const productForm = document.getElementById(`product-form-${this.dataset.section}`);
+        if (!productForm) return;
+        const addButton = productForm.querySelector('[name="add"]');
+        const addButtonText = productForm.querySelector('[name="add"] > span');
+        console.log(addButton, '---addbutton---')
+        if (!addButton) return;
+
+        if (disable) {
+            addButton.setAttribute('disabled', 'disabled');
+            if (text) addButtonText.textContent = text;
+        } else {
+            addButton.removeAttribute('disabled');
+            addButtonText.textContent = window.variantStrings.addToCart;
+        }
+
+        if (!modifyClass) return;
+    }
+
+    getVariantData() {
+        this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+        return this.variantData;
+    }
+
+    setUnavailable() {
+        const button = document.getElementById(`product-form-${this.dataset.section}`);
+        const addButton = button.querySelector('[name="add"]');
+        const addButtonText = button.querySelector('[name="add"] > span');
+        const price = document.getElementById(`price-${this.dataset.section}`);
+        const inventory = document.getElementById(`Inventory-${this.dataset.section}`);
+        const sku = document.getElementById(`Sku-${this.dataset.section}`);
+        const pricePerItem = document.getElementById(`Price-Per-Item-${this.dataset.section}`);
+        const volumeNote = document.getElementById(`Volume-Note-${this.dataset.section}`);
+        const volumeTable = document.getElementById(`Volume-${this.dataset.section}`);
+        const qtyRules = document.getElementById(`Quantity-Rules-${this.dataset.section}`);
+
+        if (!addButton) return;
+        addButtonText.textContent = window.variantStrings.unavailable;
+        if (price) price.classList.add('hidden');
+        if (inventory) inventory.classList.add('hidden');
+        if (sku) sku.classList.add('hidden');
+        if (pricePerItem) pricePerItem.classList.add('hidden');
+        if (volumeNote) volumeNote.classList.add('hidden');
+        if (volumeTable) volumeTable.classList.add('hidden');
+        if (qtyRules) qtyRules.classList.add('hidden');
     }
 
 
-    updatePrice() {
-        fetch(`${this.dataset.url}?variant=${this.currentVariant.id}&section_id=${this.dataset.section}`)
-            .then((response) => response.text())
-            .then((responseText) => {
-                const priceId = `price-${this.dataset.section}`;
-                const html = new DOMParser().parseFromString(responseText, 'text/html');
 
-                const oldPrice = document.getElementById(priceId);
-                const newPrice = html.getElementById(priceId);
+    // disableButtons() {
+    //     let buttons = document.querySelector("product-form").querySelectorAll('button')
+    //     if (!buttons) return
+    //     buttons.forEach((button) => {
+    //         button.disabled = true
+    //     })
+    // }
 
-                if (oldPrice && newPrice) oldPrice.innerHTML = newPrice.innerHTML;
+    // getSelectedOptions() {
+    //     this.options = Array.from(this.querySelectorAll('input[type="radio"]:checked'), (input) => input.value);
+    // }
+
+    // getVariantJSON() {
+    //     this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+    //     return this.variantData;
+    // }
+
+    // getVariantData() {
+    //     this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+    //     return this.variantData;
+    // }
+
+    // getSelectedVariant() {
+    //     this.currentVariant = this.getVariantJSON().find((variant) => {
+    //         const findings = !variant.options
+    //             .map((option, index) => {
+    //                 return this.options[index] === option;
+    //             })
+    //             .includes(false);
+
+    //         if (findings) return variant;
+    //     });
+    // }
+
+    // updateURL() {
+    //     if (!this.currentVariant) return;
+    //     window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+    // }
+
+    // updateFormID() {
+    //     console.log(this.dataset.section)
+    //     const form_input = document.querySelector(`#product-form-${this.dataset.section}`).querySelector('input[name="id"]');
+    //     form_input.value = this.currentVariant.id;
+    // }
+
+    // updateSKU() {
+    //     const sku = document.querySelector('.sku--text');
+    //     sku.textContent = this.currentVariant.sku;
+    // }
+
+    // updatePrice() {
+    //     fetch(`${this.dataset.url}?variant=${this.currentVariant.id}&section_id=${this.dataset.section}`)
+    //         .then((response) => response.text())
+    //         .then((responseText) => {
+    //             const priceId = `price-${this.dataset.section}`;
+    //             const html = new DOMParser().parseFromString(responseText, 'text/html');
+
+    //             const oldPrice = document.getElementById(priceId);
+    //             const newPrice = html.getElementById(priceId);
+
+    //             if (oldPrice && newPrice) oldPrice.innerHTML = newPrice.innerHTML;
 
 
 
-                const buttonsId = `buttons-${this.dataset.section}`;
-                const newButtons = html.getElementById(buttonsId);
-                const oldButtons = document.getElementById(buttonsId);
+    //             const buttonsId = `buttons-${this.dataset.section}`;
+    //             const newButtons = html.getElementById(buttonsId);
+    //             const oldButtons = document.getElementById(buttonsId);
 
 
-                if (oldButtons && newButtons) oldButtons.innerHTML = newButtons.innerHTML;
+    //             if (oldButtons && newButtons) oldButtons.innerHTML = newButtons.innerHTML;
 
-                if (window.Shopify && Shopify.PaymentButton) {
-                    Shopify.PaymentButton.init();
-                }
-            });
-    }
+    //             if (window.Shopify && Shopify.PaymentButton) {
+    //                 Shopify.PaymentButton.init();
+    //             }
+    //         });
+    // }
+
+
 }
 
 customElements.define('variant-selector', VariantSelector);
@@ -648,13 +802,6 @@ class SliderComponent extends HTMLElement {
 
 customElements.define("slider-component", SliderComponent);
 
-class SlideshowComponent extends SliderComponent {
-    constructor() {
-        super();
-    }
-}
-
-customElements.define("slideshow-component", SlideshowComponent);
 
 
 
@@ -786,13 +933,15 @@ class SplideComponent extends HTMLElement {
             console.error("Error parsing data-splide attribute:", error);
             this.splideData = {};
         }
+
+        this.sliderType = this.getAttribute('data-type');
+        this.animation = this.getAttribute('data-animation')
     }
 
     connectedCallback() {
         this.splideElement = this.querySelector(".splide");
 
         if (!this.splideElement) {
-            // console.error("Splide element not found. Make sure you have an element with class 'splide'");
             return;
         }
 
@@ -807,16 +956,11 @@ class SplideComponent extends HTMLElement {
         this.main.on('mounted', () => {
             console.log("Splide mounted");
             document.addEventListener('variantChange', this.onVariantChange.bind(this));
-
         });
-
-
 
         this.thumbnailsElement = this.querySelector(".splide-thumbnails");
 
-
         if (this.thumbnailsElement) {
-
             try {
                 this.thumbnailsData = JSON.parse(this.getAttribute("data-thumbnails")) || {};
             } catch (error) {
@@ -841,7 +985,9 @@ class SplideComponent extends HTMLElement {
             this.main.mount();
         }
 
-
+        if (this.animation) {
+            this.handleAnimation(this.main)
+        }
     }
 
     disconnectedCallback() {
@@ -870,12 +1016,37 @@ class SplideComponent extends HTMLElement {
             console.log("No variants found");
         }
     }
+    handleAnimation(splide) {
+        splide.on('active', (e) => {
+            const activeSlide = splide.Components.Elements.slides[e.index];
+            const titles = activeSlide.querySelectorAll('.animate');
+            titles.forEach((title) => {
+                title.classList.add('animate__fadeInRight');
+                title.classList.remove('animated');
+            });
+        });
+
+        splide.on('inactive', (e) => {
+            const activeSlide = splide.Components.Elements.slides[e.index];
+            const titles = activeSlide.querySelectorAll('.animate');
+            titles.forEach((title) => {
+                title.classList.remove('animate__fadeInRight');
+                title.classList.add('animated');
+            });
+        });
+    }
+
 
 
 
 }
 
 customElements.define("splide-component", SplideComponent);
+
+
+
+
+
 
 class ProductModel extends HTMLElement {
     constructor() {

@@ -21,6 +21,8 @@
 <div class="color-{{ section.settings.color_scheme }}">
   <div class="{% unless section.settings.full_width %} page-width {% endunless %}">
     <splide-component
+      data-type="slideshow"
+      data-animation="true"
       data-splide='{"type":"fade", "rewind": true, "arrows": false}'
       class=""
     >

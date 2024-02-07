@@ -981,6 +981,10 @@ p,
   color: rgba(var(--color-success));
 }
 
+.not-available label {
+  text-decoration-line: line-through;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1423,6 +1427,10 @@ p,
   width: 1px !important;
 }
 
+.w-1\/2 {
+  width: 50%;
+}
+
 .w-10 {
   width: 2.5rem;
 }
@@ -1485,10 +1493,6 @@ p,
 
 .w-full {
   width: 100%;
-}
-
-.w-1\/2 {
-  width: 50%;
 }
 
 .min-w-\[40px\] {
@@ -2178,10 +2182,6 @@ p,
   color: rgba(var(--color-text), 0.75);
 }
 
-.text-\[rgba\(var\(--color-text\)\2c \.6\)\] {
-  color: rgba(var(--color-text),.6);
-}
-
 .text-\[rgba\(var\(--color-text\)\2c \.9\)\] {
   color: rgba(var(--color-text),.9);
 }
@@ -2244,10 +2244,6 @@ p,
   text-decoration-line: line-through;
 }
 
-.decoration-1 {
-  text-decoration-thickness: 1px;
-}
-
 .opacity-0 {
   opacity: 0;
 }
@@ -2268,8 +2264,8 @@ p,
   opacity: .6;
 }
 
-.opacity-\[0\.011\] {
-  opacity: 0.011;
+.opacity-\[0\.001\] {
+  opacity: 0.001;
 }
 
 .opacity-\[0\.7\] {

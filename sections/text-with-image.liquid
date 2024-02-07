@@ -14,21 +14,41 @@
     width: {{ section.settings.image_width }}%;
   }
 
-  @media screen and (max-width: 768px){
+  @media screen and (max-width: 768px) {
     .image-with-text .image {
-    width: 100%;
+      width: 100%;
+    }
+
+  }
+  .image-small {
+    height: 300px;
   }
 
+  .image-medium {
+    height: 400px;
+  }
+
+  .image-large {
+    height: 600px;
   }
 {%- endstyle -%}
 
 <div>
-  <div class="image-with-text {% if section.settings.page_width %}page-width{% endif %} section-{{ section.id }}-padding text-{{ section.settings.vertical_alignment }}   ">
+  <div class="image-with-text {% if section.settings.page_width %}page-width{% endif %} section-{{ section.id }}-padding text-{{ section.settings.vertical_alignment }}    ">
     <div class="grid-gap flex flex-col md:flex-row {{ section.settings.image_placement}} ">
-      <div class="image shrink-0">
+      <div class="image shrink-0 ">
         {% assign image = section.settings.image %}
         {% if image %}
-          {% assign image_class = ' w-full h-full object-cover ' %}
+          {% assign image_height = 'h-full' %}
+          {% case section.settings.height %}
+            {% when 'small' %}
+              {% assign image_height = 'image-small' %}
+            {% when 'medium' %}
+              {% assign image_height = 'image-medium' %}
+            {% when 'large' %}
+              {% assign image_height = 'image-large' %}
+          {% endcase %}
+          {% assign image_class = 'w-full  object-cover ' | append: image_height %}
           {% if settings.corners == 'rounded' %}
             {% assign image_class = image_class | append: ' rounded-md' %}
           {% endif %}
@@ -64,15 +84,39 @@
     </div>
   </div>
 </div>
-
 {% schema %}
 {
-  "name": "Image with text",
+  "name": "t:sections.image-with-text.name",
   "settings": [
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image"
+      "label": "t:sections.image-with-text.settings.image.label"
+    },
+
+    {
+      "type": "select",
+      "id": "height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.all.image_height.option__1.label"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.all.image_height.option__2.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.all.image_height.option__3.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.all.image_height.option__4.label"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.all.image_height.label"
     },
     {
       "type": "checkbox",
@@ -96,7 +140,6 @@
       ],
       "default": "flex"
     },
-
     {
       "type": "range",
       "id": "image_width",
@@ -262,7 +305,7 @@
   ],
   "presets": [
     {
-      "name": "Image and Image",
+      "name": "Image with text",
       "blocks": [
         {
           "type": "heading"

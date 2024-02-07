@@ -11,42 +11,44 @@
     }
   }
 {%- endstyle -%}
-<div class=" grid-gap flex flex-col md:flex-row {{ section.settings.image_placement}}">
-  {% for block in section.blocks %}
-    {% case block.type %}
-      {% when 'image' %}
-        <div class="w-1/2">
-          {% assign image = block.settings.image %}
-          {% if image %}
-            {% assign image_class = 'w-full h-full object-cover' %}
-            {% if settings.corners == 'rounded' %}
-              {% assign image_class = image_class | append: ' rounded-md' %}
+<div class="{% if section.settings.page_width %}page-width{% endif %} section-{{ section.id }}-padding text-{{ section.settings.vertical_alignment }}  ">
+  <div class="grid-gap flex flex-col md:flex-row ">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'image' %}
+          <div class="w-1/2">
+            {% assign image = block.settings.image %}
+            {% if image %}
+              {% assign image_class = 'w-full h-full object-cover' %}
+              {% if settings.corners == 'rounded' %}
+                {% assign image_class = image_class | append: ' rounded-md' %}
+              {% endif %}
+              {{ image | image_url: width: image.width | image_tag: class: image_class }}
+            {% else %}
+              {{ 'detailed-apparel-1' | placeholder_svg_tag: 'w-full h-full object-cover' }}
             {% endif %}
-            {{ image | image_url: width: image.width | image_tag: class: image_class }}
-          {% else %}
-            {{ 'detailed-apparel-1' | placeholder_svg_tag: 'w-full h-full object-cover' }}
-          {% endif %}
-        </div>
-      {% when 'text' %}
-        <div
-          class="
-            flex
-            flex-col
-            {{ section.settings.content_position }}
-            color-{{ section.settings.color_scheme }}
-            w-full
-            grid-gap
-            p-4
-          "
-        >
-          <h2 class="{{ block.settings.heading_size }}">{{ block.settings.heading }}</h2>
-          <div class="rte {{ block.settings.sub_heading_size }}">{{ block.settings.sub_heading }}</div>
-          <div>
-            <a href="{{ block.settings.button_url }}" class="button button-primary">{{ block.settings.button }}</a>
           </div>
-        </div>
-    {% endcase %}
-  {% endfor %}
+        {% when 'text' %}
+          <div
+            class="
+              flex
+              flex-col
+              {{ section.settings.content_position }}
+              color-{{ section.settings.color_scheme }}
+
+              grid-gap
+              p-4 w-1/2
+            "
+          >
+            <h2 class="{{ block.settings.heading_size }}">{{ block.settings.heading }}</h2>
+            <div class="rte {{ block.settings.sub_heading_size }}">{{ block.settings.sub_heading }}</div>
+            <div>
+              <a href="{{ block.settings.button_url }}" class="button button-primary">{{ block.settings.button }}</a>
+            </div>
+          </div>
+      {% endcase %}
+    {% endfor %}
+  </div>
 </div>
 
 {% schema %}
@@ -58,22 +60,6 @@
       "id": "page_width",
       "label": "Page Width",
       "default": true
-    },
-    {
-      "type": "select",
-      "id": "image_placement",
-      "label": "Image Placement",
-      "options": [
-        {
-          "value": "flex",
-          "label": "Left"
-        },
-        {
-          "value": " flex flex-col-reverse md:flex-row-reverse",
-          "label": "Right"
-        }
-      ],
-      "default": "flex"
     },
 
     {
@@ -147,27 +133,19 @@
     {
       "type": "image",
       "name": "Image",
+
       "settings": [
         {
           "type": "image_picker",
           "id": "image",
           "label": "Image"
-        },
-        {
-          "type": "range",
-          "id": "image_width",
-          "label": "Image Width",
-          "min": 30,
-          "max": 70,
-          "default": 50,
-          "step": 5,
-          "unit": "%"
         }
       ]
     },
     {
       "type": "text",
       "name": "Text",
+
       "settings": [
         {
           "type": "inline_richtext",

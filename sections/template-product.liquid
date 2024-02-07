@@ -28,6 +28,7 @@
         </div>
 
         <div class="product--information sticky w-full lg:w-[40%] top-5 p-2 ">
+          {%- assign product_form_id = 'product-form-' | append: section.id -%}
           {% for block in section.blocks %}
             {% case block.type %}
               {% when 'vendor' %}
@@ -68,22 +69,23 @@
                     <variant-selector data-url="{{ product.url }}" data-section="{{ section.id }}">
                       {% for option in product.options_with_values %}
                         <label for="Option-{{ section.id }}-{{ forloop.index0 }}">{{ option.name }}</label>
-                        <div class="my-2 flex gap-4 flex-wrap">
+                        <div class="product-form__input my-2 flex gap-4 flex-wrap">
                           {% for value in option.values %}
                             {%- assign product_available = product.variants[forloop.index0].available -%}
-                            <div class="en-varient-selector-item px-4 py-1 border-2  min-w-[40px] relative {% if settings.corners == 'rounded' %} rounded-lg {% endif %}">
+                            <div class="en-varient-selector-item px-4 py-1 border-2  min-w-[40px] relative {% if settings.corners == 'rounded' %} rounded-lg {% endif %} {% unless product_available %} not-available{% endunless %}">
                               <input
                                 type="radio"
                                 name="options[{{ option.name | escape }}]"
                                 id="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
-                                class="en-varient-selector-radio block absolute inset-0 opacity-[0.011] z-[100] cursor-pointer"
+                                class="en-varient-selector-radio block absolute inset-0  z-[100] cursor-pointer opacity-[0.001] {% unless product_available %} disabled{% endunless %}"
                                 value="{{ value | escape }}"
                                 {% if option.selected_value == value %}
                                   checked="checked"
                                 {% endif %}
+                                form="{{ product_form_id }}"
                               >
                               <label
-                                class=" flex items-center justify-center  {% unless product_available %} text-[rgba(var(--color-text),.6)] line-through decoration-1{% endunless %}"
+                                class="flex items-center justify-center "
                                 for="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
                               >
                                 {{- value -}}
@@ -91,11 +93,10 @@
                             </div>
                           {% endfor %}
                         </div>
-
-                        <script type="application/json">
-                          {{ product.variants | json }}
-                        </script>
                       {% endfor %}
+                      <script type="application/json">
+                        {{ product.variants | json }}
+                      </script>
                     </variant-selector>
                   {% endunless %}
                 </div>
@@ -110,7 +111,8 @@
                       value="1"
                       min="1"
                       id="Quantity-{{ section.id }}"
-                      class="w-full h-full p-2 px-6 text-center focus:outline-none"
+                      class="product-form__input w-full h-full p-2 px-6 text-center focus:outline-none"
+                      form="{{ product_form_id }}"
                     >
                     <quantity-button
                       data-section="product-page"
@@ -196,7 +198,7 @@
                   <product-form>
                     {% form 'product',
                       product,
-                      id: 'product-form',
+                      id: product_form_id,
                       class: 'flex flex-col gap-3',
                       novalidate: 'novalidate'
                     %}
@@ -204,17 +206,20 @@
 
                       <button
                         type="submit"
-
+                        name="add"
                         class="inline-block relative button button-full button-outline disabled:opacity-50 disabled:cursor-not-allowed"
                         {% if selected_variant.available == false %}
                           disabled
                         {% endif %}
+                        form="{{ product_form_id }}"
                       >
-                        {% if selected_variant.available == false %}
-                          Sold out
-                        {% else %}
-                          Add to cart
-                        {% endif %}
+                        <span>
+                          {% if selected_variant.available == false %}
+                            Sold out
+                          {% else %}
+                            Add to cart
+                          {% endif %}
+                        </span>
                         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                           {% render 'spinner' %}
                         </div>

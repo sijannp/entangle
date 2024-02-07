@@ -253,3 +253,21 @@ en-drawer[expanded] .main-drawer {
 .collection .shopify-section {
     width: 100%;
 }
+
+.animate {
+    transform: translate3d(0px, 0px, 0px);
+    transition: transform 1s ease;
+}
+
+.animate.animated {
+    transform: translate3d(20px, 20px, 20px);
+    transition: transform 1s ease;
+}
+
+animate.animate__fadeInRight {
+    transform: translate3d(20px, 20px, 20px);
+}
+
+.not-available label {
+    text-decoration: line-through;
+}
