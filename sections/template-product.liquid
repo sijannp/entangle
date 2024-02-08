@@ -41,65 +41,112 @@
                     {{ product.title }}
                   </h1>
                 </div>
+                {% comment %}
+                  {% when 'price' %}
+                  <div class="flex flex-wrap gap-4 items-center" id="price-{{ section.id }}">
+                    {% render 'price', product: product, product_page: true %}
+                    {% render 'badges', product: product %}
+                  </div>
+
+                  <div class="rte">
+                    {%- if cart.taxes_included -%}
+                      {{ 'products.product.include_taxes' | t }}
+                    {%- endif -%}
+                    {%- if shop.shipping_policy.body != blank -%}
+                      {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                    {%- endif -%}
+                  </div>
+                  <div {{ block.shopify_attributes }}>
+                    {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id -%}
+                    {%- form 'product', product, id: product_form_installment_id, class: 'installment caption-large' -%}
+                      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                      {{ form | payment_terms }}
+                    {%- endform -%}
+                  </div>
+                {% endcomment %}
               {% when 'price' %}
-                <div class="flex flex-wrap gap-4 items-center">
-                  {% render 'price', product: product, product_page: true %}
-                  {% render 'badges', product: product %}
+                <div class="price-wrap flex flex-col">
+                  <div class="my-3 flex gap-2 items-center flex-wrap" id="price-{{ section.id }}">
+                    <span class="text-base text-red-400 line-through">
+                      {{- selected_variant.compare_at_price | money -}}
+                    </span>
+                    <span class="text-lg">{{ selected_variant.price | money }}</span>
+
+                    <div class="">
+                      {%- if product.available == false -%}
+                        <span
+                          class="bg-red-400 px-2 py-1"
+                        >
+                          Sold out
+                        </span>
+                      {%- elsif product.compare_at_price > product.price and product.available -%}
+                        <span
+                          class="bg-green-400 px-2 py-1"
+                        >
+                          Sale
+                        </span>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  {{ form | payment_terms }}
                 </div>
 
-                <div class="rte">
-                  {%- if cart.taxes_included -%}
-                    {{ 'products.product.include_taxes' | t }}
-                  {%- endif -%}
-                  {%- if shop.shipping_policy.body != blank -%}
-                    {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
-                  {%- endif -%}
-                </div>
-                <div {{ block.shopify_attributes }}>
-                  {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id -%}
-                  {%- form 'product', product, id: product_form_installment_id, class: 'installment caption-large' -%}
-                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                    {{ form | payment_terms }}
-                  {%- endform -%}
-                </div>
+                {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
+                  <div class="product__tax caption rte">
+                    {%- if cart.taxes_included -%}
+                      Tax included
+                    {%- endif -%}
+                    {%- if shop.shipping_policy.body != blank -%}
+                      Shipping calculated at checkout.
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
 
               {% when 'variant_selector' %}
-                <div class="my-3">
-                  {% unless product.has_only_default_variant %}
-                    <variant-selector data-url="{{ product.url }}" data-section="{{ section.id }}">
-                      {% for option in product.options_with_values %}
-                        <label for="Option-{{ section.id }}-{{ forloop.index0 }}">{{ option.name }}</label>
-                        <div class="product-form__input my-2 flex gap-4 flex-wrap">
-                          {% for value in option.values %}
-                            {%- assign product_available = product.variants[forloop.index0].available -%}
-                            <div class="en-varient-selector-item px-4 py-1 border-2  min-w-[40px] relative {% if settings.corners == 'rounded' %} rounded-lg {% endif %} {% unless product_available %} not-available{% endunless %}">
-                              <input
-                                type="radio"
-                                name="options[{{ option.name | escape }}]"
-                                id="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
-                                class="en-varient-selector-radio block absolute inset-0  z-[100] cursor-pointer opacity-[0.001] {% unless product_available %} disabled{% endunless %}"
-                                value="{{ value | escape }}"
-                                {% if option.selected_value == value %}
-                                  checked="checked"
-                                {% endif %}
-                                form="{{ product_form_id }}"
-                              >
-                              <label
-                                class="flex items-center justify-center "
-                                for="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
-                              >
-                                {{- value -}}
-                              </label>
-                            </div>
-                          {% endfor %}
-                        </div>
-                      {% endfor %}
-                      <script type="application/json">
-                        {{ product.variants | json }}
-                      </script>
-                    </variant-selector>
-                  {% endunless %}
-                </div>
+                {% comment %}
+                  <div class="my-3">
+                    {% unless product.has_only_default_variant %}
+                      <variant-selector
+                        data-section="{{ section.id }}"
+                        data-url="{{ product.url }}"
+                        data-update-url="true"
+                      >
+                        {% for option in product.options_with_values %}
+                          <label for="Option-{{ section.id }}-{{ forloop.index0 }}">{{ option.name }}</label>
+                          <div class="product-form__input my-2 flex gap-4 flex-wrap">
+                            {% for value in option.values %}
+                              {%- assign product_available = product.variants[forloop.index0].available -%}
+                              <div class="en-varient-selector-item px-4 py-1 border-2  min-w-[40px] relative {% if settings.corners == 'rounded' %} rounded-lg {% endif %} {% unless product_available %} not-available{% endunless %}">
+                                <input
+                                  type="radio"
+                                  name="options[{{ option.name | escape }}]"
+                                  id="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
+                                  class="en-varient-selector-radio block absolute inset-0  z-[100] cursor-pointer opacity-[0.001] {% unless product_available %} disabled{% endunless %}"
+                                  value="{{ value | escape }}"
+                                  {% if option.selected_value == value %}
+                                    checked="checked"
+                                  {% endif %}
+                                  form="{{ product_form_id }}"
+                                >
+                                <label
+                                  class="flex items-center justify-center "
+                                  for="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
+                                >
+                                  {{- value -}}
+                                </label>
+                              </div>
+                            {% endfor %}
+                          </div>
+                        {% endfor %}
+                        <script type="application/json">
+                          {{ product.variants | json }}
+                        </script>
+                      </variant-selector>
+                    {% endunless %}
+                  </div>
+                {% endcomment %}
+                {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 
               {% when 'quantity' %}
                 <div class="my-3">
@@ -187,11 +234,13 @@
                 <div class="my-3 rte">
                   {{ product.description }}
                 </div>
+              {%- when 'variant_picker' -%}
+                {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 
               {% when 'sku' %}
                 {%- assign current_variant = product.selected_or_first_available_variant -%}
                 <span class="visually-hidden">{{- 'products.product.sku' | t }}: </span>
-                <span class="sku--text">{{ current_variant.sku }}</span>
+                <span class="sku--text" id="sku-{{ section.id }}">{{ current_variant.sku }}</span>
 
               {% when 'checkout_buttons' %}
                 <div class="my-3" id="buttons-{{ section.id }}">
@@ -212,6 +261,7 @@
                           disabled
                         {% endif %}
                         form="{{ product_form_id }}"
+                        id="ProductSubmitButton-{{ section.id }}"
                       >
                         <span>
                           {% if selected_variant.available == false %}
@@ -390,9 +440,48 @@
       "limit": 1
     },
     {
-      "type": "variant_selector",
-      "name": "Variant Selector",
-      "limit": 1
+      "type": "variant_picker",
+      "name": "t:sections.main-product.blocks.variant_picker.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "picker_type",
+          "options": [
+            {
+              "value": "dropdown",
+              "label": "t:sections.main-product.blocks.variant_picker.settings.picker_type.options__1.label"
+            },
+            {
+              "value": "button",
+              "label": "t:sections.main-product.blocks.variant_picker.settings.picker_type.options__2.label"
+            }
+          ],
+          "default": "dropdown",
+          "label": "t:sections.main-product.blocks.variant_picker.settings.picker_type.label"
+        },
+        {
+          "id": "swatch_shape",
+          "label": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.label",
+          "type": "select",
+          "info": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.info",
+          "options": [
+            {
+              "value": "circle",
+              "label": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.options__1.label"
+            },
+            {
+              "value": "square",
+              "label": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.options__2.label"
+            },
+            {
+              "value": "none",
+              "label": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.options__3.label"
+            }
+          ],
+          "default": "circle"
+        }
+      ]
     },
     {
       "type": "quantity",

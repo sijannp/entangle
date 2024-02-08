@@ -11,8 +11,6 @@
   - anchor: {String} (optional) This can be added so that on page reload it takes you to wherever you've placed your anchor tag.
 {% endcomment %}
 
-{{ 'component-pagination.css' | asset_url | stylesheet_tag }}
-
 {%- if paginate.parts.size > 0 -%}
   <div class="">
     <nav class="" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
@@ -44,7 +42,7 @@
                 <a
                   role="link"
                   aria-disabled="true"
-                  class=""
+                  class="text-lg font-semibold"
                   aria-current="page"
                   aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
                 >

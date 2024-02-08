@@ -44,9 +44,10 @@
                 <sort-by>
                   <select
                     name="sort_by"
-                    id="sort-by--mobile"
+                    id="sort-by--mobile-1"
                     class=" px-2 py-2 my-2 w-full cursor-pointer bg-transparent border-2"
                   >
+                    <label for="sort-by--mobile-1" class="visually-hidden">Sort by</label>
                     {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
 
                     {% for option in collection.sort_options %}
@@ -132,7 +133,7 @@
                                 class="px-2 py-2 max-w-[40%]"
                               >
                               <span>-</span>
-                              <label for="range2" class="hidden">Max Price</label>
+                              <label for="range2" class="visually-hidden">Max Price</label>
                               <input
                                 name="{{ filter.max_value.param_name }}"
                                 id="range2"
@@ -150,7 +151,7 @@
                             </div>
                             <div class="wrapper">
                               <div class="container color-{{ color }}">
-                                <label for="slider-1" class="hidden">Min Price</label>
+                                <label for="slider-1" class="visually-hidden">Min Price</label>
                                 <input
                                   type="range"
                                   class="text-[80%]"
@@ -164,7 +165,7 @@
 
                                   id="slider-1"
                                 >
-                                <label for="slider-2" class="hidden">Min Price</label>
+                                <label for="slider-2" class="visually-hidden">Min Price</label>
                                 <input
                                   type="range"
                                   class="text-[80%]"
@@ -240,6 +241,7 @@
                 id="sort-by--mobile"
                 class=" px-2 py-2 my-2 w-full cursor-pointer bg-transparent border-2"
               >
+                <label for="sort-by--mobile" class="visually-hidden">Sort by</label>
                 {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
 
                 {% for option in collection.sort_options %}

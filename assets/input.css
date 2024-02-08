@@ -88,6 +88,11 @@
         @apply px-[calc(var(--sm-button-padding-x)_*_1.3)] lg:px-[calc(var(--button-padding-x)_*_1.3)] py-[calc(var(--sm-button-padding-y)_*_1.3)] lg:py-[calc(var(--button-padding-y)_*_1.3)];
     }
 
+    .shopify-payment-button__button--unbranded,
+    .shopify-payment-button__button--unbranded:hover:not([disabled]) {
+        @apply bg-[rgba(var(--color-btn))] text-[rgba(var(--color-btn-text))] hover:bg-[rgba(var(--color-btn))]/[0.8];
+    }
+
     .button-outline {
         @apply inline-block text-sm font-medium border border-[rgba(var(--color-text))] focus:outline-none focus:ring duration-300 hover:scale-x-95;
     }

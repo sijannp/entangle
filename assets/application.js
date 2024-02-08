@@ -276,41 +276,18 @@ class VariantSelector extends HTMLElement {
 
 
 
-        console.log(this.currentVariant)
         if (!this.currentVariant) {
+            this.toggleAddButton(true, '', true);
             this.setUnavailable();
-            console.log('---unav---')
         } else {
+            this.updateMedia();
+            this.updateURL();
             this.updateVariantInput();
-            console.log('---av---')
+            this.renderProductInfo();
         }
 
 
-        // this.disableButtons();
-        // this.getSelectedOptions();
 
-        // this.getSelectedVariant();
-
-        // if (this.currentVariant) {
-        //     const quickAddModal = this.closest('quick-add-modal');
-        //     if (!quickAddModal) {
-        //         this.updateURL();
-        //     }
-        //     this.updateFormID();
-        //     this.updatePrice();
-        //     this.updateSKU();
-        // } else {
-
-        // }
-
-        // const variantChangeEvent = new CustomEvent('variantChange', {
-
-        //     detail: {
-        //         variantId: this.currentVariant.id,
-        //         imageId: this.currentVariant.featured_media.id,
-        //     },
-        // });
-        // document.dispatchEvent(variantChangeEvent);
 
     }
 
@@ -363,7 +340,6 @@ class VariantSelector extends HTMLElement {
         productForms.forEach((productForm) => {
             const input = productForm.querySelector('input[name="id"]');
             input.value = this.currentVariant.id;
-            console.log(input, "-----input-----")
             input.dispatchEvent(new Event('change', { bubbles: true }));
         });
     }
@@ -384,16 +360,29 @@ class VariantSelector extends HTMLElement {
         });
     }
 
+    updateMedia() {
+        const variantChangeEvent = new CustomEvent('variantChange', {
+
+            detail: {
+                variantId: this.currentVariant.id,
+                imageId: this.currentVariant.featured_media.id,
+            },
+        });
+        document.dispatchEvent(variantChangeEvent);
+    }
+
     setInputAvailability(elementList, availableValuesList) {
-        console.log(elementList)
-        console.log(availableValuesList)
         elementList.forEach((element) => {
             const value = element.getAttribute('value');
             const availableElement = availableValuesList.includes(value);
 
             if (element.tagName === 'INPUT') {
                 element.classList.toggle('disabled', !availableElement);
-                element.parentNode.classList.toggle('not-available', !availableElement)
+                if (availableElement) {
+                    element.parentNode.classList.remove('line-through')
+                } else {
+                    element.parentNode.classList.add('line-through')
+                }
             } else if (element.tagName === 'OPTION') {
                 element.innerText = availableElement
                     ? value
@@ -407,7 +396,6 @@ class VariantSelector extends HTMLElement {
         if (!productForm) return;
         const addButton = productForm.querySelector('[name="add"]');
         const addButtonText = productForm.querySelector('[name="add"] > span');
-        console.log(addButton, '---addbutton---')
         if (!addButton) return;
 
         if (disable) {
@@ -449,89 +437,97 @@ class VariantSelector extends HTMLElement {
         if (qtyRules) qtyRules.classList.add('hidden');
     }
 
+    updateURL() {
+        if (!this.currentVariant || this.dataset.updateUrl === 'false') return;
+        window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+    }
+    renderProductInfo() {
+        const requestedVariantId = this.currentVariant.id;
+        const sectionId = this.dataset.originalSection ? this.dataset.originalSection : this.dataset.section;
 
+        fetch(
+            `${this.dataset.url}?variant=${requestedVariantId}&section_id=${this.dataset.originalSection ? this.dataset.originalSection : this.dataset.section
+            }`
+        )
+            .then((response) => response.text())
+            .then((responseText) => {
 
-    // disableButtons() {
-    //     let buttons = document.querySelector("product-form").querySelectorAll('button')
-    //     if (!buttons) return
-    //     buttons.forEach((button) => {
-    //         button.disabled = true
-    //     })
-    // }
+                // prevent unnecessary ui changes from abandoned selections
+                if (this.currentVariant.id !== requestedVariantId) return;
 
-    // getSelectedOptions() {
-    //     this.options = Array.from(this.querySelectorAll('input[type="radio"]:checked'), (input) => input.value);
-    // }
+                const html = new DOMParser().parseFromString(responseText, 'text/html');
+                const destination = document.getElementById(`price-${this.dataset.section}`);
+                const source = html.getElementById(
+                    `price-${this.dataset.originalSection ? this.dataset.originalSection : this.dataset.section}`
+                );
 
-    // getVariantJSON() {
-    //     this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
-    //     return this.variantData;
-    // }
+                const skuSource = html.getElementById(
+                    `Sku-${this.dataset.originalSection ? this.dataset.originalSection : this.dataset.section}`
+                );
+                const skuDestination = document.getElementById(`Sku-${this.dataset.section}`);
+                const inventorySource = html.getElementById(
+                    `Inventory-${this.dataset.originalSection ? this.dataset.originalSection : this.dataset.section}`
+                );
+                const inventoryDestination = document.getElementById(`Inventory-${this.dataset.section}`);
 
-    // getVariantData() {
-    //     this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
-    //     return this.variantData;
-    // }
+                const volumePricingSource = html.getElementById(
+                    `Volume-${this.dataset.originalSection ? this.dataset.originalSection : this.dataset.section}`
+                );
 
-    // getSelectedVariant() {
-    //     this.currentVariant = this.getVariantJSON().find((variant) => {
-    //         const findings = !variant.options
-    //             .map((option, index) => {
-    //                 return this.options[index] === option;
-    //             })
-    //             .includes(false);
+                const pricePerItemDestination = document.getElementById(`Price-Per-Item-${this.dataset.section}`);
+                const pricePerItemSource = html.getElementById(`Price-Per-Item-${this.dataset.originalSection ? this.dataset.originalSection : this.dataset.section}`);
 
-    //         if (findings) return variant;
-    //     });
-    // }
+                const volumePricingDestination = document.getElementById(`Volume-${this.dataset.section}`);
+                const qtyRules = document.getElementById(`Quantity-Rules-${this.dataset.section}`);
+                const volumeNote = document.getElementById(`Volume-Note-${this.dataset.section}`);
 
-    // updateURL() {
-    //     if (!this.currentVariant) return;
-    //     window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
-    // }
+                if (volumeNote) volumeNote.classList.remove('hidden');
+                if (volumePricingDestination) volumePricingDestination.classList.remove('hidden');
+                if (qtyRules) qtyRules.classList.remove('hidden');
 
-    // updateFormID() {
-    //     console.log(this.dataset.section)
-    //     const form_input = document.querySelector(`#product-form-${this.dataset.section}`).querySelector('input[name="id"]');
-    //     form_input.value = this.currentVariant.id;
-    // }
+                if (source && destination) destination.innerHTML = source.innerHTML;
+                if (inventorySource && inventoryDestination) inventoryDestination.innerHTML = inventorySource.innerHTML;
+                if (skuSource && skuDestination) {
+                    skuDestination.innerHTML = skuSource.innerHTML;
+                    skuDestination.classList.toggle('hidden', skuSource.classList.contains('hidden'));
+                }
 
-    // updateSKU() {
-    //     const sku = document.querySelector('.sku--text');
-    //     sku.textContent = this.currentVariant.sku;
-    // }
+                if (volumePricingSource && volumePricingDestination) {
+                    volumePricingDestination.innerHTML = volumePricingSource.innerHTML;
+                }
 
-    // updatePrice() {
-    //     fetch(`${this.dataset.url}?variant=${this.currentVariant.id}&section_id=${this.dataset.section}`)
-    //         .then((response) => response.text())
-    //         .then((responseText) => {
-    //             const priceId = `price-${this.dataset.section}`;
-    //             const html = new DOMParser().parseFromString(responseText, 'text/html');
+                if (pricePerItemSource && pricePerItemDestination) {
+                    pricePerItemDestination.innerHTML = pricePerItemSource.innerHTML;
+                    pricePerItemDestination.classList.toggle('hidden', pricePerItemSource.classList.contains('hidden'));
+                }
 
-    //             const oldPrice = document.getElementById(priceId);
-    //             const newPrice = html.getElementById(priceId);
+                const price = document.getElementById(`price-${this.dataset.section}`);
 
-    //             if (oldPrice && newPrice) oldPrice.innerHTML = newPrice.innerHTML;
+                if (price) price.classList.remove('hidden');
 
+                if (inventoryDestination)
+                    inventoryDestination.classList.toggle('hidden', inventorySource.innerText === '');
 
+                const addButtonUpdated = html.getElementById(`ProductSubmitButton-${sectionId}`);
+                this.toggleAddButton(
+                    addButtonUpdated ? addButtonUpdated.hasAttribute('disabled') : true,
+                    window.variantStrings.soldOut
+                );
 
-    //             const buttonsId = `buttons-${this.dataset.section}`;
-    //             const newButtons = html.getElementById(buttonsId);
-    //             const oldButtons = document.getElementById(buttonsId);
-
-
-    //             if (oldButtons && newButtons) oldButtons.innerHTML = newButtons.innerHTML;
-
-    //             if (window.Shopify && Shopify.PaymentButton) {
-    //                 Shopify.PaymentButton.init();
-    //             }
-    //         });
-    // }
+                // publish(PUB_SUB_EVENTS.variantChange, {
+                //     data: {
+                //         sectionId,
+                //         html,
+                //         variant: this.currentVariant,
+                //     },
+                // });
+            });
+    }
 
 
 }
 
-customElements.define('variant-selector', VariantSelector);
+customElements.define('variant-selects', VariantSelector);
 
 
 
@@ -705,7 +701,6 @@ class QuickAddOpener extends HTMLElement {
                 .then((responseText) => {
                     const responseHTML = new DOMParser().parseFromString(responseText, 'text/html');
                     const productElement = responseHTML.querySelector('[id^="MainProduct-"]');
-                    console.log(responseHTML)
                     let id = "QuickAddInfo-" + opener.getAttribute('data-id').replace(" ", "");
                     const targetElement = document.getElementById(id);
                     targetElement.innerHTML = productElement.innerHTML;
@@ -743,7 +738,6 @@ class SliderComponent extends HTMLElement {
         // Parse the JSON string from the data-slider attribute
         try {
             this.sliderData = JSON.parse(this.getAttribute("data-slider")) || {};
-            console.log(this.sliderData)
         } catch (error) {
             console.error("Error parsing data-slider attribute:", error);
             this.sliderData = {};
@@ -954,7 +948,6 @@ class SplideComponent extends HTMLElement {
         this.main = new Splide(this.splideElement, splideOptions);
 
         this.main.on('mounted', () => {
-            console.log("Splide mounted");
             document.addEventListener('variantChange', this.onVariantChange.bind(this));
         });
 
@@ -973,7 +966,6 @@ class SplideComponent extends HTMLElement {
                 ...this.thumbnailsData,
             };
 
-            console.log(thumbnailOptions)
             this.thumbnails = new Splide(this.thumbnailsElement, thumbnailOptions);
 
             this.main.sync(this.thumbnails);
@@ -1002,18 +994,15 @@ class SplideComponent extends HTMLElement {
     onVariantChange(event) {
         const imageId = event.detail.imageId;
 
-        console.log(imageId, "___image");
 
         const slideIndex = Array.from(this.splideElement.querySelectorAll('.splide__slide')).findIndex(
             (slide) => slide.getAttribute('data-imageid') === imageId.toString()
         );
 
-        console.log(slideIndex);
 
         if (slideIndex !== -1) {
             this.main.go(slideIndex);
         } else {
-            console.log("No variants found");
         }
     }
     handleAnimation(splide) {

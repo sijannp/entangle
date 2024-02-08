@@ -815,6 +815,17 @@ p,
   }
 }
 
+.shopify-payment-button__button--unbranded,
+    .shopify-payment-button__button--unbranded:hover:not([disabled]) {
+  background-color: rgba(var(--color-btn));
+  color: rgba(var(--color-btn-text));
+}
+
+.shopify-payment-button__button--unbranded:hover,
+    .shopify-payment-button__button--unbranded:hover:not([disabled]):hover {
+  background-color: rgba(var(--color-btn), 0.8);
+}
+
 .button-outline {
   display: inline-block;
   border-width: 1px;
@@ -1909,6 +1920,16 @@ p,
 .bg-gray-900 {
   --tw-bg-opacity: 1;
   background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+}
+
+.bg-green-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(74 222 128 / var(--tw-bg-opacity));
+}
+
+.bg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity));
 }
 
 .bg-transparent {
