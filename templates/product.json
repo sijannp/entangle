@@ -13,7 +13,7 @@
                     "type": "price"
                 },
                 "variant_selector": {
-                    "type": "variant_selector"
+                    "type": "variant_picker"
                 },
                 "quantity": {
                     "type": "quantity"

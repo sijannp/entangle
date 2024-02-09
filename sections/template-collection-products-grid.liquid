@@ -14,7 +14,7 @@
     {% if collection.products.size > 0 %}
       <div class="w-full flex flex-col md:flex-row md:gap-4">
         <div
-          class="grid en-grid-gap relative grid-cols-1 {% unless section.settings.display_style == 'list' %}  md:grid-cols-2 {{ desktop_columns_class }} {% endunless %} flex w-full"
+          class="grid grid-gap relative grid-cols-1 {% unless section.settings.display_style == 'list' %}  md:grid-cols-2 {{ desktop_columns_class }} {% endunless %} flex w-full"
         >
           {% for product in collection.products %}
             {% render 'product-card',

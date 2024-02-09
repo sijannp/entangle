@@ -109,6 +109,10 @@
         @apply border-0 h-1 overflow-hidden p-0 absolute w-1;
     }
 
+    .text-light {
+        @apply color-[rgba(var(--color-text))]/[0.85]
+    }
+
     .en-menu-item {
         @apply relative p-1 mx-4 cursor-pointer after:bottom-0 after:content-[""] after:block after:h-[1px] after:left-1/2 after:absolute after:bg-[rgba(var(--color-text))] after:transition-all after:duration-300 after:w-0 hover:after:w-full hover:after:left-0;
     }

@@ -12,7 +12,10 @@ module.exports = {
       'md': '768px',
       'lg': '1024px'
     },
-  
+    borderColor: {
+      DEFAULT: 'rgba(var(--color-text),.9)'
+    }
+
   },
   plugins: [],
 }

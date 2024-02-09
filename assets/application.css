@@ -136,9 +136,16 @@ collapsible-button {
 }
 
 /*---- Collapsible content end -----*/
-.en-varient-selector-item:has(> .en-varient-selector-radio:checked) {
+/* .en-varient-selector-item:has(> .en-varient-selector-radio:checked) {
     border: 2px solid;
+} */
+
+.en-varient-selector-radio:checked+.overlay {
+    border: 1px solid;
+    z-index: 2;
 }
+
+
 
 
 @media screen and (max-width: 750px) {

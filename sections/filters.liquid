@@ -45,7 +45,7 @@
                   <select
                     name="sort_by"
                     id="sort-by--mobile-1"
-                    class=" px-2 py-2 my-2 w-full cursor-pointer bg-transparent border-2"
+                    class=" px-2 py-2 my-2 w-full cursor-pointer bg-transparent border"
                   >
                     <label for="sort-by--mobile-1" class="visually-hidden">Sort by</label>
                     {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
@@ -89,7 +89,7 @@
                 <div class="collapsible-inner filter-group-display">
                   <div class="filter-group-display__header"></div>
 
-                  <div class="px-2 border-2">
+                  <div class="px-2 border">
                     {%- case filter.type -%}
                       {%- when 'boolean', 'list' -%}
                         <ul class="filter-group-display__list my-3">
@@ -202,7 +202,7 @@
             {% comment %}
               <a
                 href="{{ collection.url }}?sort_by={{ collection.sort_by }}"
-                class="active-filters__clear px-2 py-1 mr-2 my-2 border-black border-2 rounded-full inline-block"
+                class="active-filters__clear px-2 py-1 mr-2 my-2 border-black border rounded-full inline-block"
                 >Clear all</a
               >
             {% endcomment %}
@@ -239,7 +239,7 @@
               <select
                 name="sort_by"
                 id="sort-by--mobile"
-                class=" px-2 py-2 my-2 w-full cursor-pointer bg-transparent border-2"
+                class=" px-2 py-2 my-2 w-full cursor-pointer bg-transparent border"
               >
                 <label for="sort-by--mobile" class="visually-hidden">Sort by</label>
                 {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
