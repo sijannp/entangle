@@ -15,9 +15,9 @@
   {%- endstyle -%}
 
   <div class="color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding">
-    <div class="page-width">
+    <div class="page-width reveal">
       <splide-component
-        data-splide='{ "type": "loop", {% unless section.settings.show_arrows %} "arrows": false, {% endunless %}  "pagination": false, {% if section.settings.autoplay %} "autoplay": true, {% endif %}"interval": {{ section.settings.duration | times: 1000 }} }'
+        data-splide='{ "type": "loop", "speed": {{ section.settings.speed |  times: 1000 }}, {% unless section.settings.show_arrows %} "arrows": false, {% endunless %}  "pagination": false, {% if section.settings.autoplay %} "autoplay": true, {% endif %}"interval": {{ section.settings.duration | times: 1000 }} }'
         class="announcement-bar"
       >
         <div class="splide text-xs md:text-sm">
@@ -322,6 +322,16 @@
       "min": 1,
       "max": 10,
       "step": 1
+    },
+    {
+      "type": "range",
+      "label": "Slide speed",
+      "default": 1,
+      "id": "speed",
+      "min": 0,
+      "max": 5,
+      "step": 0.2,
+      "unit": "sec"
     },
     {
       "type": "color_scheme",

@@ -929,7 +929,6 @@ class SplideComponent extends HTMLElement {
         }
 
         this.sliderType = this.getAttribute('data-type');
-        this.animation = this.getAttribute('data-animation')
     }
 
     connectedCallback() {
@@ -977,9 +976,7 @@ class SplideComponent extends HTMLElement {
             this.main.mount();
         }
 
-        if (this.animation) {
-            this.handleAnimation(this.main)
-        }
+
     }
 
     disconnectedCallback() {
@@ -1005,25 +1002,7 @@ class SplideComponent extends HTMLElement {
         } else {
         }
     }
-    handleAnimation(splide) {
-        splide.on('active', (e) => {
-            const activeSlide = splide.Components.Elements.slides[e.index];
-            const titles = activeSlide.querySelectorAll('.animate');
-            titles.forEach((title) => {
-                title.classList.add('animate__fadeInRight');
-                title.classList.remove('animated');
-            });
-        });
 
-        splide.on('inactive', (e) => {
-            const activeSlide = splide.Components.Elements.slides[e.index];
-            const titles = activeSlide.querySelectorAll('.animate');
-            titles.forEach((title) => {
-                title.classList.remove('animate__fadeInRight');
-                title.classList.add('animated');
-            });
-        });
-    }
 
 
 

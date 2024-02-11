@@ -205,14 +205,14 @@
     outline-offset: 3px
 }
 
-.splide__pagination {
+/* .splide__pagination {
     bottom: .5em;
     left: 0;
     padding: 0 1em;
     position: absolute;
     right: 0;
     z-index: 1
-}
+} */
 
 .splide__pagination__page {
     background: #ccc;
@@ -250,7 +250,7 @@
 }
 
 .splide__progress__bar {
-    background: #ccc;
+    background: rgba(var(--color-text), .8);
     height: 3px
 }
 

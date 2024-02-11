@@ -14,7 +14,7 @@
 
 <footer class=" color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width section-{{ section.id }}-padding">
-    <div class="footer-top {% if section.settings.show_separator_line %} border-b-[1px] pb-6 mb-6 {% endif %}">
+    <div class="footer-top {% if section.settings.show_separator_line %} border-b-[.5px] border-[rgba(var(--color-text),.7)] pb-6 mb-6 {% endif %}">
       {%- liquid
         assign has_social_icons = true
         assign show_social_icons = true
