@@ -1193,6 +1193,10 @@ p,
   z-index: 9;
 }
 
+.z-50 {
+  z-index: 50;
+}
+
 .order-last {
   order: 9999;
 }
@@ -1924,6 +1928,10 @@ p,
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
+.stroke-\[3px\] {
+  stroke-width: 3px;
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
@@ -2242,6 +2250,10 @@ p,
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-success {
+  color: rgba(var(--color-success));
 }
 
 .underline {
