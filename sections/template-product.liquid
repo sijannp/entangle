@@ -244,39 +244,48 @@
 
               {% when 'checkout_buttons' %}
                 <div class="my-3" id="buttons-{{ section.id }}">
-                  <product-form>
-                    {% form 'product',
-                      product,
-                      id: product_form_id,
-                      class: 'flex flex-col gap-3',
-                      novalidate: 'novalidate'
-                    %}
-                      <input type="hidden" name="id" value="{{ selected_variant.id }}">
+                  {%- render 'buy-buttons',
+                    block: block,
+                    product: product,
+                    product_form_id: product_form_id,
+                    section_id: section.id,
+                    show_pickup_availability: true
+                  -%}
+                  {% comment %}
+                    <product-form>
+                      {% form 'product',
+                        product,
+                        id: product_form_id,
+                        class: 'flex flex-col gap-3',
+                        novalidate: 'novalidate'
+                      %}
+                        <input type="hidden" name="id" value="{{ selected_variant.id }}">
 
-                      <button
-                        type="submit"
-                        name="add"
-                        class="inline-block relative button button-full button-outline disabled:opacity-50 disabled:cursor-not-allowed"
-                        {% if selected_variant.available == false %}
-                          disabled
-                        {% endif %}
-                        form="{{ product_form_id }}"
-                        id="ProductSubmitButton-{{ section.id }}"
-                      >
-                        <span>
+                        <button
+                          type="submit"
+                          name="add"
+                          class="inline-block relative button button-full button-outline disabled:opacity-50 disabled:cursor-not-allowed"
                           {% if selected_variant.available == false %}
-                            Sold out
-                          {% else %}
-                            Add to cart
+                            disabled
                           {% endif %}
-                        </span>
-                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                          {% render 'spinner' %}
-                        </div>
-                      </button>
-                      {{ form | payment_button }}
-                    {% endform %}
-                  </product-form>
+                          form="{{ product_form_id }}"
+                          id="ProductSubmitButton-{{ section.id }}"
+                        >
+                          <span>
+                            {% if selected_variant.available == false %}
+                              Sold out
+                            {% else %}
+                              Add to cart
+                            {% endif %}
+                          </span>
+                          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                            {% render 'spinner' %}
+                          </div>
+                        </button>
+                        {{ form | payment_button }}
+                      {% endform %}
+                    </product-form>
+                  {% endcomment %}
                 </div>
               {% else %}
 
@@ -459,26 +468,6 @@
           ],
           "default": "button",
           "label": "Picker type"
-        },
-        {
-          "id": "swatch_shape",
-          "label": "Swatch shape",
-          "type": "select",
-          "options": [
-            {
-              "value": "circle",
-              "label": "Circle"
-            },
-            {
-              "value": "square",
-              "label": "Square"
-            },
-            {
-              "value": "none",
-              "label": "None"
-            }
-          ],
-          "default": "circle"
         }
       ]
     },

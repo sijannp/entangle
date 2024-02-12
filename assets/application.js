@@ -271,6 +271,8 @@ class VariantSelector extends HTMLElement {
         this.updateMasterId();
         this.updateSelectedSwatchValue(event);
         this.toggleAddButton(true, '', false);
+        this.updatePickupAvailability();
+
 
         this.updateVariantStatuses();
 
@@ -285,10 +287,6 @@ class VariantSelector extends HTMLElement {
             this.updateVariantInput();
             this.renderProductInfo();
         }
-
-
-
-
     }
 
     updateOptions() {
@@ -314,6 +312,8 @@ class VariantSelector extends HTMLElement {
 
     updateSelectedSwatchValue({ target }) {
         const { name, value, tagName } = target;
+
+        console.log(value)
 
         if (tagName === 'SELECT' && target.selectedOptions.length) {
             const swatchValue = target.selectedOptions[0].dataset.optionSwatchValue;
@@ -389,6 +389,20 @@ class VariantSelector extends HTMLElement {
                     : window.variantStrings.unavailable_with_option.replace('[value]', value);
             }
         });
+    }
+
+
+    updatePickupAvailability() {
+        const pickUpAvailability = document.querySelector('pickup-availability');
+        if (!pickUpAvailability) return;
+
+        if (this.currentVariant && this.currentVariant.available) {
+            pickUpAvailability.fetchAvailability(this.currentVariant.id);
+            console.log(pickUpAvailability)
+        } else {
+            pickUpAvailability.removeAttribute('available');
+            pickUpAvailability.innerHTML = '';
+        }
     }
 
     toggleAddButton(disable = true, text, modifyClass = true) {

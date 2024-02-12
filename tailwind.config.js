@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   content: [
     './layout/*.liquid',
@@ -14,6 +16,13 @@ module.exports = {
     },
     borderColor: {
       DEFAULT: 'rgba(var(--color-text),.9)'
+    },
+    colors: {
+      ...colors,
+      bg: 'rgba(var(--color-bg))',
+      text: 'rgba(var(--color-text))',
+      danger: 'rgba(var(--color-error))',
+      success: 'rgba(var(--color-success))',
     }
 
   },

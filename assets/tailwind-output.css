@@ -1431,10 +1431,6 @@ p,
   height: 100%;
 }
 
-.h-1 {
-  height: 0.25rem;
-}
-
 .max-h-64 {
   max-height: 16rem;
 }
@@ -1828,16 +1824,16 @@ p,
   border-bottom-width: 1px;
 }
 
+.border-b-\[\.5px\] {
+  border-bottom-width: .5px;
+}
+
 .border-b-\[1px\] {
   border-bottom-width: 1px;
 }
 
 .border-t {
   border-top-width: 1px;
-}
-
-.border-b-\[\.5px\] {
-  border-bottom-width: .5px;
 }
 
 .border-solid {
@@ -1850,10 +1846,6 @@ p,
 
 .border-\[rgba\(var\(--color-text\)\)\] {
   border-color: rgba(var(--color-text));
-}
-
-.border-\[rgba\(var\(--color-text\)\2c \.5\)\] {
-  border-color: rgba(var(--color-text),.5);
 }
 
 .border-\[rgba\(var\(--color-text\)\2c \.7\)\] {
@@ -1930,18 +1922,6 @@ p,
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-\[rgba\(var\(--color-text\)\)\] {
-  background-color: rgba(var(--color-text));
-}
-
-.fill-\[rgba\(var\(--color-text\)\2c \.8\)\] {
-  fill: rgba(var(--color-text),.8);
-}
-
-.fill-red-300 {
-  fill: #fca5a5;
 }
 
 .object-contain {
@@ -2218,6 +2198,10 @@ p,
 .text-blue-500 {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
+}
+
+.text-danger {
+  color: rgba(var(--color-error));
 }
 
 .text-gray-500 {
@@ -2544,14 +2528,6 @@ p,
     position: relative;
   }
 
-  .md\:left-auto {
-    left: auto;
-  }
-
-  .md\:top-full {
-    top: 100%;
-  }
-
   .md\:bottom-4 {
     bottom: 1rem;
   }
@@ -2564,6 +2540,10 @@ p,
     left: 1rem;
   }
 
+  .md\:left-auto {
+    left: auto;
+  }
+
   .md\:right-4 {
     right: 1rem;
   }
@@ -2574,6 +2554,10 @@ p,
 
   .md\:top-4 {
     top: 1rem;
+  }
+
+  .md\:top-full {
+    top: 100%;
   }
 
   .md\:col-span-2 {
@@ -2792,34 +2776,6 @@ p,
 }
 
 @media (min-width: 1024px) {
-  .lg\:absolute {
-    position: absolute;
-  }
-
-  .lg\:bottom-4 {
-    bottom: 1rem;
-  }
-
-  .lg\:left-1\/2 {
-    left: 50%;
-  }
-
-  .lg\:left-4 {
-    left: 1rem;
-  }
-
-  .lg\:right-4 {
-    right: 1rem;
-  }
-
-  .lg\:top-1\/2 {
-    top: 50%;
-  }
-
-  .lg\:top-4 {
-    top: 1rem;
-  }
-
   .lg\:col-span-2 {
     grid-column: span 2 / span 2;
   }
@@ -2872,18 +2828,6 @@ p,
     height: 100vh;
   }
 
-  .lg\:h-\[500px\] {
-    height: 500px;
-  }
-
-  .lg\:h-\[750px\] {
-    height: 750px;
-  }
-
-  .lg\:h-\[900px\] {
-    height: 900px;
-  }
-
   .lg\:w-8 {
     width: 2rem;
   }
@@ -2910,16 +2854,6 @@ p,
 
   .lg\:max-w-screen-sm {
     max-width: 480px;
-  }
-
-  .lg\:-translate-x-1\/2 {
-    --tw-translate-x: -50%;
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  .lg\:-translate-y-1\/2 {
-    --tw-translate-y: -50%;
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   }
 
   .lg\:grid-cols-2 {
@@ -2958,10 +2892,6 @@ p,
     gap: 2rem;
   }
 
-  .lg\:p-6 {
-    padding: 1.5rem;
-  }
-
   .lg\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;
@@ -2970,18 +2900,6 @@ p,
   .lg\:py-6 {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
-  }
-
-  .lg\:text-left {
-    text-align: left;
-  }
-
-  .lg\:text-center {
-    text-align: center;
-  }
-
-  .lg\:text-right {
-    text-align: right;
   }
 
   .lg\:text-5xl {

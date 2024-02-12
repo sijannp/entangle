@@ -132,11 +132,16 @@ collapsible-button {
 } */
 
 .en-varient-selector-radio:checked+.overlay {
-    border: 1px solid;
+    background-color: rgb(var(--color-text));
+    color: rgb(var(--color-bg));
     z-index: 2;
 }
 
-
+.en-varient-selector-radio:checked+.overlay+label {
+    background-color: rgb(var(--color-text));
+    color: rgb(var(--color-bg));
+    z-index: 2;
+}
 
 
 @media screen and (max-width: 750px) {
@@ -280,5 +285,5 @@ en-drawer[expanded] .main-drawer {
 
 .shopify-section {
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
