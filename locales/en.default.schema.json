@@ -537,8 +537,27 @@
             "colors": {
                 "label": "Color scheme"
             },
+            "heading": {
+                "heading": "Heading",
+                "sub_heading": "Sub Heading"
+            },
             "heading_size": {
                 "label": "Heading size",
+                "options__1": {
+                    "label": "Small"
+                },
+                "options__2": {
+                    "label": "Medium"
+                },
+                "options__3": {
+                    "label": "Large"
+                },
+                "options__4": {
+                    "label": "Extra large"
+                }
+            },
+            "sub_heading_size": {
+                "label": "Sub Heading size",
                 "options__1": {
                     "label": "Small"
                 },
@@ -571,6 +590,49 @@
                 "section_padding_heading": "Section padding",
                 "padding_top": "Top padding",
                 "padding_bottom": "Bottom padding"
+            },
+            "image": {
+                "label": "Image"
+            },
+            "image_width": {
+                "image_width_desktop": "Image Width",
+                "image_width_mobile": "Mobile Image Width"
+            },
+            "button": {
+                "label": "Button Label"
+            },
+            "button_url": {
+                "label": "Button url"
+            },
+            "text_alignment": {
+                "label": "Text alignment",
+                "options__1": {
+                    "label": "Left"
+                },
+                "options__2": {
+                    "label": "Center"
+                },
+                "options__3": {
+                    "label": "Right"
+                }
+            },
+            "text_position": {
+                "label": "Text Position",
+                "options__1": {
+                    "label": "Top"
+                },
+                "options__2": {
+                    "label": "Middle"
+                },
+                "options__3": {
+                    "label": "Bottom"
+                }
+            },
+            "text_area": {
+                "label": "Text Area"
+            },
+            "page_width": {
+                "label": "Page Width"
             }
         },
         "image-with-text": {
@@ -578,6 +640,61 @@
             "settings": {
                 "image": {
                     "label": "Image"
+                },
+                "image_placement": {
+                    "label": "Image placement",
+                    "option__1": {
+                        "label": "Left"
+                    },
+                    "option__2": {
+                        "label": "Right"
+                    }
+                }
+            },
+            "blocks": {
+                "sub_heading": {
+                    "label": "Pair text with an image"
+                },
+                "button": {
+                    "label": "Button Label"
+                }
+            }
+        },
+        "newsletter": {
+            "name": "Newsletter Compact",
+            "settings": {
+                "background_image": {
+                    "label": "Background Image"
+                },
+                "footer_text": {
+                    "label": "Footer text"
+                }
+            },
+            "blocks": {
+                "newsletter": {
+                    "label": "Newsletter Subscription"
+                },
+                "newsletter_signup": {
+                    "label": "Newsletter Signup"
+                },
+                "image": {
+                    "label": "Image"
+                }
+            }
+        },
+        "image-and-text": {
+            "name": "Image and text",
+            "settings": {
+                "image": {
+                    "label": "Image"
+                }
+            },
+            "blocks": {
+                "image": {
+                    "label": "Image"
+                },
+                "text": {
+                    "label": "Text"
                 }
             }
         }

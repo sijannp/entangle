@@ -48,6 +48,24 @@
         "hotspots": {
             "type": "image-hotspots"
         },
+        "image_and_text": {
+            "type": "text-and-image",
+            "blocks": {
+                "image": {
+                    "type": "image"
+                },
+                "text": {
+                    "type": "text",
+                    "settings": {
+                        "color_scheme": "inverse"
+                    }
+                }
+            },
+            "block_order": [
+                "image",
+                "text"
+            ]
+        },
         "newsletter": {
             "type": "newsletter",
             "blocks": {
@@ -67,6 +85,7 @@
     "order": [
         "slideshow",
         "featured_collection",
+        "image_and_text",
         "hotspots",
         "newsletter"
     ]

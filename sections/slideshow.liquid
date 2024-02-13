@@ -23,7 +23,7 @@
     <splide-component
       data-type="slideshow"
       data-animation="true"
-      data-splide='{"type":"fade", "rewind": true, "arrows": false, "autoplay": "play", "pauseOnHover": false, "interval": 7000, "speed": 1500}'
+      data-splide='{"type":"fade", "rewind": true, "arrows": true, "autoplay": "play", "pauseOnHover": false, "interval": 7000, "speed": 1500}'
       class=""
     >
       <div class="splide">
@@ -133,8 +133,9 @@
         <div class="splide__progress relative">
           <div class="splide__progress__bar"></div>
         </div>
-        <div class="flex gap-4 items-center justify-end py-1 color-{{ section.settings.color_scheme }} relative">
-          <ul class="splide__pagination relative"></ul>
+        <div class="flex page-width gap-6 items-center justify-end py-2 color-{{ section.settings.color_scheme }} relative">
+          <ul class="splide__pagination absolute left-1/2 -translate-x-1/2 "></ul>
+          {% render 'splide-arrows' %}
           <button class="splide__toggle" type="button">
             {% render 'icon-play', class: 'h-6 w-6 splide__toggle__play' %}
             {% render 'icon-pause', class: 'h-6 w-6 splide__toggle__pause' %}
@@ -179,7 +180,7 @@
       "type": "checkbox",
       "id": "full_width",
       "label": "Make section full width",
-      "default": false
+      "default": true
     },
     {
       "type": "select",

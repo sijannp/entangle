@@ -149,7 +149,7 @@
 }
 
 .splide__arrow {
-    -ms-flex-align: center;
+    /* -ms-flex-align: center;
     align-items: center;
     background: #ccc;
     border: 0;
@@ -166,14 +166,14 @@
     top: 50%;
     transform: translateY(-50%);
     width: 2em;
-    z-index: 1
+    z-index: 1 */
 }
 
-.splide__arrow svg {
+/* .splide__arrow svg {
     fill: #000;
     height: 1.2em;
     width: 1.2em
-}
+} */
 
 .splide__arrow:hover:not(:disabled) {
     opacity: .9
@@ -192,9 +192,9 @@
     left: 1em
 }
 
-.splide__arrow--prev svg {
+/* .splide__arrow--prev svg {
     transform: scaleX(-1)
-}
+} */
 
 .splide__arrow--next {
     right: 1em

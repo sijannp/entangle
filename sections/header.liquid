@@ -58,7 +58,7 @@
   class="block top-0 sticky transition-all duration-500 z-[10] gradient color-{{ section.settings.color_scheme }} "
 >
   <div class="{% unless section.settings.full_width %}page-width {% endunless %} section reveal w-full">
-    <div class="flex flex-col gap-8 lg:py-6">
+    <div class="flex flex-col gap-8 lg:py-2">
       <div class="header grid gap-3 items-center {% if section.settings.menu_style == 'top_bottom' %} twocol {% elsif section.settings.menu_style == 'drawer' -%}drawer  {%- endif %}">
         <open-drawer
           data-drawer="menu"
