@@ -556,6 +556,9 @@
                     "label": "Extra large"
                 }
             },
+            "heading_text_aligmnet": {
+                "label": "Heading Text Aligment"
+            },
             "sub_heading_size": {
                 "label": "Sub Heading size",
                 "options__1": {
@@ -695,6 +698,71 @@
                 },
                 "text": {
                     "label": "Text"
+                }
+            }
+        },
+        "multi-column": {
+            "name": "MultiColumn",
+            "settings": {
+                "image_width": {
+                    "label": "Image width",
+                    "option__1": {
+                        "label": "One-third wodth of column"
+                    },
+                    "option__2": {
+                        "label": "Half width of column"
+                    },
+                    "option__3": {
+                        "label": "Full width of column"
+                    }
+                },
+                "image_ratio": {
+                    "label": "Image Ratio",
+                    "option__1": {
+                        "label": "Adapt"
+                    },
+                    "option__2": {
+                        "label": "Portrait"
+                    },
+                    "option__3": {
+                        "label": "Square"
+                    },
+                    "option__4": {
+                        "label": "Circle"
+                    }
+                },
+                "column_display_desktop": {
+                    "label": "Number of columns on desktop"
+                },
+                "column_alignment": {
+                    "label": "Column alignment",
+                    "option__1": {
+                        "label": "Left"
+                    },
+                    "option__2": {
+                        "label": "Center"
+                    }
+                }
+            }
+        },
+        "multi-row": {
+            "name": "MultiRow",
+            "settings": {
+                "image_layout": {
+                    "label": "Image Placement",
+                    "info": "Placement is automatically optimized for mobile.",
+                    "option__1": {
+                        "label": "Alternate left"
+                    },
+                    "option__2": {
+                        "label": "Alternate right "
+                    },
+                    "option__3": {
+                        "label": "Align Left"
+                    },
+                    "option__4": {
+                        "label": "Align Right"
+                    }
                 }
             }
         }

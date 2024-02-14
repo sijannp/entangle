@@ -66,19 +66,23 @@
                 "text"
             ]
         },
-        "newsletter": {
-            "type": "newsletter",
+        "multicolumn": {
+            "type": "multi-column",
             "blocks": {
-                "newsletter": {
-                    "type": "newsletter"
+                "column_1": {
+                    "type": "column"
                 },
-                "subscribe": {
-                    "type": "newsletter_signup"
+                "column_2": {
+                    "type": "column"
+                },
+                "column_3": {
+                    "type": "column"
                 }
             },
             "block_order": [
-                "newsletter",
-                "subscribe"
+                "column_1",
+                "column_2",
+                "column_3"
             ]
         }
     },
@@ -87,6 +91,6 @@
         "featured_collection",
         "image_and_text",
         "hotspots",
-        "newsletter"
+        "multicolumn"
     ]
 }

@@ -1,0 +1,342 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  .image-with-text .image {
+    width: {{ section.settings.image_width }}%;
+  }
+
+  @media screen and (max-width: 768px) {
+    .image-with-text .image {
+      width: 100%;
+    }
+
+  }
+  .image-small {
+    height: 300px;
+  }
+
+  .image-medium {
+    height: 400px;
+  }
+
+  .image-large {
+    height: 600px;
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign odd_class = ''
+  assign even_class = ''
+  if section.settings.image_layout contains 'align-right'
+    assign odd_class = ' md:flex-row-reverse'
+    assign even_class = ' md:flex-row-reverse'
+  endif
+  if section.settings.image_layout contains 'align-left'
+    assign odd_class = 'md:flex-row'
+    assign even_class = 'md:flex-row'
+  endif
+  if section.settings.image_layout contains 'alternate-right'
+    assign odd_class = ' md:flex-row-reverse'
+    assign even_class = 'md:flex-row'
+  endif
+  if section.settings.image_layout contains 'alternate-left'
+    assign odd_class = 'md:flex-row '
+    assign even_class = ' md:flex-row-reverse'
+  endif
+-%}
+
+<div class="{% if section.settings.page_width %}page-width{% endif %} section-{{ section.id }}-padding">
+  {% for block in section.blocks %}
+    {% case block.type %}
+      {% when 'row' %}
+        <div class="image-with-text pb-4  text-{{ section.settings.vertical_alignment }}    ">
+          <div
+            class="
+              grid-gap flex flex-col
+              {% cycle odd_class, even_class %}
+            "
+          >
+            <div class="image shrink-0 ">
+              {% assign image = block.settings.image %}
+              {% if image %}
+                {% assign image_height = 'h-full' %}
+                {% case section.settings.height %}
+                  {% when 'small' %}
+                    {% assign image_height = 'image-small' %}
+                  {% when 'medium' %}
+                    {% assign image_height = 'image-medium' %}
+                  {% when 'large' %}
+                    {% assign image_height = 'image-large' %}
+                {% endcase %}
+                {% assign image_class = 'w-full  object-cover ' | append: image_height %}
+                {% if settings.corners == 'rounded' %}
+                  {% assign image_class = image_class | append: ' rounded-md' %}
+                {% endif %}
+                {{ image | image_url: width: image.width | image_tag: class: image_class }}
+              {% else %}
+                {{ 'detailed-apparel-1' | placeholder_svg_tag: ' w-full h-full object-cover ' }}
+              {% endif %}
+            </div>
+            <div
+              class="
+                flex
+                flex-col
+                {{ section.settings.content_position }}
+                color-{{ section.settings.color_scheme }}
+                p-4
+              "
+            >
+              <h2 class="{{ block.settings.heading_size }}">{{ block.settings.heading }}</h2>
+
+              <div class=" rte {{ block.settings.sub_heading_size }}">{{ block.settings.sub_heading }}</div>
+
+              <div class="">
+                <a href="{{ block.settings.button_url }}" class="button button-primary">
+                  {{ block.settings.button }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endcase %}
+  {% endfor %}
+</div>
+{% schema %}
+{
+  "name": "MultiRow",
+  "settings": [
+    {
+      "type": "select",
+      "id": "height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.all.image_height.option__1.label"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.all.image_height.option__2.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.all.image_height.option__3.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.all.image_height.option__4.label"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.all.image_height.label"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "t:sections.all.image_width.image_width_desktop",
+      "min": 20,
+      "max": 80,
+      "default": 50,
+      "step": 5,
+      "unit": "%"
+    },
+    {
+      "type": "checkbox",
+      "id": "page_width",
+      "label": "t:sections.all.page_width.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_layout",
+      "options": [
+        {
+          "value": "alternate-left",
+          "label": "t:sections.multi-row.settings.image_layout.option__1.label"
+        },
+        {
+          "value": "alternate-right",
+          "label": "t:sections.multi-row.settings.image_layout.option__2.label"
+        },
+        {
+          "value": "align-left",
+          "label": "t:sections.multi-row.settings.image_layout.option__3.label"
+        },
+        {
+          "value": "align-right",
+          "label": "t:sections.multi-row.settings.image_layout.option__4.label"
+        }
+      ],
+      "default": "alternate-left",
+      "label": "t:sections.multi-row.settings.image_layout.label",
+      "info": "t:sections.multi-row.settings.image_layout.info"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "t:sections.all.text_position.label",
+      "options": [
+        {
+          "value": "justify-start",
+          "label": "t:sections.all.text_position.options__1.label"
+        },
+        {
+          "value": "justify-center",
+          "label": "t:sections.all.text_position.options__2.label"
+        },
+        {
+          "value": "justify-end",
+          "label": "t:sections.all.text_position.options__3.label"
+        }
+      ],
+      "default": "justify-center"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "t:sections.all.text_alignment.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.all.text_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.all.text_alignment.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.all.text_alignment.options__3.label"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:sections.all.padding.padding_top",
+      "min": 0,
+      "max": 100,
+      "default": 25,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:sections.all.padding.padding_bottom",
+      "min": 0,
+      "max": 100,
+      "default": 25,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "id": "color_schemel",
+      "default": "background-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "MultiRow",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.image-with-text.settings.image.label"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "t:sections.all.heading.heading",
+          "default": "Row"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "t:sections.all.heading_size.label",
+          "options": [
+            {
+              "value": "h3",
+              "label": "t:sections.all.heading_size.options__1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.options__2.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.heading_size.options__3.label"
+            }
+          ],
+          "default": "h2"
+        },
+        {
+          "type": "richtext",
+          "id": "sub_heading",
+          "label": "t:sections.all.heading.sub_heading",
+          "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>"
+        },
+        {
+          "type": "select",
+          "id": "sub_heading_size",
+          "label": "t:sections.all.sub_heading_size.label",
+          "options": [
+            {
+              "value": "p",
+              "label": "t:sections.all.sub_heading_size.options__1.label"
+            },
+            {
+              "value": "h4",
+              "label": "t:sections.all.sub_heading_size.options__2.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:sections.all.sub_heading_size.options__3.label"
+            }
+          ],
+          "default": "h4"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "t:sections.all.button.label",
+          "default": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "t:sections.all.button_url.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MultiRow",
+      "blocks": [
+        {
+          "type": "row"
+        },
+        {
+          "type": "row"
+        },
+        {
+          "type": "row"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -19,7 +19,7 @@
 %}
 
 <div class="color-{{ section.settings.color_scheme }}">
-  <div class="{% unless section.settings.full_width %} page-width {% endunless %}">
+  <div class="slideshow {% unless section.settings.full_width %} page-width {% endunless %}">
     <splide-component
       data-type="slideshow"
       data-animation="true"
@@ -86,15 +86,15 @@
                 </div>
                 <div class="{{ content_class }} text-{{ alignment_mobile }} md:text-{{ alignment }} color-{{ block.settings.color_scheme }} {% unless container %} bg-transparent {% endunless %}">
                   {% if heading != blank %}
-                    <h2 class="animate rtl {{ block.settings.heading_size }}">{{ heading }}</h2>
+                    <h2 class="animate btt {{ block.settings.heading_size }}">{{ heading }}</h2>
                   {% endif %}
                   {% if content != blank %}
-                    <div class="rte animate ltr">
+                    <div class="rte animate btt delay-100">
                       {{ content }}
                     </div>
                   {% endif %}
                   {% if button_label %}
-                    <div class="animate rtl pt-3">
+                    <div class="animate delay-200 btt pt-3">
                       <a href="{{ button_link }}" class="button button-primary hover-effect w-full md:w-auto">
                         {{ button_label }}
                       </a>
