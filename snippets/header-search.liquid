@@ -1,6 +1,7 @@
 <div class="absolute -absolute-center w-full p-4">
   <div class="flex w-full gap-4 items-center justify-center">
-    <form action="{{ routes.search_url }}" method="get" role="search" class="search search-modal__form">rest
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search search-modal__form">
+      rest
       <div class="field">
         <input
           class="search__input field__input"
@@ -59,7 +60,7 @@
           </div>
         </div>
 
-        <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+        <span class="predictive-search-status sr-only" role="status" aria-hidden="true"></span>
       {%- endif -%}
     </form>
     <div

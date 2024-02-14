@@ -41,13 +41,13 @@
                         <span class="text-sm text-[rgba(var(--color-text))]/75">
                           {%- if item.original_price != item.final_price -%}
                             <div class="">
-                              <span class="visually-hidden">
+                              <span class="sr-only">
                                 {{ 'products.product.price.regular_price' | t }}
                               </span>
                               <s class="opacity-70">
                                 {{- item.original_price | money -}}
                               </s>
-                              <span class="visually-hidden"> Sale Price </span>
+                              <span class="sr-only"> Sale Price </span>
                               <strong class="final-line-price">
                                 {{ item.final_price | money }}
                               </strong>

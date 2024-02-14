@@ -29,7 +29,7 @@
   </div>
   {%- if form.errors contains 'email' -%}
     <span id="{{ formId }}-email-error" class="input-error-message">
-      <span class="visually-hidden">Error </span>
+      <span class="sr-only">Error </span>
       {% render 'icon-error', class: 'w-4 h-4' %}
       <span>
         {{- form.errors.translated_fields.email | capitalize }}

@@ -24,7 +24,8 @@
         "breakpoints": { "1024": { "destroy": true } },
         {% endunless %}
         "autoHeight": true,
-        "lazyLoad": true
+        "lazyLoad": true,
+        "arrows": false
       }
     '
     data-thumbnails='
@@ -49,30 +50,25 @@
   >
     <div class="splide">
       <div class="splide__track">
-        <ul class="splide__list items-center {% unless slider_desktop %} lg:flex lg:flex-wrap lg:gap-3 {% endunless %}">
-          {%- if product.selected_or_first_available_variant.featured_media != null -%}
-            {%- assign media = product.selected_or_first_available_variant.featured_media -%}
-
+        {% style %}
+          @media screen and (min-width: 768px) {
+            .media-flex-lg {
+              display: flex !important;
+            }
+          }
+        {% endstyle %}
+        <ul class="splide__list items-center {% unless slider_desktop %} media-flex-lg lg:flex-wrap lg:gap-3 {% endunless %}">
+          {% for media in product.media %}
             <li
-              class="splide__slide {% unless slider_desktop %} lg:flex lg:w-full {% endunless %} "
+              class="splide__slide {% unless slider_desktop %} lg:flex lg:w-[48%] {% endunless %} {% if media.id == product.selected_or_first_available_variant.featured_media.id %} lg:w-full lg:order-first {% else  %}  {% endif %}"
               data-imageid="{{ media.id }}"
             >
               {% render 'product-media', media: media, zoom_on_hover: zoom_on_hover, variant_images: variant_images %}
             </li>
-          {% endif %}
-
-          {% for media in product.media %}
-            {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
-              <li
-                class="splide__slide {% unless slider_desktop %} lg:flex lg:w-[48%] {% endunless %}"
-                data-imageid="{{ media.id }}"
-              >
-                {% render 'product-media', media: media, zoom_on_hover: zoom_on_hover, variant_images: variant_images %}
-              </li>
-            {% endunless %}
           {% endfor %}
         </ul>
       </div>
+      {% render 'splide-arrows' %}
     </div>
 
     {% if product.media.size > 1 %}

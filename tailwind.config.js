@@ -1,4 +1,3 @@
-const colors = require('tailwindcss/colors')
 
 module.exports = {
   content: [
@@ -18,9 +17,10 @@ module.exports = {
       DEFAULT: 'rgba(var(--color-text),.9)'
     },
     colors: {
-      ...colors,
+      transparent: 'transparent',
       bg: 'rgba(var(--color-bg))',
       text: 'rgba(var(--color-text))',
+      light: 'rgba(var(--color-text),.85)',
       danger: 'rgba(var(--color-error))',
       success: 'rgba(var(--color-success))',
     }

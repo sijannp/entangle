@@ -1005,6 +1005,8 @@ class SplideComponent extends HTMLElement {
     onVariantChange(event) {
         const imageId = event.detail.imageId;
 
+        const slideElements = Array.from(this.splideElement.querySelectorAll('.splide__slide'));
+
 
         const slideIndex = Array.from(this.splideElement.querySelectorAll('.splide__slide')).findIndex(
             (slide) => slide.getAttribute('data-imageid') === imageId.toString()
@@ -1012,6 +1014,12 @@ class SplideComponent extends HTMLElement {
 
 
         if (slideIndex !== -1) {
+            const slideElement = slideElements[slideIndex];
+            console.log(slideElement)
+            if (slideElement) {
+                slideElements.forEach(slide => slide.classList.remove('lg:order-first', 'lg:w-full'))
+                slideElement.classList.add('lg:order-first', 'lg:w-full')
+            }
             this.main.go(slideIndex);
         } else {
         }

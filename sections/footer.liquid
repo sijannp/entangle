@@ -182,7 +182,7 @@
 
         {%- if section.settings.payment_enable -%}
           <div class="footer__payment">
-            <span class="visually-hidden">{{ 'sections.footer.payment' | t }}</span>
+            <span class="sr-only">{{ 'sections.footer.payment' | t }}</span>
             <ul class="flex flex-wrap gap-2" role="list">
               {%- for type in shop.enabled_payment_types -%}
                 <li class="list-payment__item">

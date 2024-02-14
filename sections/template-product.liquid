@@ -1,365 +1,300 @@
-<div
-  id="MainProduct-{{ section.id }}"
-  class="page-width section-{{ section.id }}-padding bg-[rgba(var(--color-bg))]"
-  data-section="{{ section.id }}"
->
-  {% assign selected_variant = product.selected_or_first_available_variant %}
-  {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
 
-  {% liquid
-    assign media_width = 'md:w-[60%]'
-    if section.settings.media_width == 'small'
-      assign media_width = 'md:w-[50%]'
-    elsif section.settings.media_width == 'large'
-      assign media_width = 'md:w-[70%]'
-    endif
-  %}
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+<div class="color-{{ section.settings.color_scheme }}">
+  <div
+    id="MainProduct-{{ section.id }}"
+    class="page-width section-{{ section.id }}-padding bg-[rgba(var(--color-bg))]"
+    data-section="{{ section.id }}"
+  >
+    {% assign selected_variant = product.selected_or_first_available_variant %}
+    {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
 
-  <div class="page-width en-container">
-    <div class="mx-auto my-8">
-      <div class="flex flex-col lg:flex-row gap-8">
-        <div class="product--medias w-full {{ media_width }} {% if section.settings.media_position == "right" %} order-last {% endif %}">
-          {% render 'product-medias',
-            slider_desktop: section.settings.desktop_slider,
-            zoom_on_hover: section.settings.zoom_on_hover,
-            hide_thumbnails_on_mobile: section.settings.hide_thumbnails_on_mobile,
-            adaptive_height: section.settings.adaptive_height
-          %}
-        </div>
+    {% liquid
+      assign media_width = 'md:w-[60%]'
+      if section.settings.media_width == 'small'
+        assign media_width = 'md:w-[50%]'
+      elsif section.settings.media_width == 'large'
+        assign media_width = 'md:w-[70%]'
+      endif
+    %}
 
-        <div class="product--information sticky w-full lg:w-[40%] top-5 p-2 ">
-          {%- assign product_form_id = 'product-form-' | append: section.id -%}
-          {% for block in section.blocks %}
-            {% case block.type %}
-              {% when 'vendor' %}
-                <div class="my-3">
-                  <span class="text-xs ">{{ product.vendor }}</span>
-                </div>
-              {% when 'title' %}
-                <div class="my-3">
-                  <h1 class="h2">
-                    {{ product.title }}
-                  </h1>
-                </div>
-                {% comment %}
-                  {% when 'price' %}
-                  <div class="flex flex-wrap gap-4 items-center" id="price-{{ section.id }}">
-                    {% render 'price', product: product, product_page: true %}
-                    {% render 'badges', product: product %}
+    <div class="page-width en-container">
+      <div class="mx-auto my-8">
+        <div class="flex flex-col lg:flex-row gap-8 relative">
+          <div class="product--medias w-full md:sticky md:top-0 {{ media_width }} {% if section.settings.media_position == "right" %} order-last {% endif %}">
+            {% liquid
+              assign desktop_slider = true
+              if section.settings.desktop_media_layout == 'grid'
+                assign desktop_slider = false
+              endif
+            %}
+            {% render 'product-medias',
+              slider_desktop: desktop_slider,
+              zoom_on_hover: section.settings.zoom_on_hover,
+              hide_thumbnails_on_mobile: section.settings.hide_thumbnails_on_mobile,
+              adaptive_height: section.settings.adaptive_height
+            %}
+          </div>
+
+          {% comment %}
+            "order-first"
+          {% endcomment %}
+
+          <div class="md:sticky md:top-0 md:h-fit w-full lg:w-[40%] p-2 text-{{ section.settings.alignment }} ">
+            {%- assign product_form_id = 'product-form-' | append: section.id -%}
+            {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'vendor' %}
+                  <div class="my-3">
+                    <span class="text-xs ">{{ product.vendor }}</span>
+                  </div>
+                {% when 'title' %}
+                  <div class="my-3">
+                    <h1 class="h2">
+                      {{ product.title }}
+                    </h1>
+                  </div>
+                {% when 'price' %}
+                  <div class="price-wrap flex flex-col">
+                    <div
+                      class="my-3 flex gap-2 items-center flex-wrap justify-{{ section.settings.alignment }}"
+                      id="price-{{ section.id }}"
+                    >
+                      <span class="text-base text-red-400 line-through">
+                        {{- selected_variant.compare_at_price | money -}}
+                      </span>
+                      <span class="text-lg">{{ selected_variant.price | money }}</span>
+
+                      <div class="">
+                        {%- if product.available == false -%}
+                          <span
+                            class="bg-red-400 px-2 py-1"
+                          >
+                            Sold out
+                          </span>
+                        {%- elsif product.compare_at_price > product.price and product.available -%}
+                          <span
+                            class="bg-green-400 px-2 py-1"
+                          >
+                            Sale
+                          </span>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    {{ form | payment_terms }}
                   </div>
 
-                  <div class="rte">
-                    {%- if cart.taxes_included -%}
-                      {{ 'products.product.include_taxes' | t }}
-                    {%- endif -%}
-                    {%- if shop.shipping_policy.body != blank -%}
-                      {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
-                    {%- endif -%}
-                  </div>
-                  <div {{ block.shopify_attributes }}>
-                    {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id -%}
-                    {%- form 'product', product, id: product_form_installment_id, class: 'installment caption-large' -%}
-                      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                      {{ form | payment_terms }}
-                    {%- endform -%}
-                  </div>
-                {% endcomment %}
-              {% when 'price' %}
-                <div class="price-wrap flex flex-col">
-                  <div class="my-3 flex gap-2 items-center flex-wrap" id="price-{{ section.id }}">
-                    <span class="text-base text-red-400 line-through">
-                      {{- selected_variant.compare_at_price | money -}}
-                    </span>
-                    <span class="text-lg">{{ selected_variant.price | money }}</span>
-
-                    <div class="">
-                      {%- if product.available == false -%}
-                        <span
-                          class="bg-red-400 px-2 py-1"
-                        >
-                          Sold out
-                        </span>
-                      {%- elsif product.compare_at_price > product.price and product.available -%}
-                        <span
-                          class="bg-green-400 px-2 py-1"
-                        >
-                          Sale
-                        </span>
+                  {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
+                    <div class="product__tax caption rte">
+                      {%- if cart.taxes_included -%}
+                        Tax included
+                      {%- endif -%}
+                      {%- if shop.shipping_policy.body != blank -%}
+                        Shipping calculated at checkout.
                       {%- endif -%}
                     </div>
-                  </div>
-                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                  {{ form | payment_terms }}
-                </div>
-
-                {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
-                  <div class="product__tax caption rte">
-                    {%- if cart.taxes_included -%}
-                      Tax included
-                    {%- endif -%}
-                    {%- if shop.shipping_policy.body != blank -%}
-                      Shipping calculated at checkout.
-                    {%- endif -%}
-                  </div>
-                {%- endif -%}
-
-              {% when 'variant_selector' %}
-                {% comment %}
-                  <div class="my-3">
-                    {% unless product.has_only_default_variant %}
-                      <variant-selector
-                        data-section="{{ section.id }}"
-                        data-url="{{ product.url }}"
-                        data-update-url="true"
-                      >
-                        {% for option in product.options_with_values %}
-                          <label for="Option-{{ section.id }}-{{ forloop.index0 }}">{{ option.name }}</label>
-                          <div class="product-form__input my-2 flex gap-4 flex-wrap">
-                            {% for value in option.values %}
-                              {%- assign product_available = product.variants[forloop.index0].available -%}
-                              <div class="en-varient-selector-item px-4 py-1 border-2  min-w-[40px] relative {% if settings.corners == 'rounded' %} rounded-lg {% endif %} {% unless product_available %} not-available{% endunless %}">
-                                <input
-                                  type="radio"
-                                  name="options[{{ option.name | escape }}]"
-                                  id="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
-                                  class="en-varient-selector-radio block absolute inset-0  z-[100] cursor-pointer opacity-[0.001] {% unless product_available %} disabled{% endunless %}"
-                                  value="{{ value | escape }}"
-                                  {% if option.selected_value == value %}
-                                    checked="checked"
-                                  {% endif %}
-                                  form="{{ product_form_id }}"
-                                >
-                                <label
-                                  class="flex items-center justify-center "
-                                  for="Option-{{ section.id }}-{{ forloop.index0 }}-{{ value | escape }}"
-                                >
-                                  {{- value -}}
-                                </label>
-                              </div>
-                            {% endfor %}
-                          </div>
-                        {% endfor %}
-                        <script type="application/json">
-                          {{ product.variants | json }}
-                        </script>
-                      </variant-selector>
-                    {% endunless %}
-                  </div>
-                {% endcomment %}
-                {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
-
-              {% when 'quantity' %}
-                <div class="my-3">
-                  <label for="Quantity-{{ section.id }}">Quantity</label>
-                  <div class="w-20 md:w-32 h-full relative border ">
-                    <input
-                      type="number"
-                      name="quantity"
-                      value="1"
-                      min="1"
-                      id="Quantity-{{ section.id }}"
-                      class="product-form__input w-full h-full p-2 px-6 text-center focus:outline-none"
-                      form="{{ product_form_id }}"
-                    >
-                    <quantity-button
-                      data-section="product-page"
-                      class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
-                    >
-                      -
-                    </quantity-button>
-                    <quantity-button
-                      data-section="product-page"
-                      class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
-                    >
-                      +
-                    </quantity-button>
-                  </div>
-                </div>
-              {%- when 'inventory' -%}
-                <p
-                  class="flex gap-2 items-center{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
-                  {{ block.shopify_attributes }}
-                  id="Inventory-{{ section.id }}"
-                  role="status"
-                >
-                  {%- if product.selected_or_first_available_variant.inventory_management == 'shopify' -%}
-                    {%- if product.selected_or_first_available_variant.inventory_quantity > 0 -%}
-                      {%- if product.selected_or_first_available_variant.inventory_quantity
-                          <= block.settings.inventory_threshold
-                      -%}
-                        <svg width="15" height="15" aria-hidden="true">
-                          <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(238,148,65, 0.3)"/>
-                          <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(238,148,65)"/>
-                        </svg>
-                        {%- if block.settings.show_inventory_quantity -%}
-                          {{-
-                            'products.product.inventory_low_stock_show_count'
-                            | t: quantity: product.selected_or_first_available_variant.inventory_quantity
-                          -}}
-                        {%- else -%}
-                          {{- 'products.product.inventory_low_stock' | t -}}
-                        {%- endif -%}
-                      {%- else -%}
-                        <svg width="15" height="15" aria-hidden="true">
-                          <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(62,214,96, 0.3)"/>
-                          <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(62,214,96)"/>
-                        </svg>
-                        {%- if block.settings.show_inventory_quantity -%}
-                          {{-
-                            'products.product.inventory_in_stock_show_count'
-                            | t: quantity: product.selected_or_first_available_variant.inventory_quantity
-                          -}}
-                        {%- else -%}
-                          {{- 'products.product.inventory_in_stock' | t -}}
-                        {%- endif -%}
-                      {%- endif -%}
-                    {%- else -%}
-                      {%- if product.selected_or_first_available_variant.inventory_policy == 'continue' -%}
-                        <svg width="15" height="15" aria-hidden="true">
-                          <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(62,214,96, 0.3)"/>
-                          <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(62,214,96)"/>
-                        </svg>
-                        {{- 'products.product.inventory_out_of_stock_continue_selling' | t -}}
-                      {%- else -%}
-                        <svg width="15" height="15" aria-hidden="true">
-                          <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(200,200,200, 0.3)"/>
-                          <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(200,200,200)"/>
-                        </svg>
-                        {{- 'products.product.inventory_out_of_stock' | t -}}
-                      {%- endif -%}
-                    {%- endif -%}
                   {%- endif -%}
-                </p>
-              {% when 'description' %}
-                <div class="my-3 rte">
-                  {{ product.description }}
-                </div>
-              {%- when 'variant_picker' -%}
-                {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 
-              {% when 'sku' %}
-                {%- assign current_variant = product.selected_or_first_available_variant -%}
-                <span class="visually-hidden">{{- 'products.product.sku' | t }}: </span>
-                <span class="sku--text" id="sku-{{ section.id }}">{{ current_variant.sku }}</span>
-
-              {% when 'checkout_buttons' %}
-                <div class="my-3" id="buttons-{{ section.id }}">
-                  {%- render 'buy-buttons',
-                    block: block,
+                {% when 'variant_selector' %}
+                  {% render 'product-variant-picker',
                     product: product,
-                    product_form_id: product_form_id,
-                    section_id: section.id,
-                    show_pickup_availability: true
-                  -%}
-                  {% comment %}
-                    <product-form>
-                      {% form 'product',
-                        product,
-                        id: product_form_id,
-                        class: 'flex flex-col gap-3',
-                        novalidate: 'novalidate'
-                      %}
-                        <input type="hidden" name="id" value="{{ selected_variant.id }}">
+                    block: block,
+                    product_form_id: product_form_id
+                  %}
+                {% when 'quantity' %}
+                  <div class="my-3">
+                    <label for="Quantity-{{ section.id }}">Quantity</label>
+                    <div class="w-20 md:w-32 h-full relative border flex justify-{{ section.settings.alignment }}">
+                      <input
+                        type="number"
+                        name="quantity"
+                        value="1"
+                        min="1"
+                        id="Quantity-{{ section.id }}"
+                        class="product-form__input w-full h-full p-2 px-6 text-center focus:outline-none"
+                        form="{{ product_form_id }}"
+                      >
+                      <quantity-button
+                        data-section="product-page"
+                        class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
+                      >
+                        -
+                      </quantity-button>
+                      <quantity-button
+                        data-section="product-page"
+                        class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
+                      >
+                        +
+                      </quantity-button>
+                    </div>
+                  </div>
+                {%- when 'inventory' -%}
+                  <p
+                    class="flex gap-2 items-center{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
+                    {{ block.shopify_attributes }}
+                    id="Inventory-{{ section.id }}"
+                    role="status"
+                  >
+                    {%- if product.selected_or_first_available_variant.inventory_management == 'shopify' -%}
+                      {%- if product.selected_or_first_available_variant.inventory_quantity > 0 -%}
+                        {%- if product.selected_or_first_available_variant.inventory_quantity
+                            <= block.settings.inventory_threshold
+                        -%}
+                          <svg width="15" height="15" aria-hidden="true">
+                            <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(238,148,65, 0.3)"/>
+                            <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(238,148,65)"/>
+                          </svg>
+                          {%- if block.settings.show_inventory_quantity -%}
+                            {{-
+                              'products.product.inventory_low_stock_show_count'
+                              | t: quantity: product.selected_or_first_available_variant.inventory_quantity
+                            -}}
+                          {%- else -%}
+                            {{- 'products.product.inventory_low_stock' | t -}}
+                          {%- endif -%}
+                        {%- else -%}
+                          <svg width="15" height="15" aria-hidden="true">
+                            <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(62,214,96, 0.3)"/>
+                            <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(62,214,96)"/>
+                          </svg>
+                          {%- if block.settings.show_inventory_quantity -%}
+                            {{-
+                              'products.product.inventory_in_stock_show_count'
+                              | t: quantity: product.selected_or_first_available_variant.inventory_quantity
+                            -}}
+                          {%- else -%}
+                            {{- 'products.product.inventory_in_stock' | t -}}
+                          {%- endif -%}
+                        {%- endif -%}
+                      {%- else -%}
+                        {%- if product.selected_or_first_available_variant.inventory_policy == 'continue' -%}
+                          <svg width="15" height="15" aria-hidden="true">
+                            <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(62,214,96, 0.3)"/>
+                            <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(62,214,96)"/>
+                          </svg>
+                          {{- 'products.product.inventory_out_of_stock_continue_selling' | t -}}
+                        {%- else -%}
+                          <svg width="15" height="15" aria-hidden="true">
+                            <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(200,200,200, 0.3)"/>
+                            <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(200,200,200)"/>
+                          </svg>
+                          {{- 'products.product.inventory_out_of_stock' | t -}}
+                        {%- endif -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  </p>
+                {% when 'description' %}
+                  <div class="my-3 rte">
+                    {{ product.description }}
+                  </div>
+                {%- when 'variant_picker' -%}
+                  {% render 'product-variant-picker',
+                    product: product,
+                    block: block,
+                    product_form_id: product_form_id
+                  %}
 
-                        <button
-                          type="submit"
-                          name="add"
-                          class="inline-block relative button button-full button-outline disabled:opacity-50 disabled:cursor-not-allowed"
-                          {% if selected_variant.available == false %}
-                            disabled
-                          {% endif %}
-                          form="{{ product_form_id }}"
-                          id="ProductSubmitButton-{{ section.id }}"
-                        >
-                          <span>
-                            {% if selected_variant.available == false %}
-                              Sold out
-                            {% else %}
-                              Add to cart
-                            {% endif %}
-                          </span>
-                          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            {% render 'spinner' %}
-                          </div>
-                        </button>
-                        {{ form | payment_button }}
-                      {% endform %}
-                    </product-form>
-                  {% endcomment %}
-                </div>
-              {% else %}
+                {% when 'sku' %}
+                  {%- assign current_variant = product.selected_or_first_available_variant -%}
+                  <span class="sr-only">{{- 'products.product.sku' | t }}: </span>
+                  <span class="sku--text" id="sku-{{ section.id }}">{{ current_variant.sku }}</span>
 
-            {% endcase %}
-          {% endfor %}
+                {% when 'checkout_buttons' %}
+                  <div class="my-3" id="buttons-{{ section.id }}">
+                    {%- render 'buy-buttons',
+                      block: block,
+                      product: product,
+                      product_form_id: product_form_id,
+                      section_id: section.id,
+                      show_pickup_availability: true
+                    -%}
+                  </div>
+                {% else %}
+
+              {% endcase %}
+            {% endfor %}
+          </div>
         </div>
       </div>
+
+      <style>
+        .media model-viewer,
+        .media > * {
+          display: block;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+      </style>
     </div>
 
-    <style>
-      .media model-viewer,
-      .media > * {
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+    {%- liquid
+      if product.selected_or_first_available_variant.featured_media
+        assign seo_media = product.selected_or_first_available_variant.featured_media
+      else
+        assign seo_media = product.featured_media
+      endif
+    -%}
+
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org/",
+        "@type": "Product",
+        "name": {{ product.title | json }},
+        "url": {{ request.origin | append: product.url | json }},
+        {% if seo_media -%}
+          "image": [
+            {{ seo_media | image_url: width: 1920 | prepend: "https:" | json }}
+          ],
+        {%- endif %}
+        "description": {{ product.description | strip_html | json }},
+        {% if product.selected_or_first_available_variant.sku != blank -%}
+          "sku": {{ product.selected_or_first_available_variant.sku | json }},
+        {%- endif %}
+        "brand": {
+          "@type": "Brand",
+          "name": {{ product.vendor | json }}
+        },
+        "offers": [
+          {%- for variant in product.variants -%}
+            {
+              "@type" : "Offer",
+              {%- if variant.sku != blank -%}
+                "sku": {{ variant.sku | json }},
+              {%- endif -%}
+              {%- if variant.barcode.size == 12 -%}
+                "gtin12": {{ variant.barcode }},
+              {%- endif -%}
+              {%- if variant.barcode.size == 13 -%}
+                "gtin13": {{ variant.barcode }},
+              {%- endif -%}
+              {%- if variant.barcode.size == 14 -%}
+                "gtin14": {{ variant.barcode }},
+              {%- endif -%}
+              "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+              "price" : {{ variant.price | divided_by: 100.00 | json }},
+              "priceCurrency" : {{ cart.currency.iso_code | json }},
+              "url" : {{ request.origin | append: variant.url | json }}
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
       }
-    </style>
+    </script>
   </div>
-
-  {%- liquid
-    if product.selected_or_first_available_variant.featured_media
-      assign seo_media = product.selected_or_first_available_variant.featured_media
-    else
-      assign seo_media = product.featured_media
-    endif
-  -%}
-
-  <script type="application/ld+json">
-    {
-      "@context": "http://schema.org/",
-      "@type": "Product",
-      "name": {{ product.title | json }},
-      "url": {{ request.origin | append: product.url | json }},
-      {% if seo_media -%}
-        "image": [
-          {{ seo_media | image_url: width: 1920 | prepend: "https:" | json }}
-        ],
-      {%- endif %}
-      "description": {{ product.description | strip_html | json }},
-      {% if product.selected_or_first_available_variant.sku != blank -%}
-        "sku": {{ product.selected_or_first_available_variant.sku | json }},
-      {%- endif %}
-      "brand": {
-        "@type": "Brand",
-        "name": {{ product.vendor | json }}
-      },
-      "offers": [
-        {%- for variant in product.variants -%}
-          {
-            "@type" : "Offer",
-            {%- if variant.sku != blank -%}
-              "sku": {{ variant.sku | json }},
-            {%- endif -%}
-            {%- if variant.barcode.size == 12 -%}
-              "gtin12": {{ variant.barcode }},
-            {%- endif -%}
-            {%- if variant.barcode.size == 13 -%}
-              "gtin13": {{ variant.barcode }},
-            {%- endif -%}
-            {%- if variant.barcode.size == 14 -%}
-              "gtin14": {{ variant.barcode }},
-            {%- endif -%}
-            "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
-            "price" : {{ variant.price | divided_by: 100.00 | json }},
-            "priceCurrency" : {{ cart.currency.iso_code | json }},
-            "url" : {{ request.origin | append: variant.url | json }}
-          }{% unless forloop.last %},{% endunless %}
-        {%- endfor -%}
-      ]
-    }
-  </script>
 </div>
 {% schema %}
 {
@@ -368,7 +303,7 @@
   "settings": [
     {
       "type": "header",
-      "content": "Product media"
+      "content": "Layout and styles"
     },
     {
       "type": "select",
@@ -408,16 +343,20 @@
       "info": "Width is automatically adjusted for mobile devices."
     },
     {
-      "type": "checkbox",
-      "id": "desktop_slider",
-      "label": "Enable carousel in desktop",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "hide_thumbnails_on_mobile",
-      "label": "Hide thumbnails on mobile",
-      "default": false
+      "type": "select",
+      "id": "desktop_media_layout",
+      "label": "Media layout",
+      "default": "slider",
+      "options": [
+        {
+          "label": "Slider carousel",
+          "value": "slider"
+        },
+        {
+          "label": "Grid",
+          "value": "grid"
+        }
+      ]
     },
     {
       "type": "checkbox",
@@ -430,6 +369,53 @@
       "id": "adaptive_height",
       "label": "Adaptive height of slides",
       "default": true
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Text alignment",
+      "default": "center"
+    },
+
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_thumbnails_on_mobile",
+      "label": "Hide thumbnails on mobile",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Colors and padding"
+    },
+    {
+      "type": "color_scheme",
+      "label": "Color Scheme",
+      "id": "color_scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:sections.all.padding.padding_top",
+      "min": 0,
+      "max": 100,
+      "default": 25,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:sections.all.padding.padding_bottom",
+      "min": 0,
+      "max": 100,
+      "default": 25,
+      "step": 1,
+      "unit": "px"
     }
   ],
   "blocks": [
