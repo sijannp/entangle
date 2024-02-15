@@ -127,14 +127,14 @@
                 {% when 'quantity' %}
                   <quantity-input class="">
                     <label for="Quantity-{{ section.id }}">Quantity</label>
-                    <div class="w-20 md:w-32 h-full relative border flex justify-{{ section.settings.alignment }}">
+                    <div class="w-20 md:w-32 h-full relative border overflow-hidden flex justify-{{ section.settings.alignment }}">
                       <input
                         type="number"
                         name="quantity"
                         value="1"
                         min="1"
                         id="Quantity-{{ section.id }}"
-                        class="product-form__input w-full h-full p-2 px-6 text-center focus:outline-none"
+                        class="product-form__input input w-full h-full border-none outline-none text-center focus:outline-none"
                         form="{{ product_form_id }}"
                       >
                       <button
@@ -413,7 +413,7 @@
       "type": "text_alignment",
       "id": "alignment",
       "label": "Text alignment",
-      "default": "center"
+      "default": "left"
     },
 
     {

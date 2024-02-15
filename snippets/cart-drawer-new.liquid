@@ -1,3 +1,7 @@
+<div id="CartDrawer">
+  <div class="drawer__innder">Inner</div>
+</div>
+
 <en-drawer
   data-id="cart-drawer"
   id="shopify-section-cart-drawer"
@@ -5,12 +9,12 @@
 >
   <div
     class="main-drawer main-drawer--right flex flex-col bg-bg text-text absolute h-full w-full md:max-w-[25rem] m-0 z-[99]"
-    id="main-nav"
   >
     <div class="close-drawer absolute bg-bg text-text z-[100] flex items-center rounded-full right-2 top-2 cursor-pointer">
       {% render 'icon-close', class: 'close-drawer' %}
     </div>
-    <div id="cart-drawer" class=" flex flex-col h-full pt-4">
+    <div id="cartDrawer"></div>
+    <div id="cart-drawer" class="drawer__inner flex flex-col h-full pt-4">
       {% if cart.item_count > 0 %}
         <div class="cart-has-item flex flex-col h-full" data-money-format="{{ shop.money_format }}">
           <div class="flex flex-col h-full">

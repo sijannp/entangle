@@ -587,7 +587,7 @@ class AddtoCartButton extends HTMLElement {
                 const mainNav = document.getElementById("main-nav");
                 const newMainNavContent = html.getElementById("main-nav").innerHTML;
                 mainNav.innerHTML = newMainNavContent;
-                document.querySelector('open-drawer[data-drawer="cart-drawer"]').click();
+                document.querySelector('open-drawer[target-id="cart-drawer"]').click();
             })
             .catch((error) => {
                 console.error("An error occurred:", error);
@@ -645,7 +645,7 @@ customElements.define("add-to-cart", AddtoCartButton);
 //                 const mainNav = document.getElementById("main-nav");
 //                 const newMainNavContent = html.getElementById("main-nav").innerHTML;
 //                 mainNav.innerHTML = newMainNavContent;
-//                 const cartButton = document.querySelector('open-drawer[data-drawer="cart-drawer" ]');
+//                 const cartButton = document.querySelector('open-drawer[target-id="cart-drawer" ]');
 //                 if (cartButton) {
 //                     cartButton.click()
 //                 }
@@ -882,24 +882,89 @@ customElements.define("en-header", EnHeader);
 
 
 
-
-
-customElements.define('en-drawer', class extends HTMLElement {
+class EnDrawer extends HTMLElement {
     constructor() {
         super();
+        this.id = this.getAttribute('data-id')
     }
 
     connectedCallback() {
-        this.addEventListener("click", () => this.handleClick)
+        if (this.id) {
+            document.addEventListener("openDrawer", this.openDrawer)
+            document.addEventListener("closeDrawer", this.closeDrawer)
+        }
     }
 
     disconnectedCallback() {
-        this.removeEventListener("click", () => this.handleClick)
+        if (this.id) {
+            document.removeEventListener("openDrawer", this.openDrawer)
+            document.removeEventListener("closeDrawer", this.closeDrawer)
+        }
     }
 
-    handleClick() {
+    openDrawer(event) {
+        this.eventId = event.detail.targetId;
+        if (this.eventId === this.id) {
+            this.setAttribute("expanded", "")
+            this.classList.add("visible")
+            this.addEventListener("click", (e) => {
+                if (e.target.classList.contains("overlay-full") || e.target.classList.contains("drawer-close") || e.target.classList.contains("close-drawer")) {
+                    this.removeAttribute("expanded")
+                    this.classList.remove("visible")
+
+                }
+            })
+        }
+
     }
-});
+
+    renderContents(parsedState) {
+        this.querySelector('.drawer__inner').classList.contains('is-empty') &&
+            this.querySelector('.drawer__inner').classList.remove('is-empty');
+        this.productId = parsedState.id;
+        this.getSectionsToRender().forEach((section) => {
+            console.log(document.querySelector('#CartDrawer'))
+            const sectionElement = section.selector
+                ? document.querySelector(section.selector)
+                : document.getElementById(section.id);
+            console.log(sectionElement, "sectionElement")
+            sectionElement.innerHTML = this.getSectionInnerHTML(parsedState.sections[section.id], section.selector);
+        });
+
+        setTimeout(() => {
+            this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
+            this.open();
+        });
+    }
+
+    getSectionInnerHTML(html, selector = '.shopify-section') {
+        return new DOMParser().parseFromString(html, 'text/html').querySelector(selector).innerHTML;
+    }
+
+    getSectionsToRender() {
+        return [
+            {
+                id: 'cart-drawer',
+                selector: '#CartDrawer',
+            },
+            {
+                id: 'cart-icon-bubble',
+            },
+        ];
+    }
+
+    getSectionDOM(html, selector = '.shopify-section') {
+        return new DOMParser().parseFromString(html, 'text/html').querySelector(selector);
+    }
+
+    setActiveElement(element) {
+        this.activeElement = element;
+    }
+}
+
+customElements.define('en-drawer', EnDrawer);
+
+
 
 customElements.define('open-drawer', class extends HTMLElement {
     constructor() {
@@ -908,7 +973,7 @@ customElements.define('open-drawer', class extends HTMLElement {
     }
 
     openDrawer() {
-        const drawerId = this.getAttribute('data-drawer');
+        const drawerId = this.getAttribute('target-id');
         const drawer = document.querySelector(`en-drawer[data-id="${drawerId}"]`);
         if (drawer) {
             drawer.setAttribute("expanded", '')
@@ -923,6 +988,13 @@ customElements.define('open-drawer', class extends HTMLElement {
         }
     }
 });
+
+
+class CartDrawer extends EnDrawer {
+    constructor() {
+        super();
+    }
+}
 
 
 class DropdownMenu extends HTMLElement {
@@ -1156,6 +1228,9 @@ class QuantityInput extends HTMLElement {
 }
 customElements.define('quantity-input', QuantityInput);
 
+
+
+
 if (!customElements.get('product-form')) {
     customElements.define(
         'product-form',
@@ -1166,7 +1241,7 @@ if (!customElements.get('product-form')) {
                 this.form = this.querySelector('form');
                 this.form.querySelector('[name=id]').disabled = false;
                 this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
-                this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
+                this.cart = document.querySelector('cart-notification') || document.querySelector('en-drawer[data-id="cart-drawer"]');
                 this.submitButton = this.querySelector('[type="submit"]');
 
                 if (document.querySelector('cart-drawer')) this.submitButton.setAttribute('aria-haspopup', 'dialog');
@@ -1188,6 +1263,7 @@ if (!customElements.get('product-form')) {
                 config.headers['X-Requested-With'] = 'XMLHttpRequest';
                 delete config.headers['Content-Type'];
 
+                console.log(this.cart)
                 const formData = new FormData(this.form);
                 if (this.cart) {
                     formData.append(
@@ -1196,6 +1272,13 @@ if (!customElements.get('product-form')) {
                     );
                     formData.append('sections_url', window.location.pathname);
                     this.cart.setActiveElement(document.activeElement);
+                    const openDrawerEvent = new CustomEvent('openDrawer', {
+
+                        detail: {
+                            targetId: 'cart-drawer',
+                        },
+                    });
+                    document.dispatchEvent(openDrawerEvent);
                 }
                 config.body = formData;
 
@@ -1243,6 +1326,7 @@ if (!customElements.get('product-form')) {
                             );
                             quickAddModal.hide(true);
                         } else {
+                            console.log(response)
                             this.cart.renderContents(response);
                         }
                     })

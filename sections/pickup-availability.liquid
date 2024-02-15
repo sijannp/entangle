@@ -20,7 +20,7 @@
           }}
         </p>
         <p class="text-sm">{{ closest_location.pick_up_time }}</p>
-        <open-drawer data-drawer="pickup">
+        <open-drawer target-id="pickup">
           <button
             id="ShowPickupAvailabilityDrawer"
             class="underline text-sm"
@@ -40,7 +40,7 @@
           }}
         </p>
         {%- if pick_up_availabilities.size > 1 -%}
-          <open-drawer data-drawer="pickup">
+          <open-drawer target-id="pickup">
             <button
               id="ShowPickupAvailabilityDrawer"
               class="underline text-sm"

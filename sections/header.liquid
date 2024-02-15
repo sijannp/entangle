@@ -61,7 +61,7 @@
     <div class="flex flex-col gap-8 lg:py-2">
       <div class="header grid gap-3 items-center {% if section.settings.menu_style == 'top_bottom' %} twocol {% elsif section.settings.menu_style == 'drawer' -%}drawer  {%- endif %}">
         <open-drawer
-          data-drawer="menu"
+          target-id="menu"
           class="drawer-icon en-menu-icon w-[30px] cursor-pointer flex flex-col items-center justify-center gap-1 {% unless section.settings.menu_style == 'drawer' %} lg:hidden {% endunless %}"
         >
           {% render 'icon-bars' %}
@@ -149,7 +149,7 @@
           </collapsible-button>
 
           {% if settings.cart_type == 'drawer' %}
-            <open-drawer data-drawer="cart-drawer" class="cursor-pointer">
+            <open-drawer target-id="cart-drawer" class="cursor-pointer">
               {% unless section.settings.icon_style == 'text' %}
                 {% render 'icon-cart', items: cart.item_count, style: section.settings.icon_style %}
               {% else %}
