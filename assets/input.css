@@ -125,7 +125,7 @@
     }
 
     .overlay-full {
-        @apply bg-text/[50] fixed left-0 top-0 opacity-0 duration-[.3s] invisible w-full h-full z-[98];
+        @apply bg-text/[.75] fixed left-0 top-0 opacity-0 duration-[.3s] invisible w-full h-full z-[98];
     }
 
     .grid-gap {
@@ -142,6 +142,14 @@
 
     .not-available label {
         @apply line-through;
+    }
+
+    .product-badge.sale {
+        @apply bg-[rgba(var(--color-sale-bg))] text-[rgba(var(--color-sale-text))];
+    }
+
+    .product-badge.soldout {
+        @apply bg-[rgba(var(--color-soldout-bg))] text-[rgba(var(--color-soldout-text))];
     }
 
 }

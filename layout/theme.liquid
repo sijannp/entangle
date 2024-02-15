@@ -139,6 +139,7 @@
     {{ 'splide.min.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'splide.min.js' | asset_url }}" defer></script>
     <script src="{{ 'constants.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'pubsub.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'application.js' | asset_url }}" defer></script>
     <script src="{{ 'revealOnScroll.js' | asset_url }}" defer></script>
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
@@ -155,6 +156,13 @@
     {% sections 'footer-group' %}
 
     <script>
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}',
+      };
       window.variantStrings = {
         addToCart: `{{ 'products.product.add_to_cart' | t }}`,
         soldOut: `{{ 'products.product.sold_out' | t }}`,

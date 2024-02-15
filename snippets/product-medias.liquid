@@ -55,12 +55,18 @@
             .media-flex-lg {
               display: flex !important;
             }
+
+            .splide.is-initialized:not(.is-active) .media--first {
+              width: 100%;
+              order: -999;
+            }
           }
         {% endstyle %}
+
         <ul class="splide__list items-center {% unless slider_desktop %} media-flex-lg lg:flex-wrap lg:gap-3 {% endunless %}">
           {% for media in product.media %}
             <li
-              class="splide__slide {% unless slider_desktop %} lg:flex lg:w-[48%] {% endunless %} {% if media.id == product.selected_or_first_available_variant.featured_media.id %} lg:w-full lg:order-first {% else  %}  {% endif %}"
+              class="splide__slide {% unless slider_desktop %} lg:flex lg:w-[48%] {% endunless %} {% if media.id == product.selected_or_first_available_variant.featured_media.id %} media--first {% else  %}  {% endif %}"
               data-imageid="{{ media.id }}"
             >
               {% render 'product-media', media: media, zoom_on_hover: zoom_on_hover, variant_images: variant_images %}
@@ -128,13 +134,13 @@
     transform: scale(2);
   }
 
-  {% if adaptive_height and slider_desktop %}
+  {% if adaptive_height %}
 
   .splide__list {
     align-items: flex-start;
   }
 
-  .splide__slide:not(.is-active) {
+  .splide.is-active .splide__slide:not(.is-active) {
     height: 0;
   }
 

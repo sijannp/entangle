@@ -29,7 +29,7 @@
       endif
     %}
 
-    <div class="page-width en-container">
+    <div class="">
       <div class="mx-auto my-8">
         <div class="flex flex-col lg:flex-row gap-8 relative">
           <div class="product--medias w-full md:sticky md:top-0 {{ media_width }} {% if section.settings.media_position == "right" %} order-last {% endif %}">
@@ -51,47 +51,58 @@
             "order-first"
           {% endcomment %}
 
-          <div class="md:sticky md:top-0 md:h-fit w-full lg:w-[40%] p-2 text-{{ section.settings.alignment }} ">
+          <div class="md:sticky md:top-0 md:h-fit w-full lg:w-[40%] p-2 text-{{ section.settings.alignment }} flex flex-col gap-3 ">
             {%- assign product_form_id = 'product-form-' | append: section.id -%}
             {% for block in section.blocks %}
               {% case block.type %}
                 {% when 'vendor' %}
-                  <div class="my-3">
+                  <div class="">
                     <span class="text-xs ">{{ product.vendor }}</span>
                   </div>
                 {% when 'title' %}
-                  <div class="my-3">
+                  <div class="">
                     <h1 class="h2">
                       {{ product.title }}
                     </h1>
                   </div>
                 {% when 'price' %}
-                  <div class="price-wrap flex flex-col">
+                  <div class="price-wrap flex flex-col" id="price-{{ section.id }}">
                     <div
-                      class="my-3 flex gap-2 items-center flex-wrap justify-{{ section.settings.alignment }}"
-                      id="price-{{ section.id }}"
+                      class=" flex gap-2 items-center flex-wrap justify-{{ section.settings.alignment }}"
                     >
-                      <span class="text-base text-red-400 line-through">
+                      <span class="text-base text-danger line-through">
                         {{- selected_variant.compare_at_price | money -}}
                       </span>
                       <span class="text-lg">{{ selected_variant.price | money }}</span>
 
-                      <div class="">
-                        {%- if product.available == false -%}
-                          <span
-                            class="bg-red-400 px-2 py-1"
-                          >
-                            Sold out
-                          </span>
-                        {%- elsif product.compare_at_price > product.price and product.available -%}
-                          <span
-                            class="bg-green-400 px-2 py-1"
-                          >
-                            Sale
-                          </span>
-                        {%- endif -%}
-                      </div>
+                      <span
+                        id="badge-{{ section.id }}"
+                        class="product-badge {% if product.selected_or_first_available_variant.available == false %} soldout{% elsif product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}sale {% else %} hidden {% endif %} px-2 py-1 text-sm"
+                      >
+                        {% if product.selected_or_first_available_variant.available == false %}
+                          {{ 'products.product.sold_out' | t }}
+                        {% elsif product.selected_or_first_available_variant.compare_at_price
+                            > product.selected_or_first_available_variant.price
+                        %}
+                          {{ 'products.product.on_sale' | t }}
+                        {% endif %}
+                      </span>
                     </div>
+                    <small class="unit-price caption{% if product.selected_or_first_available_variant.unit_price_measurement == nil %} hidden{% endif %}">
+                      <span class="sr-only">{{ 'products.product.price.unit_price' | t }}</span>
+                      <span class="">
+                        <span>{{- product.selected_or_first_available_variant.unit_price | money -}}</span>
+                        <span aria-hidden="true">/</span>
+                        <span class="sr-only">&nbsp;{{ 'accessibility.unit_price_separator' | t }}&nbsp;</span>
+                        <span>
+                          {%- if product.selected_or_first_available_variant.unit_price_measurement.reference_value != 1
+                          -%}
+                            {{- product.selected_or_first_available_variant.unit_price_measurement.reference_value -}}
+                          {%- endif -%}
+                          {{ product.selected_or_first_available_variant.unit_price_measurement.reference_unit }}
+                        </span>
+                      </span>
+                    </small>
                     <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
                     {{ form | payment_terms }}
                   </div>
@@ -114,7 +125,7 @@
                     product_form_id: product_form_id
                   %}
                 {% when 'quantity' %}
-                  <div class="my-3">
+                  <quantity-input class="">
                     <label for="Quantity-{{ section.id }}">Quantity</label>
                     <div class="w-20 md:w-32 h-full relative border flex justify-{{ section.settings.alignment }}">
                       <input
@@ -126,20 +137,20 @@
                         class="product-form__input w-full h-full p-2 px-6 text-center focus:outline-none"
                         form="{{ product_form_id }}"
                       >
-                      <quantity-button
-                        data-section="product-page"
-                        class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
+                      <button
+                        name="minus"
+                        class="quantity__button absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
                       >
                         -
-                      </quantity-button>
-                      <quantity-button
-                        data-section="product-page"
-                        class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
+                      </button>
+                      <button
+                        name="plus"
+                        class="quantity__button absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
                       >
                         +
-                      </quantity-button>
+                      </button>
                     </div>
-                  </div>
+                  </quantity-input>
                 {%- when 'inventory' -%}
                   <p
                     class="flex gap-2 items-center{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
@@ -196,7 +207,7 @@
                     {%- endif -%}
                   </p>
                 {% when 'description' %}
-                  <div class="my-3 rte">
+                  <div class="my-2 rte">
                     {{ product.description }}
                   </div>
                 {%- when 'variant_picker' -%}
@@ -212,7 +223,7 @@
                   <span class="sku--text" id="sku-{{ section.id }}">{{ current_variant.sku }}</span>
 
                 {% when 'checkout_buttons' %}
-                  <div class="my-3" id="buttons-{{ section.id }}">
+                  <div class="" id="buttons-{{ section.id }}">
                     {%- render 'buy-buttons',
                       block: block,
                       product: product,
@@ -221,8 +232,36 @@
                       show_pickup_availability: true
                     -%}
                   </div>
-                {% else %}
+                {% when 'text' %}
+                  <div class="">
+                    {{ block.settings.text }}
+                  </div>
 
+                {% when 'tab' %}
+                  <div class="tab border-b-2 border-[rgba(var(--color-text),.5)] pb-2">
+                    <collapsible-button
+                      target-id="tab-{{ section.id }}-{{ block.id }}"
+                      class="flex justify-between items-center"
+                    >
+                      <h3 class="h4">{{ block.settings.heading }}</h3>
+                      <span class="en-collapsible-caret">
+                        {% render 'icon-caret', class: 'w-4 h-4 stroke-2' %}
+                      </span>
+                    </collapsible-button>
+
+                    <collapsible-content data-id="tab-{{ section.id }}-{{ block.id }}">
+                      <div class="collapsible-inner">
+                        <div class="rte">
+                          {{ block.settings.content }}
+                        </div>
+                      </div>
+                    </collapsible-content>
+                  </div>
+
+                {% when 'custom_liquid' %}
+                  <div class="">
+                    {{ block.settings.liquid }}
+                  </div>
               {% endcase %}
             {% endfor %}
           </div>
@@ -505,6 +544,48 @@
           "id": "show_inventory_quantity",
           "label": "Show inventory quantity",
           "default": true
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text block",
+          "default": "Text block"
+        }
+      ]
+    },
+    {
+      "type": "tab",
+      "name": "Collapsible tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shipping information"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Use collapsible tabs for more detailed information that will help customers make a purchasing decision. <br/>Ex: Shipping and return policies, size guides, and other common questions.</p>"
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "liquid",
+          "default": "{% comment %} Use this section to write custom liquid/HTML {% endcomment %} <h4>Custom code block</h4><p>Use this advanced section to add custom HTML, app scripts, or liquid.</p>",
+          "label": "Liquid/HTML"
         }
       ]
     }
