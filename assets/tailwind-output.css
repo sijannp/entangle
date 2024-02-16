@@ -1018,8 +1018,8 @@ p,
   border-width: 0;
 }
 
-.invisible {
-  visibility: hidden;
+.visible {
+  visibility: visible;
 }
 
 .fixed {
@@ -1124,6 +1124,10 @@ p,
 
 .top-full {
   top: 100%;
+}
+
+.isolate {
+  isolation: isolate;
 }
 
 .z-0 {
@@ -1326,6 +1330,10 @@ p,
 
 .mt-auto {
   margin-top: auto;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
 }
 
 .block {
@@ -1532,6 +1540,10 @@ p,
   width: 100%;
 }
 
+.w-32 {
+  width: 8rem;
+}
+
 .min-w-\[40px\] {
   min-width: 40px;
 }
@@ -1602,10 +1614,6 @@ p,
 
 .table-auto {
   table-layout: auto;
-}
-
-.border-collapse {
-  border-collapse: collapse;
 }
 
 .origin-top {
@@ -1931,6 +1939,10 @@ p,
   background-color: transparent;
 }
 
+.bg-text {
+  background-color: rgba(var(--color-text));
+}
+
 .stroke-2 {
   stroke-width: 2;
 }
@@ -2222,6 +2234,10 @@ p,
   color: rgba(var(--color-text));
 }
 
+.text-bg {
+  color: rgba(var(--color-bg));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -2293,12 +2309,6 @@ p,
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-.transition-\[opacity_0\.3s\2c _visibility_0\.3s\] {
-  transition-property: opacity 0.3s, visibility 0.3s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -2564,8 +2574,16 @@ p,
     display: block;
   }
 
+  .md\:inline-block {
+    display: inline-block;
+  }
+
   .md\:flex {
     display: flex;
+  }
+
+  .md\:table-cell {
+    display: table-cell;
   }
 
   .md\:hidden {
@@ -2655,10 +2673,6 @@ p,
 
   .md\:max-w-\[25rem\] {
     max-width: 25rem;
-  }
-
-  .md\:max-w-\[30rem\] {
-    max-width: 30rem;
   }
 
   .md\:max-w-\[50\%\] {

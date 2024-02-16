@@ -327,7 +327,6 @@ class VariantSelector extends HTMLElement {
     updateSelectedSwatchValue({ target }) {
         const { name, value, tagName } = target;
 
-        console.log(value)
 
         if (tagName === 'SELECT' && target.selectedOptions.length) {
             const swatchValue = target.selectedOptions[0].dataset.optionSwatchValue;
@@ -412,7 +411,6 @@ class VariantSelector extends HTMLElement {
 
         if (this.currentVariant && this.currentVariant.available) {
             pickUpAvailability.fetchAvailability(this.currentVariant.id);
-            console.log(pickUpAvailability)
         } else {
             pickUpAvailability.removeAttribute('available');
             pickUpAvailability.innerHTML = '';
@@ -890,32 +888,36 @@ class EnDrawer extends HTMLElement {
 
     connectedCallback() {
         if (this.id) {
-            document.addEventListener("openDrawer", this.openDrawer)
-            document.addEventListener("closeDrawer", this.closeDrawer)
+            document.addEventListener("openDrawer", this.openDrawer.bind(this))
+            document.addEventListener("closeDrawer", this.close.bind(this))
         }
     }
 
     disconnectedCallback() {
         if (this.id) {
             document.removeEventListener("openDrawer", this.openDrawer)
-            document.removeEventListener("closeDrawer", this.closeDrawer)
+            document.removeEventListener("closeDrawer", this.close)
         }
     }
 
-    openDrawer(event) {
-        this.eventId = event.detail.targetId;
-        if (this.eventId === this.id) {
-            this.setAttribute("expanded", "")
-            this.classList.add("visible")
-            this.addEventListener("click", (e) => {
-                if (e.target.classList.contains("overlay-full") || e.target.classList.contains("drawer-close") || e.target.classList.contains("close-drawer")) {
-                    this.removeAttribute("expanded")
-                    this.classList.remove("visible")
+    openDrawer() {
 
-                }
-            })
-        }
+        this.setAttribute("expanded", "")
+        this.classList.add("visible")
+        this.addEventListener("click", (e) => {
+            if (e.target.classList.contains("overlay-full") || e.target.classList.contains("drawer-close") || e.target.classList.contains("close-drawer")) {
+                this.removeAttribute("expanded")
+                this.classList.remove("visible")
 
+            }
+        })
+    }
+
+
+
+    close() {
+        this.removeAttribute("expanded")
+        this.classList.remove("visible")
     }
 
     renderContents(parsedState) {
@@ -923,22 +925,21 @@ class EnDrawer extends HTMLElement {
             this.querySelector('.drawer__inner').classList.remove('is-empty');
         this.productId = parsedState.id;
         this.getSectionsToRender().forEach((section) => {
-            console.log(document.querySelector('#CartDrawer'))
             const sectionElement = section.selector
                 ? document.querySelector(section.selector)
                 : document.getElementById(section.id);
-            console.log(sectionElement, "sectionElement")
             sectionElement.innerHTML = this.getSectionInnerHTML(parsedState.sections[section.id], section.selector);
         });
 
         setTimeout(() => {
-            this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
-            this.open();
+            this.openDrawer();
         });
     }
 
     getSectionInnerHTML(html, selector = '.shopify-section') {
-        return new DOMParser().parseFromString(html, 'text/html').querySelector(selector).innerHTML;
+        console.log(html)
+        console.log(new DOMParser().parseFromString(html, 'text/html'))
+        return new DOMParser().parseFromString(html, 'text/html')?.querySelector(selector)?.innerHTML;
     }
 
     getSectionsToRender() {
@@ -1101,7 +1102,6 @@ class SplideComponent extends HTMLElement {
 
         if (slideIndex !== -1) {
             const slideElement = slideElements[slideIndex];
-            console.log(slideElement)
             if (slideElement) {
                 if (!this.querySelector('.splide').classList.contains('is-active')) {
                     slideElements.forEach(slide => slide.classList.remove('media--first'))
@@ -1263,22 +1263,16 @@ if (!customElements.get('product-form')) {
                 config.headers['X-Requested-With'] = 'XMLHttpRequest';
                 delete config.headers['Content-Type'];
 
-                console.log(this.cart)
                 const formData = new FormData(this.form);
                 if (this.cart) {
+
                     formData.append(
                         'sections',
                         this.cart.getSectionsToRender().map((section) => section.id)
                     );
                     formData.append('sections_url', window.location.pathname);
                     this.cart.setActiveElement(document.activeElement);
-                    const openDrawerEvent = new CustomEvent('openDrawer', {
 
-                        detail: {
-                            targetId: 'cart-drawer',
-                        },
-                    });
-                    document.dispatchEvent(openDrawerEvent);
                 }
                 config.body = formData;
 
@@ -1326,7 +1320,6 @@ if (!customElements.get('product-form')) {
                             );
                             quickAddModal.hide(true);
                         } else {
-                            console.log(response)
                             this.cart.renderContents(response);
                         }
                     })
@@ -1357,6 +1350,57 @@ if (!customElements.get('product-form')) {
             }
         }
     );
+}
+
+
+class CountdownComponent extends HTMLElement {
+    constructor() {
+        super();
+
+        this.timerValue = this.getAttribute("data-timervalue");
+        this.hrsValue = parseInt(this.getAttribute("data-hrsvalue"));
+        this.minValue = parseInt(this.getAttribute("data-minvalue"));
+
+        const [day, month, year] = this.timerValue.split("-").map(Number);
+        this.timerDate = new Date(year, month - 1, day);
+
+        this.calculateTime();
+    }
+
+    calculateTime() {
+        const countDownDate = new Date(this.timerDate);
+        countDownDate.setUTCHours(countDownDate.getUTCHours() + this.hrsValue);
+        countDownDate.setUTCMinutes(countDownDate.getUTCMinutes() + this.minValue);
+        const countDownTimestamp = countDownDate.getTime();
+
+        const element = this;
+        const x = setInterval(function () {
+            const now = Date.now(); // Current UTC timestamp
+            const distance = countDownTimestamp - now;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            element.render(days, hours, minutes, seconds);
+            console.log(distance)
+            if (distance < 0) {
+                clearInterval(x);
+                element.closest('.shopify-section').classList.add('hidden')
+            }
+        }, 1000);
+    }
+
+    render(days, hours, minutes, seconds) {
+        this.querySelector(".days").innerHTML = days;
+        this.querySelector(".hours").innerHTML = hours;
+        this.querySelector(".minutes").innerHTML = minutes;
+        this.querySelector(".seconds").innerHTML = seconds;
+    }
+
+
+}
+if (!customElements.get("countdown-component")) {
+    customElements.define("countdown-component", CountdownComponent);
 }
 
 
