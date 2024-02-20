@@ -13,7 +13,7 @@
 {%- endstyle -%}
 
 <div
-  class="gradient color-{{ section.settings.color_scheme }}{% if cart == empty %} is-empty{% endif %}"
+  class="gradient color-{{ section.settings.color_scheme }}{% if cart == empty %} is-empty hidden{% endif %}"
   id="main-cart-footer"
   data-id="{{ section.id }}"
 >
@@ -32,7 +32,7 @@
         </cart-note>
       {%- endif -%}
 
-      <div class="cart__blocks">
+      <div class="cart__blocks flex flex-col  gap-3 items-end">
         {% for block in section.blocks %}
           {%- case block.type -%}
             {%- when '@app' -%}
@@ -73,7 +73,7 @@
             {%- else -%}
               <div class="cart__ctas" {{ block.shopify_attributes }}>
                 <noscript>
-                  <button type="submit" class="cart__update-button button button--secondary" form="cart">
+                  <button type="submit" class="cart__update-button btn btn-outline" form="cart">
                     {{ 'sections.cart.update' | t }}
                   </button>
                 </noscript>
@@ -81,7 +81,7 @@
                 <button
                   type="submit"
                   id="checkout"
-                  class="cart__checkout-button button"
+                  class="cart__checkout-button button button-primary button-full w-full"
                   name="checkout"
                   {% if cart == empty %}
                     disabled

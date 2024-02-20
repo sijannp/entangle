@@ -171,7 +171,8 @@ class CartItems extends HTMLElement {
 
                 publish(PUB_SUB_EVENTS.cartUpdate, { source: 'cart-items', cartData: parsedState, variantId: variantId });
             })
-            .catch(() => {
+            .catch((e) => {
+                console.log(e)
                 this.querySelectorAll('.loading__spinner').forEach((overlay) => overlay.classList.add('hidden'));
                 const errors = document.getElementById('cart-errors') || document.getElementById('CartDrawer-CartErrors');
                 errors.textContent = window.cartStrings.error;
@@ -184,6 +185,7 @@ class CartItems extends HTMLElement {
     updateLiveRegions(line, message) {
         const lineItemError =
             document.getElementById(`Line-item-error-${line}`) || document.getElementById(`CartDrawer-LineItemError-${line}`);
+        console.log(lineItemError)
         if (lineItemError) lineItemError.querySelector('.cart-item__error-text').innerHTML = message;
 
         this.lineItemStatusElement.setAttribute('aria-hidden', true);
@@ -203,9 +205,13 @@ class CartItems extends HTMLElement {
 
     enableLoading(line) {
         const mainCartItems = document.getElementById('main-cart-items') || document.getElementById('CartDrawer-CartItems');
-        mainCartItems.classList.add('cart__items--disabled');
+        mainCartItems.classList.add('pointer-events-none');
 
+        console.log(line)
         const cartItemElements = this.querySelectorAll(`#CartItem-${line} .loading__spinner`);
+
+        console.log(cartItemElements)
+
         const cartDrawerItemElements = this.querySelectorAll(`#CartDrawer-Item-${line} .loading__spinner`);
 
         [...cartItemElements, ...cartDrawerItemElements].forEach((overlay) => overlay.classList.remove('hidden'));
@@ -216,7 +222,7 @@ class CartItems extends HTMLElement {
 
     disableLoading(line) {
         const mainCartItems = document.getElementById('main-cart-items') || document.getElementById('CartDrawer-CartItems');
-        mainCartItems.classList.remove('cart__items--disabled');
+        mainCartItems.classList.remove('pointer-events-none');
 
         const cartItemElements = this.querySelectorAll(`#CartItem-${line} .loading__spinner`);
         const cartDrawerItemElements = this.querySelectorAll(`#CartDrawer-Item-${line} .loading__spinner`);
@@ -267,83 +273,3 @@ class CartDrawerItems extends CartItems {
 customElements.define('cart-drawer-items', CartDrawerItems);
 
 
-if (!customElements.get('quantity-popover')) {
-    customElements.define(
-        'quantity-popover',
-        class QuantityPopover extends HTMLElement {
-            constructor() {
-                super();
-                this.mql = window.matchMedia('(min-width: 990px)');
-                this.mqlTablet = window.matchMedia('(min-width: 750px)');
-                this.infoButtonDesktop = this.querySelector('.quantity-popover__info-button--icon-only');
-                this.infoButtonMobile = this.querySelector('.quantity-popover__info-button--icon-with-label');
-                this.popoverInfo = this.querySelector('.quantity-popover__info');
-                this.closeButton = this.querySelector('.button-close');
-                this.variantInfo = this.querySelector('.quantity-popover-container');
-                this.eventMouseEnterHappened = false;
-
-                if (this.closeButton) {
-                    this.closeButton.addEventListener('click', this.closePopover.bind(this));
-                }
-
-                if (this.popoverInfo && this.infoButtonDesktop && this.mql.matches) {
-                    this.popoverInfo.addEventListener('mouseenter', this.closePopover.bind(this));
-                }
-
-                if (this.infoButtonDesktop) {
-                    this.infoButtonDesktop.addEventListener('click', this.togglePopover.bind(this));
-                    this.infoButtonDesktop.addEventListener('focusout', this.closePopover.bind(this));
-                }
-
-                if (this.infoButtonMobile) {
-                    this.infoButtonMobile.addEventListener('click', this.togglePopover.bind(this));
-                    this.infoButtonMobile.addEventListener('focusout', this.closePopover.bind(this));
-                }
-
-                if (this.infoButtonDesktop && this.mqlTablet.matches) {
-                    this.variantInfo.addEventListener('mouseenter', this.togglePopover.bind(this));
-                    this.variantInfo.addEventListener('mouseleave', this.closePopover.bind(this));
-                }
-            }
-
-            togglePopover(event) {
-                event.preventDefault();
-                if (event.type === 'mouseenter') {
-                    this.eventMouseEnterHappened = true;
-                }
-
-                if (event.type === 'click' && this.eventMouseEnterHappened) return;
-
-                const button = this.infoButtonDesktop && this.mql.matches ? this.infoButtonDesktop : this.infoButtonMobile;
-                const isExpanded = button.getAttribute('aria-expanded') === 'true';
-
-                button.setAttribute('aria-expanded', !isExpanded);
-
-                this.popoverInfo.toggleAttribute('hidden');
-
-                const isOpen = button.getAttribute('aria-expanded') === 'true';
-
-                button.classList.toggle('quantity-popover__info-button--open');
-
-                if (isOpen && event.type !== 'mouseenter') {
-                    button.focus();
-                }
-            }
-
-            closePopover(event) {
-                event.preventDefault();
-                const isChild = this.variantInfo.contains(event.relatedTarget);
-
-                const button = this.infoButtonDesktop && this.mql.matches ? this.infoButtonDesktop : this.infoButtonMobile;
-
-                if (!event.relatedTarget || !isChild) {
-                    button.setAttribute('aria-expanded', 'false');
-                    button.classList.remove('quantity-popover__info-button--open');
-                    this.popoverInfo.setAttribute('hidden', '');
-                }
-
-                this.eventMouseEnterHappened = false;
-            }
-        }
-    );
-}
