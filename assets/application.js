@@ -378,10 +378,13 @@ class VariantSelector extends HTMLElement {
 
             detail: {
                 variantId: this.currentVariant.id,
-                imageId: this.currentVariant.featured_media.id,
+                imageId: this.currentVariant.featured_media?.id,
             },
         });
-        document.dispatchEvent(variantChangeEvent);
+
+        if (this.currentVariant.featured_media?.id) {
+            document.dispatchEvent(variantChangeEvent);
+        }
     }
 
     setInputAvailability(elementList, availableValuesList) {
@@ -937,8 +940,6 @@ class EnDrawer extends HTMLElement {
     }
 
     getSectionInnerHTML(html, selector = '.shopify-section') {
-        console.log(html)
-        console.log(new DOMParser().parseFromString(html, 'text/html'))
         return new DOMParser().parseFromString(html, 'text/html')?.querySelector(selector)?.innerHTML;
     }
 
@@ -1390,7 +1391,6 @@ class CountdownComponent extends HTMLElement {
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             element.render(days, hours, minutes, seconds);
-            console.log(distance)
             if (distance < 0) {
                 clearInterval(x);
                 element.closest('.shopify-section').classList.add('hidden')

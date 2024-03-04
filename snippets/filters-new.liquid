@@ -41,7 +41,7 @@
       </div>
 
       <filter-form>
-        <form class="filter-form flex flex-col gap-3" id="en-filter-form">
+        <form class="filter-form min-w-[15rem] flex flex-col gap-3" id="en-filter-form">
           {%- for filter in collection.filters -%}
             <div class="filter-group flex flex-col">
               <collapsible-button target-id="filter-{{ filter.label }}" class="en-collapsible">

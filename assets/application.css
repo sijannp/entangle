@@ -280,6 +280,10 @@ en-drawer[expanded] .main-drawer {
     width: 100%;
 }
 
+.search.shopify-section {
+    width: 100%;
+}
+
 
 .not-available label {
     text-decoration: line-through;

@@ -1,0 +1,143 @@
+{% liquid
+  assign desktop_columns_class = 'lg:grid-cols-3'
+  if section.settings.columns_desktop == '3'
+    assign desktop_columns_class = 'lg:grid-cols-3'
+  elsif section.settings.columns_desktop == '4'
+    assign desktop_columns_class = 'lg:grid-cols-4'
+  elsif section.settings.columns_desktop == '5'
+    assign desktop_columns_class = 'lg:grid-cols-5'
+  endif
+%}
+
+{% paginate search.results by 10 %}
+  {% if search.performed %}
+    {% if search.results.size > 0 %}
+      <div class="page-width en-container relative" id="products-grid">
+        {% paginate search.results by 12 %}
+          <div class="w-full flex flex-col md:flex-row md:gap-4">
+            <div
+              class="grid grid-gap relative grid-cols-1 {% unless section.settings.display_style == 'list' %}  md:grid-cols-2 {{ desktop_columns_class }} {% endunless %} flex w-full"
+            >
+              {% for item in search.results %}
+                {% case item.object_type %}
+                  {% when 'product' %}
+                    {% render 'product-card',
+                      card_product: item,
+                      show_vendor: section.settings.show_vendor,
+                      quick_add: section.settings.quick_add,
+                      type: section.settings.display_style,
+                      swatches: section.settings.color_swatches
+                    %}
+                  {% when 'article' %}
+                    {% render 'article-card',
+                      article: item,
+                      show_image: true,
+                      show_date: true,
+                      show_author: true,
+                      show_badge: true,
+                      media_aspect_ratio: 1
+                    %}
+                  {% when 'page' %}
+                    {{ item.title }}
+                  {% else %}
+
+                {% endcase %}
+              {% endfor %}
+            </div>
+          </div>
+
+          {% render 'pagination', paginate: paginate %}
+        {% endpaginate %}
+        <div
+          id="products-grid-overlay"
+          class="absolute w-full h-full top-0 left-0 transition duration-500 z-[-1]"
+        ></div>
+      </div>
+
+    {% else %}
+      <div class="text-center my-4">
+        <p>No results found for the search term: {{ search.terms | escape }}. Try to use a different keyword</p>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% render 'pagination', pagination: paginate %}
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": "Search results",
+  "tag": "section",
+  "class": "grow shrink basis-0",
+  "blocks": [
+    {
+      "type": "vendor",
+      "name": "Product vendor"
+    },
+    {
+      "type": "title",
+      "name": "Product title"
+    },
+    {
+      "type": "price",
+      "name": "Product price"
+    }
+  ],
+  "settings": [
+    {
+      "type": "number",
+      "id": "number_of_products_per_page",
+      "default": 6,
+      "label": "Number of products per page"
+    },
+    {
+      "type": "select",
+      "id": "display_style",
+      "default": "grid",
+      "label": "Display Style",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "label": "List",
+          "value": "list"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "color_swatches",
+      "default": true,
+      "label": "Enable Color Swatches"
+    },
+    {
+      "type": "checkbox",
+      "id": "quick_add",
+      "default": true,
+      "label": "Enable quick add"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "default": "4",
+      "label": "No of columns on desktop",
+      "options": [
+        {
+          "label": "3",
+          "value": "3"
+        },
+        {
+          "label": "4",
+          "value": "4"
+        },
+        {
+          "label": "5",
+          "value": "5"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -13,26 +13,39 @@
 {%- endstyle -%}
 
 <div
-  class="gradient color-{{ section.settings.color_scheme }}{% if cart == empty %} is-empty hidden{% endif %}"
+  class="gradient color-{{ section.settings.color_scheme }}"
   id="main-cart-footer"
   data-id="{{ section.id }}"
 >
-  <div class="page-width">
-    <div class="cart__footer isolate section-{{ section.id }}-padding">
-      {%- if settings.show_cart_note -%}
-        <cart-note class="cart__note field">
-          <label for="Cart-note">{{ 'sections.cart.note' | t }}</label>
-          <textarea
-            class="text-area field__input"
-            name="note"
-            form="cart"
-            id="Cart-note"
-            placeholder="{{ 'sections.cart.note' | t }}"
-          >{{ cart.note }}</textarea>
+  <div class="page-width template-cart-footer">
+    <div class="cart__footer flex gap-3 md:gap-6 w-full  flex-col md:flex-row justify-between isolate section-{{ section.id }}-padding {% if cart == empty %} is-empty hidden{% endif %}">
+      {%- if settings.enable_cart_note -%}
+        <cart-note class="cart__note field w-full md:max-w-screen-sm">
+          <div class="flex flex-col border-b border-b-[color:rgba(var(--color-text),.5)] gap-4">
+            <collapsible-button
+              target-id="cart-note-{{ section.id }}"
+              class="flex items-center justify-between"
+            >
+              <label for="Cart-note" class="my-1 w-full text-lg cursor-pointer">{{ 'sections.cart.note' | t }}</label>
+              <span class="en-collapsible-caret text-sm">
+                {% render 'icon-caret' %}
+              </span>
+            </collapsible-button>
+            <collapsible-content data-id="cart-note-{{ section.id }}" class="w-full">
+              <div class="collapsible-inner">
+                <textarea
+                  name="note"
+                  id="Cart-note"
+                  class="border focus:outline-none w-full md:max-w-lg resize-none p-2 h-32"
+                  placeholder="{{ 'sections.cart.note' | t }}"
+                >{{ cart.note }}</textarea>
+              </div>
+            </collapsible-content>
+          </div>
         </cart-note>
       {%- endif -%}
 
-      <div class="cart__blocks flex flex-col  gap-3 items-end">
+      <div class="cart__blocks flex flex-col gap-3 md:items-end shrink-0">
         {% for block in section.blocks %}
           {%- case block.type -%}
             {%- when '@app' -%}

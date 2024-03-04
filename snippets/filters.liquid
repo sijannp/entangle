@@ -307,7 +307,6 @@
   });
 
   let sliderOne = document.getElementById('slider-1');
-  console.log(sliderOne.value);
   let sliderTwo = document.getElementById('slider-2');
   let displayValOne = document.getElementById('range1');
   let displayValTwo = document.getElementById('range2');
@@ -373,10 +372,8 @@
       const filterFormNew = document.querySelector('.en-filters');
       const formData = new FormData(filterFormNew);
       let formString = new URLSearchParams(formData).toString();
-      console.log(formString);
       // Build the URL based on the form data (You need to modify this according to your needs)
       const url = `${window.location.pathname}?section_id=en-collection-products-grid&${formString}`;
-      console.log(url);
 
       // Fetch data from the URL
       fetch(url)

@@ -1,10 +1,15 @@
 {
+    "wrapper": "div.collection.flex.flex-wrap",
     "sections": {
-        "template": {
-            "type": "template-search"
+        "header": {
+            "type": "template-search-header"
+        },
+        "results": {
+            "type": "template-search-results"
         }
     },
     "order": [
-        "template"
+        "header",
+        "results"
     ]
 }

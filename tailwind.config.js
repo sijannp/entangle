@@ -22,17 +22,20 @@ module.exports = {
       '95': '0.95',
 
     },
-    colors: {
-      transparent: 'transparent',
-      bg: 'rgba(var(--color-bg))',
-      text: 'rgba(var(--color-text))',
-      light: 'rgba(var(--color-text),.85)',
-      danger: 'rgba(var(--color-error))',
-      success: 'rgba(var(--color-success))',
-      saleBg: 'rgba(var(--color-sale-bg))',
-      saleText: 'rgba((var(--color-sale-text))',
-      soldOutBg: 'rgba(var(--color-soldout-bg))',
-      soldOutText: 'rgba(var(--color-soldout-text))'
+    extend: {
+      colors: {
+        transparent: 'transparent',
+        bg: 'rgba(var(--color-bg))',
+        text: 'rgba(var(--color-text))',
+        textlight: 'rgba(var(--color-text),.75)',
+        textextralight: 'rgba(var(--color-text),.5)',
+        danger: 'rgba(var(--color-error))',
+        success: 'rgba(var(--color-success))',
+        saleBg: 'rgba(var(--color-sale-bg))',
+        saleText: 'rgba((var(--color-sale-text))',
+        soldOutBg: 'rgba(var(--color-soldout-bg))',
+        soldOutText: 'rgba(var(--color-soldout-text))'
+      }
     }
 
   },

@@ -91,46 +91,39 @@
                               {%- endfor -%}
                             </ul>
 
-                            <div class="flex items-center gap-3 flex-wrap">
-                              <div class="cart-quantity-selector w-20 md:w-32 h-full relative border ">
-                                <input
-                                  type="number"
-                                  name="updates[]"
-                                  value="{{ item.quantity }}"
-                                  min="1"
-                                  id="updates_{{ forloop.index }}"
-                                  class="w-full h-full p-2 px-6 text-center focus:outline-none"
-                                >
-                                <quantity-button
-                                  data-section="cart-drawer"
-                                  class="minus absolute text-xl left-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
-                                >
-                                  -
-                                </quantity-button>
-                                <quantity-button
-                                  data-section="cart-drawer"
-                                  class="plus absolute text-xl right-0 top-1/2 -translate-y-1/2 w-6 h-full z-10 flex items-center justify-center cursor-pointer bg-[rgba(var(--color-bg))]"
-                                >
-                                  +
-                                </quantity-button>
-                              </div>
+                            <quantity-input class="cart-quantity flex items-center border border-collapse">
+                              <button class="qty__btn px-3" name="minus" type="button">
+                                <span class="sr-only">
+                                  {{- 'products.product.quantity.decrease' | t: product: item.product.title | escape -}}
+                                </span>
 
-                              <remove-from-cart
-                                data-section="cart-drawer"
-                                class="remove-from-cart text-sm font-medium text-red-500 my-1 cursor-pointer"
+                                {% render 'icon-minus', class: 'h-4 w-4 inline' %}
+                              </button>
+                              <input
+                                class="qty__input w-24 border-x py-2 lg:py-4 outline-none focus:outline-none bg-transparent text-center"
+                                data-quantity-variant-id="{{ item.variant.id }}"
+                                type="number"
+                                name="updates[]"
+                                value="{{ item.quantity }}"
+                                {% # theme-check-disable %}
+                                data-cart-quantity="{{ cart | item_count_for_variant: item.variant.id }}"
+                                min="{{ item.variant.quantity_rule.min }}"
+                                {% if item.variant.quantity_rule.max != null %}
+                                  max="{{ item.variant.quantity_rule.max }}"
+                                {% endif %}
+                                step="{{ item.variant.quantity_rule.increment }}"
+                                {% # theme-check-enable %}
+                                aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
+                                id="Quantity-{{ item.index | plus: 1 }}"
+                                data-index="{{ item.index | plus: 1 }}"
                               >
-                                {% render 'icon-trash' -%}
-                              </remove-from-cart>
-
-                              <div class="py-4 px-2 ">
-                                <span class="line-item-price">
-                                  {{ item.final_line_price | money }}
+                              <button class="qty__btn px-3" name="plus" type="button">
+                                <span class="sr-only">
+                                  {{- 'products.product.quantity.increase' | t: product: item.product.title | escape -}}
                                 </span>
-                                <span class="spinner--overlay hidden">
-                                  {% render 'spinner' %}
-                                </span>
-                              </div>
-                            </div>
+                                {% render 'icon-plus', class: 'h-4 w-4 inline' %}
+                              </button>
+                            </quantity-input>
                           </div>
                         </div>
                       </div>

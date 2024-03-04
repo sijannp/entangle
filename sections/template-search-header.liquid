@@ -1,0 +1,21 @@
+<div class="">
+  <div class="page-width">
+    <h1 class="text-center">Search Results</h1>
+
+    <div class="flex justify-center">
+      <form action="{{ routes.search_url }}" method="get" class="flex w-full justify-center">
+        <input
+          type="text"
+          name="q"
+          placeholder="Search"
+          value="{{ search.terms | escape }}"
+          class="input bg-transparent border w-full md:max-w-screen-sm"
+        >
+
+        <button type="submit" class="button button-primary">
+          {% render 'icon-search' %}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

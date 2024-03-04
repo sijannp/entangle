@@ -85,7 +85,7 @@ class CartItems extends HTMLElement {
             {
                 id: 'main-cart-items',
                 section: document.getElementById('main-cart-items').dataset.id,
-                selector: '.js-contents',
+                selector: '.template-cart-items',
             },
             {
                 id: 'cart-icon-bubble',
@@ -100,7 +100,7 @@ class CartItems extends HTMLElement {
             {
                 id: 'main-cart-footer',
                 section: document.getElementById('main-cart-footer').dataset.id,
-                selector: '.js-contents',
+                selector: '.template-cart-footer',
             },
         ];
     }
@@ -172,7 +172,6 @@ class CartItems extends HTMLElement {
                 publish(PUB_SUB_EVENTS.cartUpdate, { source: 'cart-items', cartData: parsedState, variantId: variantId });
             })
             .catch((e) => {
-                console.log(e)
                 this.querySelectorAll('.loading__spinner').forEach((overlay) => overlay.classList.add('hidden'));
                 const errors = document.getElementById('cart-errors') || document.getElementById('CartDrawer-CartErrors');
                 errors.textContent = window.cartStrings.error;
@@ -185,7 +184,6 @@ class CartItems extends HTMLElement {
     updateLiveRegions(line, message) {
         const lineItemError =
             document.getElementById(`Line-item-error-${line}`) || document.getElementById(`CartDrawer-LineItemError-${line}`);
-        console.log(lineItemError)
         if (lineItemError) lineItemError.querySelector('.cart-item__error-text').innerHTML = message;
 
         this.lineItemStatusElement.setAttribute('aria-hidden', true);
@@ -207,10 +205,8 @@ class CartItems extends HTMLElement {
         const mainCartItems = document.getElementById('main-cart-items') || document.getElementById('CartDrawer-CartItems');
         mainCartItems.classList.add('pointer-events-none');
 
-        console.log(line)
         const cartItemElements = this.querySelectorAll(`#CartItem-${line} .loading__spinner`);
 
-        console.log(cartItemElements)
 
         const cartDrawerItemElements = this.querySelectorAll(`#CartDrawer-Item-${line} .loading__spinner`);
 

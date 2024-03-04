@@ -10,6 +10,9 @@
     }
   {% endstyle %}
 {% endif %}
+{% if template == 'search' %}
+  {% assign collection = search %}
+{% endif %}
 
 <div class="page-width relative w-full left-0 md:w-auto flex flex-col">
   <collapsible-button
@@ -268,7 +271,7 @@
   "name": "Collection filters",
   "class": "collection-filters",
   "enabled_on": {
-    "templates": ["collection"]
+    "templates": ["collection", "search"]
   },
   "settings": [
     {
