@@ -26,7 +26,7 @@
   endif
 %}
 <div
-  class="{% if settings.reveal_on_scroll %} reveal {% endif %} {% unless card_style == 'standard' %} color-{{ color_scheme }} border {% endunless %} {% if settings.corners == "rounded" %} rounded-lg {% endif %} w-full my-4 overflow-hidden duration-300 hover:shadow-md "
+  class="{% if settings.reveal_on_scroll %} reveal {% endif %} {% unless card_style == 'standard' %} color-{{ color_scheme }} border {% endunless %} {% if settings.corners == "rounded" %} rounded-lg {% endif %} w-ful overflow-hidden duration-300 hover:shadow-md "
 >
   <div class="relative w-full overflow-hidden  group {% if type == 'list' %} flex{% endif %}">
     <div class="en-product-image--padding relative w-full {% if type == 'list' %} max-w-[200px]{% endif %}">
@@ -133,22 +133,42 @@
       </div>
     </div>
 
-    <div class=" flex flex-col gap-1 py-3 px-3">
-      {% for block in blocks %}
-        {% case block.type %}
-          {% when 'vendor' %}
-            <span class="text-sm text-[rgba(var(--color-text),.9)]">{{ card_product.vendor }}</span>
+    {% if blocks != blank %}
+      <div class=" flex flex-col gap-1 py-3 px-3">
+        {% for block in blocks %}
+          {% case block.type %}
+            {% when 'vendor' %}
+              <span class="text-sm text-[rgba(var(--color-text),.9)]">{{ card_product.vendor }}</span>
 
-          {% when 'title' %}
+            {% when 'title' %}
+              <a href="{{ card_product.url }}" class="">
+                <h3 class="h4">{{ card_product.title }}</h3>
+              </a>
+
+            {% when 'price' %}
+              {% render 'price', product: card_product %}
+          {% endcase %}
+        {% endfor %}
+      </div>
+    {% else %}
+      {% if show_vendor == true or show_title == true or show_price == true %}
+        <div class=" flex flex-col gap-1 py-3 px-3">
+          {% if show_vendor %}
+            <span class="text-sm text-[rgba(var(--color-text),.9)]">{{ card_product.vendor }}</span>
+          {% endif %}
+
+          {% if show_title %}
             <a href="{{ card_product.url }}" class="">
               <h3 class="h4">{{ card_product.title }}</h3>
             </a>
+          {% endif %}
 
-          {% when 'price' %}
+          {% if show_price %}
             {% render 'price', product: card_product %}
-        {% endcase %}
-      {% endfor %}
-    </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
   </div>
 </div>
 

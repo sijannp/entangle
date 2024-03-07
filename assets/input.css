@@ -152,4 +152,10 @@
         @apply bg-[rgba(var(--color-soldout-bg))] text-[rgba(var(--color-soldout-text))];
     }
 
+
+
+    .checkbox input:checked+div svg {
+        @apply block;
+    }
+
 }

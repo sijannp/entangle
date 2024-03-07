@@ -24,6 +24,8 @@
                     {% render 'product-card',
                       card_product: item,
                       show_vendor: section.settings.show_vendor,
+                      show_title: true,
+                      show_price: section.settings.show_price,
                       quick_add: section.settings.quick_add,
                       type: section.settings.display_style,
                       swatches: section.settings.color_swatches
@@ -38,7 +40,20 @@
                       media_aspect_ratio: 1
                     %}
                   {% when 'page' %}
-                    {{ item.title }}
+                    <div class="{% if settings.reveal_on_scroll %} reveal {% endif %} {% if settings.product_card_style == 'card' %} product-card {% endif %} {% if settings.corners == "rounded" %} rounded-lg {% endif %} w-full duration-300 hover:shadow-md overflow-hidden flex flex-col items-center h-full justify-center">
+                      <div class="absolute flex items-center justify-center text-xs font-bold uppercase overflow-hidden top-1 left-1 {% if settings.corners == "rounded" %} rounded-sm {% endif %}">
+                        <span
+                          class="bg-bg/75 text-text text-xs px-2 py-1"
+                        >
+                          Page
+                        </span>
+                      </div>
+                      <a href="{{ item.url }}">
+                        <h3 class="h4">
+                          {{ item.title }}
+                        </h3>
+                      </a>
+                    </div>
                   {% else %}
 
                 {% endcase %}
@@ -69,20 +84,6 @@
   "name": "Search results",
   "tag": "section",
   "class": "grow shrink basis-0",
-  "blocks": [
-    {
-      "type": "vendor",
-      "name": "Product vendor"
-    },
-    {
-      "type": "title",
-      "name": "Product title"
-    },
-    {
-      "type": "price",
-      "name": "Product price"
-    }
-  ],
   "settings": [
     {
       "type": "number",
@@ -112,6 +113,19 @@
       "default": true,
       "label": "Enable Color Swatches"
     },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": true,
+      "label": "Show vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "default": true,
+      "label": "Show price"
+    },
+
     {
       "type": "checkbox",
       "id": "quick_add",

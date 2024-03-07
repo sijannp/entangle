@@ -1,4 +1,10 @@
 {{ 'en-filters.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign section_data = 'template-collection-products-grid'
+  if template == 'search'
+    assign section_data = 'template-search-results'
+  endif
+%}
 
 {% assign desktop_position = section.settings.desktop_position %}
 {% if desktop_position == 'sidebar' %}
@@ -12,9 +18,16 @@
 {% endif %}
 {% if template == 'search' %}
   {% assign collection = search %}
+  {% unless search.results.size > 0 %}
+    <style>
+      #{{ section.id }} {
+        display: none;
+      }
+    </style>
+  {% endunless %}
 {% endif %}
 
-<div class="page-width relative w-full left-0 md:w-auto flex flex-col">
+<div class="page-width relative w-full left-0 md:w-auto flex flex-col" id="{{ section.id }}">
   <collapsible-button
     target-id="filters"
     class="flex items-center gap-2 {% if desktop_position == 'top' %} md:hidden {% endif %}"
@@ -30,7 +43,7 @@
       id="en-filters"
       class="collapsible-inner w-full {% if desktop_position == 'top' %} md:flex md:flex-wrap md:items-center gap-4 {% endif %}"
     >
-      <filter-form class="flex flex-col w-full">
+      <filter-form class="flex flex-col w-full" data-template="{{ template }}" data-section="{{ section_data }}">
         <form
           class="filter-form flex gap-3 flex-col {% if desktop_position == 'top' %} md:flex-row md:items-center {% endif %}"
           id="en-filter-form"
@@ -70,7 +83,7 @@
           </div>
           {%- for filter in collection.filters -%}
             <div class="filter-group flex flex-col">
-              <collapsible-button target-id="filter-{{ filter.label }}" class="en-collapsible">
+              <collapsible-button target-id="filter-{{ filter.label }}" close-on-click="" true class="en-collapsible">
                 <div class="filter-group-summary">
                   <div class="flex gap-2 items-center justify-between">
                     <p class="h4">{{ filter.label }}</p>
@@ -92,25 +105,44 @@
                 <div class="collapsible-inner filter-group-display">
                   <div class="filter-group-display__header"></div>
 
-                  <div class="px-2 border">
+                  <div class=" border min-w-[19rem] p-4">
                     {%- case filter.type -%}
                       {%- when 'boolean', 'list' -%}
-                        <ul class="filter-group-display__list my-3">
+                        <ul class="filter-group-display__list my-3 flex flex-col gap-3">
                           {%- for filter_value in filter.values -%}
                             <li class="filter-group-display__list-item ">
                               <label for="Filter-{{ filter.param_name }}-{{ forloop.index }}" class="flex items-center">
-                                <input
-                                  type="checkbox"
-                                  name="{{ filter_value.param_name }}"
-                                  value="{{ filter_value.value }}"
-                                  class="w-4 h-4 mr-2"
-                                  {% if filter_value.active -%}
-                                    checked
-                                  {%- endif %}
-                                  {% if filter_value.count == 0 and filter_value.active == false -%}
-                                    disabled
-                                  {%- endif %}
-                                >
+                                {% comment %}
+                                  <input
+                                    type="checkbox"
+                                    name="{{ filter_value.param_name }}"
+                                    value="{{ filter_value.value }}"
+                                    class="w-4 h-4 mr-2"
+                                    {% if filter_value.active -%}
+                                      checked
+                                    {%- endif %}
+                                    {% if filter_value.count == 0 and filter_value.active == false -%}
+                                      disabled
+                                    {%- endif %}
+                                  >
+                                {% endcomment %}
+                                {% liquid
+                                  assign checked = false
+                                  assign disabled = content_for_additional_checkout_buttons
+                                  if filter_value.active
+                                    assign checked = true
+                                  endif
+                                  if filter_value.count == 0 and filter_value.active == false
+                                    assign disabled = true
+                                  endif
+                                %}
+
+                                {% render 'checkbox',
+                                  name: filter_value.param_name,
+                                  value: filter_value.value,
+                                  checked: checked,
+                                  disabled: disabled
+                                %}
                                 {{- filter_value.label -}}
                               </label>
                             </li>
@@ -215,7 +247,7 @@
                 {%- if filter.min_value.value != null or filter.max_value.value != null -%}
                   {% if filter.range_max != filter.max_value.value or filter.min_value.value != 0 %}
                     <remove-filter
-                      class="active-filters__remove-filter cursor-pointer rounded-full inline-block text-sm border border-[rgba(var(--color-text))] px-3 py-1"
+                      class="active-filters__remove-filter cursor-pointer rounded-full inline-block text-sm border hover:bg-danger/25 transition duration-300 px-3 py-1"
                       data-url="{{ filter.url_to_remove }}"
                     >
                       {{ filter.range_min }}
@@ -228,7 +260,7 @@
               {%- else -%}
                 {%- for filter_value in filter.active_values -%}
                   <remove-filter
-                    class="active-filters__remove-filter cursor-pointer rounded-full inline-block text-sm border border-[rgba(var(--color-text))] px-3 py-1"
+                    class="active-filters__remove-filter cursor-pointer rounded-full inline-block text-sm border hover:bg-danger/25 transition duration-300 px-3 py-1"
                     data-url="{{ filter_value.url_to_remove }}"
                   >
                     {{ filter.label }}: {{ filter_value.label }} X

@@ -4,12 +4,16 @@
         "header": {
             "type": "template-search-header"
         },
+        "filters": {
+            "type": "filters"
+        },
         "results": {
             "type": "template-search-results"
         }
     },
     "order": [
         "header",
+        "filters",
         "results"
     ]
 }

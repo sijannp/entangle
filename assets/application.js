@@ -112,11 +112,8 @@ class FilterForm extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
-        this.shadowRoot.innerHTML = `
-          <slot></slot>
-        `;
+        this.shadowRoot.innerHTML = `<slot></slot>`;
         this.inputs = this.querySelectorAll('input, select');
-
         this.handleFormChange = this.handleFormChange.bind(this);
         this.setupEventListeners();
     }
@@ -135,34 +132,63 @@ class FilterForm extends HTMLElement {
     }
 
     handleFormChange() {
-        this.productsGrid = document.querySelector('#products-grid');
-        this.filterComponent = document.querySelector('#active-filters');
+        const section = this.dataset.section;
         const formData = new FormData(this.querySelector('form'));
+        if (this.dataset.template == 'search') {
+            formData.append('q', document.querySelector("input[name='q']")?.value);
+        }
         const formString = new URLSearchParams(formData).toString();
-        const url = `${window.location.pathname}?${formString}`;
-        document.querySelector('#products-grid-overlay').classList.add('bg-[rgba(var(--color-bg))]', 'z-[101]');
+        const url = `${window.location.pathname}?${formString}&section=${section}`;
+
+        this.showLoadingOverlay();
+        this.fetchData(url, formString);
+    }
+
+    showLoadingOverlay() {
+        document.querySelector('#products-grid-overlay').classList.add('bg-bg/[.95]', 'z-[1]');
+    }
+
+    fetchData(url, formString) {
         fetch(url)
             .then((response) => response.text())
-            .then((data) => {
-                const html = new DOMParser().parseFromString(data, 'text/html');
-                this.productsGrid.innerHTML = html.getElementById('products-grid').innerHTML;
-                this.filterComponent.innerHTML = html.getElementById('active-filters').innerHTML;
-                this.updateURL(`${window.location.pathname}?${formString}`);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-            })
-            .finally(() => {
-                document.querySelector('#products-grid-overlay').classList.remove('bg-[rgba(var(--color-bg))]', 'z-[101]');
-            });
+            .then((data) => this.updateContent(data, formString))
+            .catch((error) => this.handleError(error))
+            .finally(() => this.hideLoadingOverlay());
+    }
+
+    updateContent(data, formString) {
+        const html = new DOMParser().parseFromString(data, 'text/html');
+        const productsGridContent = html.getElementById('products-grid').innerHTML;
+        const filterComponentContent = html.getElementById('active-filters').innerHTML;
+
+        this.updateGridAndFilters(productsGridContent, filterComponentContent);
+        this.updateURL(`${window.location.pathname}?${formString}`);
+    }
+
+    updateGridAndFilters(productsGridContent, filterComponentContent) {
+        this.productsGrid.innerHTML = productsGridContent;
+        this.filterComponent.innerHTML = filterComponentContent;
     }
 
     updateURL(url) {
         window.history.replaceState({}, '', url);
     }
+
+    hideLoadingOverlay() {
+        document.querySelector('#products-grid-overlay').classList.remove('bg-bg/[.95]', 'z-[1]');
+    }
+
+    get productsGrid() {
+        return document.querySelector('#products-grid');
+    }
+
+    get filterComponent() {
+        return document.querySelector('#active-filters');
+    }
 }
 
 customElements.define('filter-form', FilterForm);
+
 
 
 class PriceRange extends HTMLElement {

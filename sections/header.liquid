@@ -187,22 +187,52 @@
     class="absolute top-full w-full bg-[rgba(var(--color-bg))]"
   >
     <div class="collapsible-inner w-full">
-      <form action="{{ routes.search_url }}" class="">
-        <div class="max-w-xs mx-auto flex items-center border-b-[1px] border-b-black mb-8">
-          <input
-            type="text"
-            placeholder="Search"
-            name="q"
-            value="{{ search.terms | escape }}"
-            class="input w-full bg-[rgba(var(--color-bg))] border-none"
-            autofocus
-          >
+      {% comment %}
+        <form action="{{ routes.search_url }}" class="">
+          <div class="max-w-xs mx-auto flex items-center border-b-[1px] border-b-black mb-8">
+            <input
+              type="text"
+              placeholder="Search"
+              name="q"
+              value="{{ search.terms | escape }}"
+              class="input w-full bg-[rgba(var(--color-bg))] border-none"
+              autofocus
+            >
 
-          <button type="submit" value="Search" class="" aria-label="Search">
-            {% render 'icon-search', class: 'opacity-[.6]' %}
-          </button>
-        </div>
-      </form>
+            <button type="submit" value="Search" class="" aria-label="Search">
+              {% render 'icon-search', class: 'opacity-[.6]' %}
+            </button>
+          </div>
+        </form>
+      {% endcomment %}
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+      {% comment %}
+        <predictive-search>
+          <form action="{{ routes.search_url }}" method="get" role="search" class="flex w-full justify-center pb-6">
+            <label for="Search" class="sr-only">Search</label>
+            <input
+              id="Search"
+              type="search"
+              name="q"
+              value="{{ search.terms | escape }}"
+              role="combobox"
+              aria-expanded="false"
+              aria-owns="predictive-search-results"
+              aria-controls="predictive-search-results"
+              aria-haspopup="listbox"
+              aria-autocomplete="list"
+              class="input bg-transparent border w-full md:max-w-screen-sm"
+            >
+            <button type="submit" class="button button-primary">
+              {% render 'icon-search' %}
+            </button>
+            <input name="options[prefix]" type="hidden" value="last">
+          </form>
+          <div id="predictive-search" tabindex="-1"></div>
+        </predictive-search>
+      {% endcomment %}
+
+      {% render 'header-search', input_id: 'Search-In-Modal' %}
     </div>
   </collapsible-content>
 </en-header>

@@ -63,6 +63,11 @@ button:disabled {
     padding-right: 2.5rem;
 }
 
+
+.page-width--narrow {
+    max-width: 750px;
+}
+
 .en-grid-gap {
     row-gap: var(--grid-gap-horizontal);
     column-gap: var(--grid-gap-horizontal);
