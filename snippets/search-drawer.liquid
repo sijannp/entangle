@@ -1,0 +1,15 @@
+{% unless position %}
+  {% assign position = 'right' %}
+{% endunless %}
+
+<en-drawer
+  class="drawer fixed left-0 top-0 w-full h-full z-[99] overlay-full"
+  data-id="{{ id }}"
+>
+  <div
+    class="main-drawer main-drawer--{{ position }} flex flex-col bg-bg text-text absolute h-full w-full md:max-w-[32rem] m-0 z-[99] p-4"
+    id="1"
+  >
+    {% render 'header-search', input_id: 'Search-In-Modal' %}
+  </div>
+</en-drawer>

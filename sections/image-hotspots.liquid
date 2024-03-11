@@ -205,7 +205,35 @@
     })();
   </script>
 {% endcomment %}
+<open-drawer target-id="test"> Open Drawer </open-drawer>
 
+<custom-drawer
+  data-id="1"
+  class="fixed inset-0 w-full h-full z-[11] -translate-x-full transition-all ease-linear duration-300"
+>
+  <div class="absolute overlay h-full w-full bg-text/40"></div>
+  <div class="absolute content w-80 h-full bg-bg text-text z-[11] p-4">
+    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rem beatae accusantium, sapiente molestias vero itaque
+    nihil laborum necessitatibus eligendi voluptatem modi, repellat dignissimos ipsum, nisi ipsam! Nesciunt officia
+    pariatur ullam.
+  </div>
+</custom-drawer>
+
+<en-drawer
+  class="drawer fixed left-0 top-0 w-full h-full z-[99] overlay-full"
+  data-id="test"
+>
+  <div
+    class="main-drawer main-drawer--left flex flex-col bg-bg text-text absolute h-full w-full md:max-w-[25rem] m-0 z-[99]"
+    id="1"
+  ></div>
+</en-drawer>
+
+<style>
+  custom-drawer {
+    transform: translateX(-100%);
+  }
+</style>
 {% schema %}
 {
   "name": "Image Hotspots",

@@ -618,7 +618,6 @@ class AddtoCartButton extends HTMLElement {
             })
             .catch((error) => {
                 console.error("An error occurred:", error);
-                // Handle error gracefully, e.g., show an error message
             })
             .finally(() => {
                 this.innerHTML = "Add to Cart";
@@ -1436,6 +1435,37 @@ class CountdownComponent extends HTMLElement {
 if (!customElements.get("countdown-component")) {
     customElements.define("countdown-component", CountdownComponent);
 }
+
+
+class CustomDrawer extends HTMLElement {
+    constructor() {
+        super();
+        this.id = this.dataset.id;
+        this.drawerButton = document.querySelector(`open-drawer[data-id='${this.id}']`)
+        this.overlay = this.querySelector('.overlay')
+    }
+
+    connectedCallback() {
+        if (this.drawerButton) {
+            this.drawerButton.addEventListener('click', this.showDrawer.bind(this))
+            if (this.overlay) {
+                this.overlay.addEventListener('click', this.hideDrawer.bind(this))
+            }
+        }
+    }
+
+    showDrawer() {
+        this.style.transform = "translateX(0%)";
+    }
+    hideDrawer() {
+        this.style.transform = "translateX(-100%)";
+    }
+}
+
+customElements.define('custom-drawer', CustomDrawer)
+
+
+
 
 
 const inputs = document.querySelectorAll('.form-control input');
