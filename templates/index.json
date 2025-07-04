@@ -1,96 +1,201 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
-    "sections": {
-        "slideshow": {
-            "type": "slideshow",
-            "blocks": {
-                "slide1": {
-                    "type": "slide",
-                    "settings": {
-                        "content_position": "bottom_center",
-                        "color_scheme": "background-2",
-                        "image_opacity": 0.7,
-                        "container": false
-                    }
-                },
-                "slide2": {
-                    "type": "slide",
-                    "settings": {
-                        "content_position": "left",
-                        "alignment": "left",
-                        "color_scheme": "background-1"
-                    }
-                }
-            },
-            "block_order": [
-                "slide1",
-                "slide2"
-            ]
+  "sections": {
+    "slideshow": {
+      "type": "slideshow",
+      "blocks": {
+        "slide1": {
+          "type": "slide",
+          "settings": {
+            "image_opacity": 0.7,
+            "heading": "Slider Heding",
+            "heading_size": "h1",
+            "text": "<p> Give customers details about the banner image(s) or content on the template.</p>",
+            "button_label": "Shop now",
+            "button_link": "",
+            "container": false,
+            "content_position": "bottom_center",
+            "alignment": "center",
+            "color_scheme": "background-2"
+          }
         },
-        "featured_collection": {
-            "type": "featured-collection",
-            "blocks": {
-                "vendor": {
-                    "type": "vendor"
-                },
-                "title": {
-                    "type": "title"
-                },
-                "price": {
-                    "type": "price"
-                }
-            },
-            "block_order": [
-                "vendor",
-                "title",
-                "price"
-            ]
-        },
-        "hotspots": {
-            "type": "image-hotspots"
-        },
-        "image_and_text": {
-            "type": "text-and-image",
-            "blocks": {
-                "image": {
-                    "type": "image"
-                },
-                "text": {
-                    "type": "text",
-                    "settings": {
-                        "color_scheme": "inverse"
-                    }
-                }
-            },
-            "block_order": [
-                "image",
-                "text"
-            ]
-        },
-        "multicolumn": {
-            "type": "multi-column",
-            "blocks": {
-                "column_1": {
-                    "type": "column"
-                },
-                "column_2": {
-                    "type": "column"
-                },
-                "column_3": {
-                    "type": "column"
-                }
-            },
-            "block_order": [
-                "column_1",
-                "column_2",
-                "column_3"
-            ]
+        "slide2": {
+          "type": "slide",
+          "settings": {
+            "image_opacity": 0.9,
+            "heading": "Slider Heding",
+            "heading_size": "h1",
+            "text": "<p> Give customers details about the banner image(s) or content on the template.</p>",
+            "button_label": "Shop now",
+            "button_link": "",
+            "container": true,
+            "content_position": "left",
+            "alignment": "left",
+            "color_scheme": "background-1"
+          }
         }
+      },
+      "block_order": [
+        "slide1",
+        "slide2"
+      ],
+      "settings": {
+        "slide_duration": 7,
+        "slide_style": "fade",
+        "full_width": true,
+        "image_height": "medium",
+        "color_scheme": ""
+      }
     },
-    "order": [
-        "slideshow",
-        "featured_collection",
-        "image_and_text",
-        "hotspots",
-        "multicolumn"
-    ]
+    "featured_collection": {
+      "type": "featured-collection",
+      "blocks": {
+        "vendor": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price"
+      ],
+      "settings": {
+        "heading": "Featured Collection",
+        "collection": "collection1",
+        "columns_desktop": 3,
+        "columns_mobile": 1,
+        "display_type": "slider",
+        "enable_quick_add": true,
+        "max_products_to_show": 8,
+        "full_width": false,
+        "padding_top": 25,
+        "padding_bottom": 25,
+        "color_scheme": "",
+        "card_color_scheme": ""
+      }
+    },
+    "image_and_text": {
+      "type": "text-and-image",
+      "blocks": {
+        "image": {
+          "type": "image",
+          "settings": {}
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "heading": "Image and text",
+            "heading_size": "h2",
+            "sub_heading": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "sub_heading_size": "h4",
+            "button": "Shop Now",
+            "button_url": "",
+            "color_scheme": "inverse"
+          }
+        }
+      },
+      "block_order": [
+        "image",
+        "text"
+      ],
+      "settings": {
+        "page_width": true,
+        "content_position": "justify-center",
+        "vertical_alignment": "left",
+        "padding_top": 25,
+        "padding_bottom": 25,
+        "color_scheme": ""
+      }
+    },
+    "hotspots": {
+      "type": "image-hotspots",
+      "settings": {
+        "hotspot_color": "#952e31",
+        "padding_top": 25,
+        "padding_bottom": 25
+      }
+    },
+    "multicolumn": {
+      "type": "multi-column",
+      "blocks": {
+        "column_1": {
+          "type": "column",
+          "settings": {
+            "heading": "Column",
+            "heading_size": "h2",
+            "sub_heading": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "sub_heading_size": "h4",
+            "button": "",
+            "button_url": ""
+          }
+        },
+        "column_2": {
+          "type": "column",
+          "settings": {
+            "heading": "Column",
+            "heading_size": "h2",
+            "sub_heading": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "sub_heading_size": "h4",
+            "button": "",
+            "button_url": ""
+          }
+        },
+        "column_3": {
+          "type": "column",
+          "settings": {
+            "heading": "Column",
+            "heading_size": "h2",
+            "sub_heading": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "sub_heading_size": "h4",
+            "button": "",
+            "button_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_1",
+        "column_2",
+        "column_3"
+      ],
+      "settings": {
+        "col_heading": "MultiColumn",
+        "col_heading_size": "h2",
+        "col_vertical_alignment": "left",
+        "image_width": "w-full",
+        "image_ratio": "h-auto",
+        "columns_desktop": 3,
+        "page_width": true,
+        "vertical_alignment": "justify-items-start",
+        "padding_top": 25,
+        "padding_bottom": 25,
+        "color_scheme": "",
+        "button_label": "",
+        "button_link": ""
+      }
+    }
+  },
+  "order": [
+    "slideshow",
+    "featured_collection",
+    "image_and_text",
+    "hotspots",
+    "multicolumn"
+  ]
 }
